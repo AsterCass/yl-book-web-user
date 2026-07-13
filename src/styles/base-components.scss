@@ -1,0 +1,745 @@
+@use "@/styles/base-theme";
+
+//==================== base ====================
+
+@mixin component-full-btn-base(
+  $thisHeight: 2.4rem,
+  $thisWidth: 6rem,
+  $thisMinWidth: 6rem,
+  $bgColor: rgb(var(--full-container-background-color)),
+) {
+  height: $thisHeight !important;
+  min-height: $thisHeight !important;
+  width: $thisWidth !important;
+  min-width: $thisMinWidth !important;
+  padding: 0 .6rem !important;
+  color: rgb(var(--full-container-text-color)) !important;
+  background: $bgColor !important;
+  border-radius: 4px !important;
+  border: 2px solid $bgColor !important;
+
+  &:before {
+    border-bottom: none !important;
+  }
+}
+
+
+@mixin component-outline-btn-base(
+  $thisHeight: 2.4rem,
+  $thisWidth: 6rem,
+  $thisMinWidth: 6rem,
+  $thisBorder:  2px solid rgb(var(--full-container-background-color)),
+) {
+  height: $thisHeight !important;
+  min-height: $thisHeight !important;
+  width: $thisWidth !important;
+  min-width: $thisMinWidth !important;
+  padding: 0 .6rem !important;
+  border: $thisBorder !important;
+  border-radius: 4px !important;
+
+  &:before {
+    border-bottom: none !important;
+  }
+}
+
+@mixin component-none-btn-base($thisWidth: 6rem, $thisHeight: 2.2rem) {
+  height: $thisHeight;
+  width: $thisWidth !important;
+  min-width: $thisWidth !important;
+  min-height: $thisHeight !important;
+  padding: 0 .6rem !important;
+  border-radius: 4px !important;
+}
+
+@mixin component-outline-input-base(
+  $thisWidth: 12rem,
+  $thisMinWidth: 12rem,
+  $thisHeight: 2.4rem,
+  $thisBorder: 2px solid rgb(var(--full-container-background-color))
+) {
+  width: $thisWidth !important;
+  min-width: $thisMinWidth !important;
+  border-radius: 4px !important;
+
+  &.q-field--with-bottom {
+    padding-bottom: 0;
+  }
+
+  .q-field__native {
+    color: rgb(var(--text-color)) !important;
+    height: $thisHeight !important;
+  }
+
+  .q-field__control {
+    color: $thisBorder !important;
+    height: $thisHeight !important;
+    border-radius: 4px !important;
+
+    .q-field__control-container {
+      padding: 0 3px !important;
+    }
+  }
+
+  .q-field__control:before {
+    border: $thisBorder !important;
+  }
+
+  .q-field__prepend {
+    font-size: .9rem;
+    height: $thisHeight !important;
+    color: rgb(var(--container-text-color));
+  }
+
+  .q-field__append {
+    height: $thisHeight !important;
+    color: rgb(var(--text-color));
+
+    .q-icon {
+      font-size: 1rem;
+    }
+  }
+
+  .q-field__messages {
+    color: rgb(var(--negative));
+  }
+
+  .q-chip {
+    color: rgb(var(--full-container-text-color));
+    background-color: rgb(var(--full-container-background-color));
+    opacity: .9;
+
+    .q-icon {
+      color: rgb(var(--full-container-text-color));
+      opacity: .9;
+    }
+  }
+
+  &.q-field--highlighted {
+    .q-field__prepend {
+      color: rgb(var(--container-text-color));
+    }
+
+    .q-field__append {
+      .q-icon {
+        color: rgb(var(--container-text-color));
+      }
+    }
+  }
+
+  &.q-field--auto-height {
+    .q-field__control {
+      min-height: $thisHeight !important;
+    }
+
+    .q-field__native {
+      min-height: $thisHeight !important;
+    }
+  }
+
+}
+
+.component-separator-base {
+  background-color: rgb(var(--text-color)) !important;
+  opacity: .3;
+}
+
+.component-separator-in-container {
+  background-color: rgb(var(--full-container-text-color)) !important;
+  opacity: .4;
+}
+
+.component-ratio-base {
+
+  .q-checkbox__inner:not(.q-checkbox__inner--truthy) {
+    color: rgb(var(--text-color));
+    opacity: .7;
+  }
+
+  .q-checkbox__inner--truthy {
+    color: rgb(var(--text-color));
+  }
+
+  .q-radio__inner:not(.q-radio__inner--truthy) {
+    color: rgb(var(--text-color));
+    opacity: .7;
+  }
+
+  .q-radio__inner--truthy {
+    color: rgb(var(--text-color));
+  }
+}
+
+.component-vertical-tabs-with-container {
+
+  .q-tab {
+    white-space: break-spaces;
+    transition: border-left-color .5s ease;
+  }
+
+  .tabs-expandable-content {
+    height: 95px;
+  }
+
+  .tabs-expand-enter-active,
+  .tabs-expand-leave-active {
+    transition: all .5s ease-out;
+    overflow: hidden;
+  }
+
+  .tabs-expand-enter-from,
+  .tabs-expand-leave-to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.component-long-text-input {
+
+  ::-webkit-scrollbar {
+    overflow: visible;
+    z-index: 12;
+    background: transparent;
+    height: 12px;
+    width: 14px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    width: 10px;
+    background-color: rgb(var(--text-color));
+    border-radius: 10px;
+    z-index: 12;
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    transition: background-color .28s ease-in-out;
+    margin: 4px;
+    min-height: 32px;
+    min-width: 32px;
+  }
+
+  textarea {
+    resize: none !important;
+    font-size: .9rem;
+    color: rgb(var(--text-color));
+    letter-spacing: 0.023rem;
+    line-height: 1.3rem;
+    border-top: 2px solid rgb(var(--text-color), .8);
+    border-right: 2px solid rgb(var(--text-color), .8);
+    border-left: 2px solid rgb(var(--text-color), .8);
+    background-color: rgba(var(--full-container-background-color-light));
+    margin: .8rem 0 0 0;
+    padding: 1rem;
+    height: 5.5rem;
+    border-radius: 8px 8px 0 0;
+    overflow-wrap: anywhere;
+  }
+
+  .component-long-text-input-bottom {
+    translate: 0 -3px;
+    height: 2.5rem;
+    color: rgb(var(--text-color));
+    background-color: rgba(var(--full-container-background-color-light));
+    border-bottom: 2px solid rgb(var(--text-color), .8);
+    border-right: 2px solid rgb(var(--text-color), .8);
+    border-left: 2px solid rgb(var(--text-color), .8);
+    border-radius: 0 0 8px 8px;
+  }
+
+}
+
+.component-long-text-input-simple {
+
+  ::-webkit-scrollbar {
+    overflow: visible;
+    z-index: 12;
+    background: transparent;
+    height: 12px;
+    width: 14px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    width: 10px;
+    background-color: rgb(var(--text-color));
+    border-radius: 10px;
+    z-index: 12;
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    transition: background-color .28s ease-in-out;
+    margin: 4px;
+    min-height: 32px;
+    min-width: 32px;
+  }
+
+  textarea {
+    resize: none !important;
+    font-size: .9rem;
+    color: rgb(var(--text-color));
+    letter-spacing: 0.023rem;
+    line-height: 1.3rem;
+    min-height: 1.3rem !important;
+    border: 2px solid rgb(var(--text-color), .8);
+    background-color: rgba(var(--full-container-background-color-light));
+    margin: .1rem 0 0 0;
+    padding: 8px 12px !important;
+    border-radius: 8px;
+    overflow-wrap: anywhere;
+  }
+
+}
+
+.component-base-tree {
+
+  .q-tree__node--parent {
+    margin-right: 8px;
+  }
+
+  .q-icon {
+    margin: 0 5px;
+    color: rgb(var(--text-color));
+  }
+
+  //非一级父节点
+  .q-tree__node--parent > .q-tree__node-header > .q-tree__node-header-content {
+    color: rgb(var(--text-color));
+    font-size: .9rem;
+  }
+
+  //一级父节点
+  > .q-tree__node--parent > .q-tree__node-header > .q-tree__node-header-content {
+    color: rgb(var(--text-color));
+    font-size: .95rem;
+  }
+
+  //子节点
+  .q-tree__node--child > .q-tree__node-header > .q-tree__node-header-content {
+    color: rgb(var(--text-color));
+    font-size: .9rem;
+  }
+
+  .q-tree__node-header {
+    transition: transform 1s ease .2s, border-left-width .15s linear, margin-right .15s linear;
+  }
+
+  .cask-chatroom-chat-list-subtitle {
+    transition: transform 1s ease .2s, opacity 1s ease .2s;
+    transform: translateX(0px);
+    opacity: .5;
+  }
+
+  .cask-chatroom-chat-list-delete {
+    right: 0;
+    padding-right: 15px;
+    transition: transform 1s ease .2s, opacity 1s ease .2s;
+    opacity: 0;
+    transform: translateX(25px);
+  }
+
+  .q-tree__node--selected {
+    transform: translateX(-15px);
+    background-color: rgba(var(--text-color), 0.05);
+    border-left: 8px solid rgba(var(--text-color), .9);
+    margin-right: -15px;
+    margin-left: 7px;
+
+    .cask-chatroom-chat-list-delete {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+
+    .cask-chatroom-chat-list-subtitle {
+      transform: translateX(-25px);
+      opacity: 0;
+    }
+  }
+
+  .q-tree__children {
+    padding-left: 10px;
+  }
+
+}
+
+@mixin component-max-line-text(
+  $max-line: 1
+) {
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $max-line;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.component-no-scroller {
+  &::-webkit-scrollbar {
+    height: 0;
+  }
+}
+
+.component-full-screen {
+  height: 100vh;
+  width: 100vw;
+}
+
+.component-full-screen-with-header {
+  height: 100vh;
+  width: 100vw;
+  padding-top: 8rem;
+}
+
+//==================== mix ====================
+
+.component-full-btn-std {
+  @include component-full-btn-base()
+}
+
+.component-full-btn-std-sq {
+  @include component-full-btn-base(
+          $thisHeight: 2.5rem,
+          $thisWidth: 2.5rem,
+          $thisMinWidth: 2.5rem,
+  )
+}
+
+.component-full-btn-mini {
+  @include component-full-btn-base(
+          $thisWidth: 2.2rem,
+          $thisHeight: 1.8rem,
+          $thisMinWidth: 2.2rem,
+  )
+}
+
+.component-full-btn-long {
+  @include component-full-btn-base(
+          $thisWidth: 12rem,
+          $thisMinWidth: 12rem,
+  )
+}
+
+.component-full-btn-grow {
+  @include component-full-btn-base(
+          $thisWidth: auto,
+  )
+}
+
+.component-full-btn-full {
+  @include component-full-btn-base(
+          $thisWidth: 100%,
+  )
+}
+
+.component-full-btn-mini-error-full {
+  @include component-full-btn-base(
+          $thisHeight: 2rem,
+          $thisWidth: 100%,
+          $bgColor: rgb(var(--negative)),
+  )
+}
+
+.component-full-btn-error-full {
+  @include component-full-btn-base(
+          $thisWidth: 100%,
+          $bgColor: rgb(var(--negative)),
+  )
+}
+
+.component-full-btn-mini-grow {
+  @include component-full-btn-base(
+          $thisHeight: 2.2rem,
+          $thisWidth: auto,
+  )
+}
+
+.component-full-btn-mini-mini-grow {
+  @include component-full-btn-base(
+          $thisHeight: 1.8rem,
+          $thisWidth: auto,
+          $thisMinWidth: 4rem,
+  );
+  font-size: .75rem !important;
+}
+
+.component-outline-btn-std {
+  @include component-outline-btn-base()
+}
+
+.component-outline-btn-grow {
+  @include component-outline-btn-base(
+          $thisWidth: auto,
+  )
+}
+
+.component-outline-btn-full {
+  @include component-outline-btn-base(
+          $thisWidth: 100%,
+  )
+}
+
+.component-outline-btn-mini-grow {
+  @include component-outline-btn-base(
+          $thisHeight: 2rem,
+          $thisWidth: auto,
+          $thisMinWidth: 4rem,
+  )
+}
+
+.component-outline-btn-clear-grow {
+  @include component-outline-btn-base(
+          $thisWidth: auto,
+          $thisBorder: 2px solid rgb(var(--full-container-background-color-light)),
+  )
+}
+
+.component-none-btn-grow {
+  @include component-none-btn-base(
+          $thisWidth: auto,
+  )
+}
+
+.component-none-btn-mini-grow {
+  @include component-none-btn-base(
+          $thisHeight: 1.8rem,
+          $thisWidth: auto,
+  )
+}
+
+.component-none-btn-full {
+  @include component-none-btn-base(
+          $thisWidth: 100%,
+          $thisHeight: auto,
+  )
+}
+
+.component-none-btn-std {
+  @include component-none-btn-base()
+}
+
+.component-none-btn-mini {
+  @include component-none-btn-base(
+          $thisWidth: 2.2rem,
+          $thisHeight: 1.8rem,
+  )
+}
+
+.component-outline-btn-mini {
+  @include component-outline-btn-base(
+          $thisWidth: 2.2rem,
+          $thisHeight: 1.8rem,
+          $thisMinWidth: 2.2rem,
+  )
+}
+
+.component-outline-input-std {
+  @include component-outline-input-base();
+}
+
+.component-outline-input-longest {
+  @include component-outline-input-base(
+          $thisWidth: 28rem,
+  );
+}
+
+.component-outline-dash-input-std {
+  @include component-outline-input-base(
+          $thisBorder: 2px dashed rgb(var(--full-container-background-color)),
+  );
+}
+
+.component-outline-dash-input-longest {
+  @include component-outline-input-base(
+          $thisWidth: 28rem,
+          $thisBorder: 2px dashed rgb(var(--full-container-background-color)),
+  );
+}
+
+.component-outline-input-mini {
+  @include component-outline-input-base(
+          $thisWidth: 9.5rem,
+          $thisMinWidth: 9.5rem,
+  );
+}
+
+.component-outline-input-mini-short {
+  @include component-outline-input-base(
+          $thisWidth: 9.5rem,
+          $thisMinWidth: 9.5rem,
+          $thisHeight: 2rem,
+  );
+}
+
+.component-outline-input-mini-est {
+  @include component-outline-input-base(
+          $thisWidth: 4rem,
+          $thisMinWidth: 4rem,
+  );
+}
+
+.component-outline-input-mini-est-short {
+  @include component-outline-input-base(
+          $thisWidth: 6rem,
+          $thisMinWidth: 6rem,
+          $thisHeight: 2rem,
+  );
+}
+
+.component-outline-dash-input-mini {
+  @include component-outline-input-base(
+          $thisWidth: 9.5rem,
+          $thisMinWidth: 9.5rem,
+          $thisBorder: 2px dashed rgb(var(--full-container-background-color)),
+  );
+}
+
+.component-outline-dash-input-mini-short {
+  @include component-outline-input-base(
+          $thisWidth: 9.5rem,
+          $thisMinWidth: 9.5rem,
+          $thisHeight: 2rem,
+          $thisBorder: 2px dashed rgb(var(--full-container-background-color)),
+  );
+}
+
+.component-outline-dash-input-mini-est {
+  @include component-outline-input-base(
+          $thisWidth: 4rem,
+          $thisMinWidth: 4rem,
+          $thisBorder: 2px dashed rgb(var(--full-container-background-color)),
+  );
+}
+
+.component-outline-input-larger {
+  @include component-outline-input-base(
+          $thisWidth: 28rem,
+          $thisMinWidth: 28rem,
+          $thisHeight: 12rem,
+  );
+}
+
+.component-outline-input-large {
+  @include component-outline-input-base(
+          $thisWidth: 28rem,
+          $thisMinWidth: 28rem,
+          $thisHeight: 18rem,
+  );
+}
+
+.component-outline-input-grow {
+  @include component-outline-input-base(
+          $thisWidth: auto,
+          $thisMinWidth: 12rem,
+  );
+}
+
+.component-outline-input-mini-grow {
+  @include component-outline-input-base(
+          $thisWidth: auto,
+          $thisHeight: 2.05rem,
+          $thisMinWidth: 12rem,
+  );
+}
+
+
+.component-outline-input-grow-on-semi-trans {
+  @include component-outline-input-base(
+          $thisWidth: auto,
+          $thisMinWidth: 12rem,
+          $thisBorder: 2px solid rgb(var(--semi-bg-container-background-color)),
+  );
+}
+
+.component-outline-input-grow-on-semi-trans-mini {
+  @include component-outline-input-base(
+          $thisWidth: 10rem,
+          $thisMinWidth: 10rem,
+          $thisBorder: 2px solid rgb(var(--semi-bg-container-background-color)),
+  );
+}
+
+.component-outline-input-textarea-grow {
+  textarea {
+    resize: none !important;
+    color: rgb(var(--text-color));
+    border-radius: 4px;
+    padding: .75rem;
+    height: 16rem;
+    overflow-wrap: anywhere;
+    border: 2px solid rgb(var(--text-color), 0.75);
+
+  }
+
+  ::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--text-color-select));
+  }
+}
+
+.component-outline-input-textarea-grow-dash {
+  textarea {
+    resize: none !important;
+    color: rgb(var(--text-color));
+    border-radius: 4px;
+    padding: .75rem;
+    height: 16rem;
+    overflow-wrap: anywhere;
+    border: 2px dashed rgb(var(--text-color), 0.75);
+  }
+
+  ::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--text-color-select));
+  }
+}
+
+.component-none-input-grow {
+  @include component-outline-input-base(
+          $thisWidth: auto,
+          $thisMinWidth: 6rem,
+          $thisBorder: none,
+  );
+}
+
+.component-outline-select-grow {
+  @include component-outline-input-base(
+          $thisWidth: auto,
+          $thisMinWidth: 12rem,
+          $thisBorder: 2px dashed rgb(var(--full-container-background-color)),
+  );
+}
+
+.component-outline-select-large {
+  @include component-outline-input-base(
+          $thisWidth: 28rem,
+          $thisMinWidth: 28rem,
+          $thisHeight: 18rem,
+          $thisBorder: 2px dashed rgb(var(--full-container-background-color)),
+  );
+}
+
+.component-outline-select-larger {
+  @include component-outline-input-base(
+          $thisWidth: 28rem,
+          $thisMinWidth: 28rem,
+          $thisHeight: 12rem,
+          $thisBorder: 2px dashed rgb(var(--full-container-background-color)),
+  );
+}
+
+.component-max-line-text-2 {
+  @include component-max-line-text(2)
+}
+
+.component-max-line-text-3 {
+  @include component-max-line-text(3)
+}
+
+.component-max-line-text {
+  @include component-max-line-text()
+}
+
+.component-max-line-text-4 {
+  @include component-max-line-text(4)
+}

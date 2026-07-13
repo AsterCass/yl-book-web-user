@@ -1,0 +1,367 @@
+@use "@/styles/base-theme";
+
+//==================== cask tabs ====================
+
+.component-cask-tabs {
+
+  .q-tab:not(.q-tab--active) {
+    color: rgb(var(--text-color));
+  }
+
+  .q-tab--active {
+    color: rgb(var(--full-container-text-color));
+  }
+
+  .component-cask-tabs-btn {
+    margin: 4px 0;
+    border-radius: 4px;
+  }
+
+  .q-tabs__arrow {
+    font-size: 0;
+  }
+
+}
+
+.component-cask-tab-mask {
+  position: absolute;
+  height: calc(100% - 8px);
+  background-color: rgb(var(--full-container-background-color));
+  border-radius: 4px;
+  transition: all .5s ease;
+  z-index: 0;
+}
+
+//==================== cask time ====================
+
+.component-cask-time {
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  color: rgb(var(--full-container-text-color));
+  background: white;
+  outline: 0;
+  width: 290px;
+  min-width: 290px;
+  max-width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+
+  .component-cask-time-header {
+    height: 86px;
+    color: rgb(var(--full-container-text-color));
+    background: rgb(var(--full-container-background-color));
+    border-radius: 4px 4px 0 0;
+    padding: 16px;
+
+    .component-cask-time-header-label {
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.00833em;
+    }
+  }
+
+  .component-cask-time-main {
+    color: rgb(var(--text-color)) !important;
+    background: rgb(var(--container-background-color));
+
+    .component-cask-time-view {
+      height: 100%;
+      width: 100%;
+      min-height: 290px;
+      padding: 24px 16px;
+
+      .component-cask-time-selected {
+        color: rgb(var(--full-container-text-color));
+        background: rgb(var(--full-container-background-color));
+        border-radius: 4px;
+        width: 50px;
+        box-shadow: inset 0 0 6px 2px rgb(var(--full-container-background-color-dark))
+      }
+
+      .q-slider {
+        .q-slider__track {
+          color: rgb(var(--text-color)) !important;
+        }
+
+        .q-slider__selection {
+          //background-color: transparent !important;
+        }
+
+        .q-slider__thumb {
+          color: rgb(var(--text-color)) !important;
+        }
+      }
+    }
+
+  }
+}
+
+
+//==================== cask cascade selector ====================
+
+
+.component-cask-cascade-selector {
+  border: 2px solid rgb(var(--full-container-background-color));
+  border-radius: 4px;
+  padding: 0 8px;
+}
+
+
+//==================== cask upload input ====================
+
+.component-cask-upload-input {
+
+  .q-field--float .q-field__label {
+    transform: translateY(-15%) scale(.9) translateX(-6%);
+  }
+
+  .q-field__control {
+    padding: 24px 24px;
+    color: rgb(var(--text-color)) !important;
+
+    .q-field__label {
+      width: 100%;
+      font-size: inherit;
+    }
+
+    .q-icon {
+      margin-top: 4.5rem;
+      font-size: 1rem;
+    }
+  }
+
+  .q-field__label {
+    color: rgb(var(--text-color));
+  }
+}
+
+//==================== cask announcement block ====================
+
+.component-cask-announcement-block {
+  width: 100%;
+  padding: .2rem 2rem .2rem .5rem;
+  border-radius: 4px;
+
+  background-color: rgb(var(--full-container-background-color-light));
+  color: rgb(var(--text-color));
+
+}
+
+//==================== cask badge tips ====================
+
+.component-cask-badge-tips {
+
+  color: rgb(var(--text-color)) !important;
+
+  .q-icon {
+    margin-top: 10%;
+    opacity: .75;
+  }
+
+}
+
+.component-cask-badge-tips-tooltip {
+  border-radius: 8px !important;
+  color: rgb(var(--text-color)) !important;
+  background-color: rgb(var(--container-background-color)) !important;
+  box-shadow: inset 0 0 2px 2px rgb(var(--text-color-select)) !important;
+  backdrop-filter: saturate(200%) blur(30px) !important;
+
+  .q-item--active {
+    color: inherit !important;
+  }
+}
+
+//==================== cask dialog ====================
+
+.component-cask-dialog-judgement-std {
+  min-height: 10rem;
+  min-width: 20rem;
+  padding: 1rem;
+  border-radius: 8px !important;
+  color: rgb(var(--text-color)) !important;
+  opacity: .95;
+  background-color: var(--dialog-background-color) !important;
+  box-shadow: inset 0 0 2px 1px var(--dialog-background-color-frame) !important;
+  backdrop-filter: saturate(200%) blur(30px) !important;
+}
+
+.component-cask-dialog-judgement-large {
+  min-height: 30rem;
+  height: 30rem;
+  min-width: 50rem;
+  width: 50rem;
+  padding: 1rem;
+  border-radius: 8px !important;
+  color: rgb(var(--text-color)) !important;
+  opacity: .95;
+  background-color: var(--dialog-background-color) !important;
+  box-shadow: inset 0 0 2px 1px var(--dialog-background-color-frame) !important;
+  backdrop-filter: saturate(200%) blur(30px) !important;
+}
+
+.component-cask-dialog-image-std {
+  max-width: 75% !important;
+  max-height: 75% !important;
+  justify-content: center;
+  align-items: center;
+
+  &::-webkit-scrollbar {
+    width: 16px !important;
+  }
+}
+
+.component-cask-dialog-image-std img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+
+//==================== cask complex table ====================
+
+.component-cask-complex-table-std-setting {
+  width: 300px;
+  max-height: 800px;;
+  overflow-y: auto;
+  border-radius: 8px !important;
+  color: rgb(var(--text-color)) !important;
+  background-color: rgb(var(--container-background-color)) !important;
+  box-shadow: inset 0 0 2px 1px rgb(var(--text-color-select)) !important;
+  backdrop-filter: saturate(200%) blur(30px) !important;
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--text-color-select));
+  }
+
+  .q-checkbox__inner {
+    color: rgb(var(--container-text-color)) !important;
+  }
+
+  .q-checkbox__inner--truthy {
+    color: rgb(var(--text-color)) !important;
+  }
+}
+
+.component-cask-complex-table-std {
+  border-radius: 0 !important;
+  //background-color: transparent !important;
+  //for support toggleFullscreen
+  background-color: rgb(var(--background-color)) !important;
+  color: rgb(var(--text-color)) !important;
+
+  .component-cask-complex-table-std-header {
+    color: rgb(var(--text-color)) !important;
+
+    .text-center {
+      opacity: .8;
+      font-size: 15px !important;
+      padding: 15px 16px !important;
+    }
+
+    .text-left {
+      opacity: .8;
+      font-size: 15px !important;
+      padding: 15px 16px !important;
+    }
+
+    .text-right {
+      opacity: .8;
+      font-size: 15px !important;
+      padding: 15px 16px !important;
+    }
+
+  }
+
+  .q-table tbody td {
+    height: 60px;
+  }
+
+  .q-table thead tr {
+    height: 60px;
+  }
+
+  .q-table__bottom {
+    font-size: .9rem;
+    padding: 15px 0 0 0;
+    background-color: transparent;
+    color: rgb(var(--text-color));
+    opacity: .9;
+
+    .component-cask-complex-table-std-bottom {
+      color: rgb(var(--text-color));
+      width: 100%;
+
+      .component-cask-complex-table-std-bottom-contain {
+        color: rgb(var(--full-container-text-color)) !important;
+        background-color: rgb(var(--full-container-background-color)) !important;
+      }
+
+      .component-cask-complex-table-std-bottom-line {
+        min-height: 1rem;
+        margin-top: .5rem;
+        border-radius: 0 0 .5rem .5rem;
+        background: transparent !important;
+      }
+
+      .q-pagination {
+
+        .bg-primary {
+          background-color: rgb(var(--full-container-background-color)) !important;
+        }
+
+        .text-primary {
+          color: rgb(var(--text-color)) !important;
+        }
+
+        .q-btn {
+          padding: 0.1rem !important;
+          min-height: .8rem !important;
+        }
+      }
+    }
+  }
+
+  .q-table__linear-progress {
+    height: 4px;
+    border-radius: 4px;
+    color: rgb(var(--text-color-select)) !important;
+  }
+
+  .q-linear-progress__model--indeterminate::after {
+    border-radius: 1rem !important;
+  }
+
+  .q-linear-progress__model--indeterminate::before {
+    border-radius: 1rem !important;
+  }
+
+  .q-table--col-auto-width {
+    padding: 7px 0 7px 7px !important;
+
+    .q-checkbox__svg {
+      color: rgb(var(--text-color));
+      opacity: .8;
+    }
+
+    .q-checkbox__bg {
+      color: rgb(var(--text-color));
+      opacity: .8;
+    }
+
+    .q-checkbox__inner--indet .q-checkbox__bg {
+      color: transparent;
+    }
+
+    .q-checkbox__inner--truthy .q-checkbox__bg {
+      color: transparent;
+    }
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--text-color-select));
+  }
+
+}
+
+

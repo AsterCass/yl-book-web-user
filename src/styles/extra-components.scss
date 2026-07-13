@@ -1,0 +1,63 @@
+@use "@/styles/base-theme";
+
+.component-extra-card-std {
+  border-radius: 4px !important;
+  color: rgb(var(--container-text-color)) !important;
+  background-color: rgb(var(--container-background-color)) !important;
+  backdrop-filter: saturate(200%) blur(30px) !important;
+
+  .q-item--active {
+    color: inherit !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--text-color-select));
+  }
+
+}
+
+.component-extra-card-std-limit {
+  border-radius: 4px !important;
+  color: rgb(var(--container-text-color)) !important;
+  background-color: rgb(var(--container-background-color)) !important;
+  backdrop-filter: saturate(200%) blur(30px) !important;
+  max-height: 20rem;
+
+  .q-item--active {
+    color: inherit !important;
+  }
+
+  &::-webkit-scrollbar {
+    overflow: visible;
+    background: transparent;
+    height: 13px;
+    width: 13px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--text-color-select));
+  }
+
+}
+
+.component-extra-card-std-angle {
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    border-image: linear-gradient(135deg, red 5%, transparent 10%, transparent 90%, red 95%) 1;
+    //linear-gradient(135deg, rgb(var(--text-color)) .3%, transparent .9%, transparent 99.1%, rgb(var(--text-color)) 99.7%)
+
+    pointer-events: none;
+  }
+
+}
+

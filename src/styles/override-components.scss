@@ -1,0 +1,54 @@
+@use "@/styles/base-theme";
+
+//==================== date ====================
+
+.q-date {
+  border-radius: 5px !important;
+
+  .q-date__header {
+    color: rgb(var(--full-container-text-color));
+    background: rgb(var(--full-container-background-color));
+    border-radius: 4px 4px 0 0 !important;
+  }
+
+  .q-date__main {
+    color: rgb(var(--text-color)) !important;
+    background: rgb(var(--container-background-color));
+
+    .bg-primary {
+      background-color: rgb(var(--full-container-background-color)) !important;
+    }
+  }
+}
+
+.q-notification {
+
+  &.bg-warning {
+    color: rgb(var(--warning)) !important;
+    border-radius: 4px !important;
+    background-color: rgb(var(--tips-bg-dark)) !important;
+    backdrop-filter: blur(20px) !important;
+  }
+
+  &.bg-negative {
+    color: rgb(var(--negative)) !important;
+    border-radius: 4px !important;
+    background-color: rgb(var(--tips-bg-light)) !important;
+    backdrop-filter: blur(30px) !important;
+  }
+
+  &.bg-positive {
+    color: rgb(var(--positive)) !important;
+    border-radius: 4px !important;
+    background-color: rgb(var(--tips-bg-light)) !important;
+    backdrop-filter: blur(30px) !important;
+  }
+
+  &.bg-info {
+    color: rgb(var(--info)) !important;
+    border-radius: 4px !important;
+    background-color: rgb(var(--tips-bg-light)) !important;
+    backdrop-filter: blur(30px) !important;
+  }
+
+}
