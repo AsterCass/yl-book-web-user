@@ -408,12 +408,6 @@ function checkLoginInfo() {
 
 onMounted(() => {
   checkLoginInfo()
-  // 谷歌一键登录：配置了 client id 时初始化并自动弹出 One Tap
-  initGoogleOneTap(handleGoogleCredential).then(ok => {
-    if (ok) {
-      promptGoogleOneTap()
-    }
-  })
 })
 
 onBeforeUnmount(() => {
