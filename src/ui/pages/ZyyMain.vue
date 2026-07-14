@@ -1,7 +1,7 @@
 <template>
 
   <q-layout class="fixed-full column" view="hhh lpr fff"
-            style="background-color: rgba(var(--background-color));background-image: url('/img/chatroom-bg.png'); min-height: 0!important;">
+            style="background-color: rgba(var(--background-color));background-image: url('/img/bg.png'); min-height: 0!important;">
 
     <zyy-header/>
 

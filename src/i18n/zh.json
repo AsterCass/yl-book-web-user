@@ -1,1 +1,88 @@
-{}
+{
+  "cask_time_hour": "小时",
+  "cask_time_minute": "分钟",
+
+  "in_develop": "功能开发中，敬请期待",
+  "in_develop_simple": "开发中，敬请期待",
+  "error_request": "系统繁忙，请稍后再试",
+  "error_request_429": "您的请求过于频繁，请稍后再试",
+  "no_login": "未登录用户无法进行该操作，请先登录",
+  "file_no_limit": "上传数量达到最大限制，请明天再来吧😭",
+  "back_home": "回到主页",
+
+  "error": {
+    "401": {"title": "错误 401", "subtitle": "用户未登录", "message": "您还未登录，请先登录。"},
+    "403": {"title": "错误 403", "subtitle": "用户认证失败", "message": "您还未被授权当前页面，回到主页重新看看吧"},
+    "404": {"title": "错误 404", "subtitle": "页面未找到", "message": "页面地址错咯，回到主页重新看看吧"}
+  },
+
+  "dashboard": { "placeholder": "这里是仪表盘，暂时用不到" },
+
+  "main_company": "远元健康科技集团有限公司",
+  "main_footer_dev_mail": "开发者邮箱",
+
+  "main_header_back_pre": "返回上级",
+
+  "main_login": "登录",
+  "main_login_title": "预约系统",
+  "main_login_mail": "邮箱",
+  "main_login_password": "密码",
+  "main_login_passwd_tips": "密码需 8-20 位，且包含大写字母、小写字母和数字",
+  "main_login_more": "其他登录方式",
+  "main_login_success": "登录成功",
+  "main_login_success_copy": "复制成功",
+  "main_login_fail_copy": "复制失败",
+  "main_register_show_passwd": "显示密码",
+  "main_register_hide_passwd": "隐藏密码",
+  "main_setting_save_login_data": "保存登录相关信息",
+
+  "login": {
+    "welcome": "登录后即可预约您的专属服务",
+    "register_title": "创建账户",
+    "register_subtitle": "填写以下信息完成注册。密码需 8-20 位，且包含大写字母、小写字母和数字。",
+    "code": "验证码",
+    "send_code": "发送验证码",
+    "nick": "昵称",
+    "nick_hint": "选填，默认取邮箱前缀。",
+    "sign_up": "注册",
+    "to_register": "还没有账号？立即注册",
+    "to_login": "已有账号？返回登录",
+    "forgot": "忘记密码？",
+    "github": "GitHub 登录",
+    "google": "谷歌登录",
+    "qq": "QQ 登录",
+    "empty_login": "请输入邮箱和密码",
+    "empty_register": "请输入邮箱、验证码和密码",
+    "email_invalid": "邮箱格式不正确",
+    "password_invalid": "密码需 8-20 位，且包含大写字母、小写字母和数字",
+    "code_sent": "验证码已发送，请查收邮箱。",
+    "register_success": "注册成功，欢迎加入！",
+    "google_not_config": "谷歌登录暂未配置",
+    "google_failed": "谷歌登录失败，请重试"
+  },
+
+  "main_chat_new_message_browser_error": "此浏览器不支持新消息通知， 请更换现代浏览器",
+  "main_chat_new_message_auto_error": "浏览器通知权限未开启，请开启获得最佳体验",
+  "main_chat_new_message_auto_error_2": "收到一条新消息，但浏览器通知权限未开启，请开启获得最佳体验。如不需要该功能，请在设置中关闭新消息通知",
+  "main_chat_message_file_expire": "该文件已过期",
+  "main_chat_emoji_recently": "最近使用：",
+  "main_chat_emoji_all": "全部表情：",
+
+  "main_long_text_input_send": "发送",
+  "main_long_text_input_image_empty": "发送图片不能为空",
+  "main_long_text_input_file_empty": "发送文件不能为空",
+  "main_long_text_input_placeholder": "使用 Enter 发送，Ctrl+Enter 换行",
+  "main_long_text_upload_emoji": "上传表情包",
+  "main_long_text_input_emoji_upload_success": "上传成功",
+
+  "yl_system_dashboard": "仪表盘",
+  "yl_system_login": "登录",
+
+  "yl_subsystem_appointment": "预约管理",
+  "yl_subsystem_staff": "雇员管理",
+  "yl_subsystem_agent": "智能体系统",
+  "yl_subsystem_bill": "账目管理",
+  "yl_subsystem_order": "订单管理",
+  "yl_subsystem_page": "页面管理",
+  "yl_subsystem_user": "用户管理"
+}

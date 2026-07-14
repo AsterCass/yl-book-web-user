@@ -1,7 +1,7 @@
 <template>
   <div class="bottom-footer-base-simple row items-center justify-center">
 
-    <div class="q-mx-md">
+    <div class="q-mx-md text-center">
       &copy; 2007-{{ curYear }}&nbsp;&nbsp;&nbsp;{{$t('main_company')}}
     </div>
 

@@ -1,1 +1,88 @@
-{}
+{
+  "cask_time_hour": "Hour",
+  "cask_time_minute": "Minute",
+
+  "in_develop": "This feature is under development. Stay tuned",
+  "in_develop_simple": "Coming Soon",
+  "error_request": "The system is busy. Please try again later",
+  "error_request_429": "You are sending requests too frequently. Please wait a moment and try again.",
+  "no_login": "Unauthenticated users cannot perform this action. Please log in first",
+  "file_no_limit": "The upload limit has been reached. Please come back tomorrow😭",
+  "back_home": "Back to Home",
+
+  "error": {
+    "401": {"title": "Error 401", "subtitle": "User not logged in", "message": "You are not logged in. Please sign in."},
+    "403": {"title": "Error 403", "subtitle": "User authentication failed", "message": "You are not authorized to view this page. Please return to the homepage."},
+    "404": {"title": "Error 404", "subtitle": "Page not found", "message": "The page address is incorrect. Please return to the homepage."}
+  },
+
+  "dashboard": { "placeholder": "This is the dashboard, currently unused" },
+
+  "main_company": "Yuanyuan Health Technology Group Co., Ltd",
+  "main_footer_dev_mail": "Developer Email",
+
+  "main_header_back_pre": "Up One Level",
+
+  "main_login": "Sign in",
+  "main_login_title": "Appointment System",
+  "main_login_mail": "Mail",
+  "main_login_password": "Password",
+  "main_login_passwd_tips": "The password must be 8-20 characters long and include uppercase letters, lowercase letters, and numbers.",
+  "main_login_more": "Or",
+  "main_login_success": "Login successful",
+  "main_login_success_copy": "Copied",
+  "main_login_fail_copy": "Copy failed",
+  "main_register_show_passwd": "Show Password",
+  "main_register_hide_passwd": "Hide Password",
+  "main_setting_save_login_data": "Save login-related information",
+
+  "login": {
+    "welcome": "Sign in to book your appointment",
+    "register_title": "Create account",
+    "register_subtitle": "Fill in the details below to sign up. Password must be 8-20 characters with uppercase, lowercase letters and numbers.",
+    "code": "Code",
+    "send_code": "Send code",
+    "nick": "Nickname",
+    "nick_hint": "Optional. Defaults to the email prefix.",
+    "sign_up": "Sign up",
+    "to_register": "No account yet? Sign up",
+    "to_login": "Already have an account? Sign in",
+    "forgot": "Forgot password?",
+    "github": "Sign in with GitHub",
+    "google": "Sign in with Google",
+    "qq": "Sign in with QQ",
+    "empty_login": "Please enter your email and password",
+    "empty_register": "Please enter your email, code and password",
+    "email_invalid": "Invalid email format",
+    "password_invalid": "Password must be 8-20 characters incl. uppercase, lowercase letters and numbers",
+    "code_sent": "Verification code sent. Please check your email.",
+    "register_success": "Registered successfully. Welcome!",
+    "google_not_config": "Google sign-in is not configured yet",
+    "google_failed": "Google sign-in failed, please try again"
+  },
+
+  "main_chat_new_message_browser_error": "This browser does not support new message notifications. Please switch to a modern browser",
+  "main_chat_new_message_auto_error": "Browser notification permissions are not enabled. Please enable them for the best experience",
+  "main_chat_new_message_auto_error_2": "A new message has been received, but browser notification permissions are not enabled. If this feature is not needed, please disable new message notifications in settings",
+  "main_chat_message_file_expire": "This file has expired",
+  "main_chat_emoji_recently": "Recently Used:",
+  "main_chat_emoji_all": "All:",
+
+  "main_long_text_input_send": "Send",
+  "main_long_text_input_image_empty": "Image data cannot be empty",
+  "main_long_text_input_file_empty": "File data cannot be empty",
+  "main_long_text_input_placeholder": "Press Enter to send, Ctrl+Enter to insert a line break.",
+  "main_long_text_upload_emoji": "Upload EP",
+  "main_long_text_input_emoji_upload_success": "Upload successful",
+
+  "yl_system_dashboard": "Dashboard",
+  "yl_system_login": "Login",
+
+  "yl_subsystem_appointment": "Appointment Management",
+  "yl_subsystem_staff": "Staff Management",
+  "yl_subsystem_agent": "Agent System",
+  "yl_subsystem_bill": "Bill Management",
+  "yl_subsystem_order": "Order Management",
+  "yl_subsystem_page": "Page Management",
+  "yl_subsystem_user": "User Management"
+}

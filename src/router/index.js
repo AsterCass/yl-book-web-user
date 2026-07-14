@@ -7,6 +7,7 @@ import NoLogin from "@/ui/pages/NoLogin.vue";
 import ZyyMain from "../ui/pages/ZyyMain.vue";
 import ZyyLogin from "@/ui/pages/ZyyLogin.vue";
 import ZyyDashboard from "@/ui/views/ZyyDashboard.vue";
+import WebAuthLogin from "@/ui/pages/WebAuthLogin.vue";
 
 
 const router = createRouter({
@@ -52,6 +53,36 @@ const router = createRouter({
             path: "/403",
             name: '403',
             component: NoAuth
+        },
+        {
+            path: "/auth",
+            name: 'mainAuth',
+            children: [
+                {
+                    path: "google/callback",
+                    name: "authGoogleCallback",
+                    component: WebAuthLogin,
+                    meta: {
+                        title: 'Auth Callback ',
+                    },
+                    props: ($route) => ({
+                        code: $route.query.code,
+                        brand: 'google',
+                    }),
+                },
+                {
+                    path: "github/callback",
+                    name: "authGithubCallback",
+                    component: WebAuthLogin,
+                    meta: {
+                        title: 'Auth Callback',
+                    },
+                    props: ($route) => ({
+                        code: $route.query.code,
+                        brand: 'github',
+                    }),
+                },
+            ]
         },
         {
             path: "/:catchAll(.*)",

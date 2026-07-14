@@ -1,175 +1,233 @@
 <template>
 
-  <div class="fixed-full column">
-    <q-img class="fixed" width="100%" height="100%" position="50% 58%" style="z-index: -1"
-           fit="cover" src="/img/login.jpg">
-    </q-img>
+  <div class="login-page column"
+       style="min-height: 100vh; background-color: rgba(var(--background-color)); background-image: url('/img/bg.png');">
 
-
-    <div style="height: 5rem; color: rgb(var(--full-container-text-color));"
-         class="full-width row items-center q-px-md">
+    <!-- 顶部：语言 / 主题切换 -->
+    <div class="login-topbar full-width row items-center q-px-md">
       <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchLanguage()">
-        <div class="row items-center q-ma-xs">
-          <q-icon name="fa-solid fa-language" size="1.75rem"/>
-        </div>
+        <q-icon name="fa-solid fa-language" size="1.6rem"/>
+      </q-btn>
+      <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchTheme()">
+        <q-icon name="fa-solid fa-circle-half-stroke" size="1.25rem"/>
       </q-btn>
     </div>
 
-    <div class="col row justify-center items-center">
-      <div
-          class="animated animate__fadeInUp animated_duration_15  column justify-between top-semi-trans-header-login">
+    <!-- 中部：登录 / 注册卡片（可滚动，移动端自适应） -->
+    <div class="login-body">
+      <transition name="fade-slide" mode="out-in" appear>
 
-        <div class="full-height column justify-evenly">
+        <!-- ============ 登录卡片 ============ -->
+        <div v-if="mode === 'login'" key="login"
+             class="login-card column">
 
-          <div class="row justify-center" style="margin-top: -15px !important">
-            <h4>
-              {{ $t('main_login_title') }}
-            </h4>
+          <div class="row justify-center">
+            <h4>{{ $t('main_login_title') }}</h4>
           </div>
-          <div class="row justify-center q-mx-md text-center q-mb-md">
-            <div>
-              <span style="opacity: .5"> {{ $t('main_login_subtitle_pre') }}</span>
-              <span @click="notifyTopWarning($t('in_develop'))"
-                    class="cask-jump-link-in-text">{{ $t('main_login_subtitle_reset_center') }}</span>
-            </div>
+          <div class="row justify-center text-center q-mb-md q-mx-md" style="opacity: .55; font-size: .85rem">
+            {{ $t('login.welcome') }}
           </div>
 
-          <div class="q-mx-md">
-            <q-input v-model="inputTenantName" tabindex="0" dense outlined
-                     class="q-ma-md component-outline-input-grow-on-semi-trans">
-              <template v-slot:prepend>
-                <div class="row items-center justify-between">
-                  <q-icon class="q-mr-sm" name="fa-regular fa-building" size="1rem"/>
-                  <div style="opacity: 0.8">
-                    {{ $t('main_login_tenant') }}
-                  </div>
-                </div>
-              </template>
-            </q-input>
+          <div class="q-px-md">
 
-            <q-input v-model="inputStoreName" tabindex="0" dense outlined
-                     class="q-ma-md component-outline-input-grow-on-semi-trans">
+            <q-input v-model="inputMail" dense outlined type="email" tabindex="0"
+                     class="q-my-sm component-outline-input-grow-on-semi-trans"
+                     @keyup.enter="doLogin">
               <template v-slot:prepend>
-                <div class="row items-center justify-between">
-                  <q-icon class="q-mr-sm" name="fa-solid fa-store" size="1rem"/>
-                  <div style="opacity: 0.8">
-                    {{ $t('main_login_store') }}
-                  </div>
-                </div>
-              </template>
-            </q-input>
-
-            <q-input v-model="inputMail" tabindex="0" dense outlined
-                     class="q-ma-md component-outline-input-grow-on-semi-trans">
-              <template v-slot:prepend>
-                <div class="row items-center justify-between">
+                <div class="row items-center">
                   <q-icon class="q-mr-sm" name="fa-regular fa-envelope" size="1rem"/>
-                  <div style="opacity: 0.8">
-                    {{ $t('main_login_mail') }}
-                  </div>
+                  <div style="opacity: 0.8">{{ $t('main_login_mail') }}</div>
                 </div>
               </template>
             </q-input>
 
-            <q-input v-model="inputPassword" tabindex="0" dense outlined :type="showUserPasswd ? 'text' : 'password'"
-                     class="q-mt-md q-mx-md component-outline-input-grow-on-semi-trans">
+            <q-input v-model="inputPassword" dense outlined tabindex="0"
+                     :type="showUserPasswd ? 'text' : 'password'"
+                     class="q-my-sm component-outline-input-grow-on-semi-trans"
+                     @keyup.enter="doLogin">
               <template v-slot:prepend>
-                <div class="row items-center justify-between">
+                <div class="row items-center">
                   <q-icon class="q-mr-sm" name="fa-solid fa-unlock-keyhole" size="1rem"/>
-                  <div style="opacity: 0.8">
-                    {{ $t('main_login_password') }}
-                  </div>
+                  <div style="opacity: 0.8">{{ $t('main_login_password') }}</div>
+                </div>
+              </template>
+              <template v-slot:append>
+                <q-icon :name="showUserPasswd ? 'visibility' : 'visibility_off'" size="1rem"
+                        class="cursor-pointer" @click="showUserPasswd = !showUserPasswd">
+                  <q-tooltip>
+                    {{ showUserPasswd ? $t('main_register_hide_passwd') : $t('main_register_show_passwd') }}
+                  </q-tooltip>
+                </q-icon>
+              </template>
+            </q-input>
 
+            <div class="row justify-end q-mt-xs q-mb-sm">
+              <span class="cask-jump-link-in-text" style="font-size: .75rem"
+                    @click="notifyTopWarning($t('in_develop'))">{{ $t('login.forgot') }}</span>
+            </div>
+
+            <div class="row justify-center q-mt-sm">
+              <q-btn no-caps unelevated class="shadow-2 component-full-btn-grow full-width"
+                     style="background-color: rgb(var(--semi-bg-container-background-color)) !important"
+                     @click="doLogin">
+                <div class="row items-center">
+                  <div class="q-mr-sm" style="font-size: 14px">{{ $t('main_login') }}</div>
+                  <q-icon name="fa-solid fa-arrow-right-to-bracket" size="15px"/>
+                </div>
+              </q-btn>
+            </div>
+
+            <div class="q-my-md row justify-evenly items-center">
+              <q-separator class="component-separator-base col-grow" inset size="1px"/>
+              <div class="q-px-sm" style="opacity:.9; font-size: .8rem">{{ $t('main_login_more') }}</div>
+              <q-separator class="component-separator-base col-grow" inset size="1px"/>
+            </div>
+
+            <div class="row justify-evenly items-center q-mb-md">
+
+              <q-icon name="fa-brands fa-github" size="2rem" class="cursor-pointer"
+                      @click="notifyTopWarning($t('in_develop'))">
+                <q-tooltip>{{ $t('login.github') }}</q-tooltip>
+              </q-icon>
+
+              <div class="relative-position">
+                <button class="gsi-material-button" @click="openLink(googleLoginUrl, false)">
+                  <div class="gsi-material-button-state"></div>
+                  <div class="gsi-material-button-content-wrapper">
+                    <div class="gsi-material-button-icon">
+                      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
+                           xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
+                        <path fill="#EA4335"
+                              d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+                        <path fill="#4285F4"
+                              d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                        <path fill="#FBBC05"
+                              d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                        <path fill="#34A853"
+                              d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                        <path fill="none" d="M0 0h48v48H0z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              <q-icon name="fa-brands fa-qq" size="2rem" class="cursor-pointer"
+                      style="color: rgb(0, 153, 255)" @click="notifyTopWarning($t('in_develop'))">
+                <q-tooltip>{{ $t('login.qq') }}</q-tooltip>
+              </q-icon>
+
+            </div>
+
+            <div class="row justify-center items-center q-mb-sm">
+              <q-checkbox v-model="isSaveLoginInfo" :val="true" class="component-ratio-base q-mr-sm" dense
+                          checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
+              <span style="opacity: .9; font-size: .85rem">{{ $t('main_setting_save_login_data') }}</span>
+            </div>
+
+            <div class="row justify-center q-mb-md">
+              <span class="cask-jump-link-in-text" style="font-size: .85rem"
+                    @click="switchMode('register')">{{ $t('login.to_register') }}</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ============ 注册卡片 ============ -->
+        <div v-else key="register"
+             class="login-card column">
+
+          <div class="row justify-center">
+            <h4>{{ $t('login.register_title') }}</h4>
+          </div>
+          <div class="row justify-center text-center q-mb-md q-mx-md" style="opacity: .55; font-size: .78rem">
+            {{ $t('login.register_subtitle') }}
+          </div>
+
+          <div class="q-px-md">
+
+            <q-input v-model="inputMail" dense outlined type="email" tabindex="0"
+                     class="q-my-sm component-outline-input-grow-on-semi-trans">
+              <template v-slot:prepend>
+                <div class="row items-center">
+                  <q-icon class="q-mr-sm" name="fa-regular fa-envelope" size="1rem"/>
+                  <div style="opacity: 0.8">{{ $t('main_login_mail') }}</div>
                 </div>
               </template>
             </q-input>
 
-            <div class="q-mx-lg q-mt-sm" style="opacity: .5; font-size: .75rem">
+            <q-input v-model="inputCode" dense outlined tabindex="0"
+                     class="q-my-sm component-outline-input-grow-on-semi-trans">
+              <template v-slot:prepend>
+                <div class="row items-center">
+                  <q-icon class="q-mr-sm" name="fa-solid fa-shield-halved" size="1rem"/>
+                  <div style="opacity: 0.8">{{ $t('login.code') }}</div>
+                </div>
+              </template>
+              <template v-slot:append>
+                <q-btn no-caps flat dense :disable="countdown > 0" @click="doSendCode"
+                       class="cask-color-pointer" style="font-size: .75rem">
+                  {{ countdown > 0 ? countdown + 's' : $t('login.send_code') }}
+                </q-btn>
+              </template>
+            </q-input>
+
+            <q-input v-model="inputPassword" dense outlined tabindex="0"
+                     :type="showUserPasswd ? 'text' : 'password'"
+                     class="q-my-sm component-outline-input-grow-on-semi-trans">
+              <template v-slot:prepend>
+                <div class="row items-center">
+                  <q-icon class="q-mr-sm" name="fa-solid fa-unlock-keyhole" size="1rem"/>
+                  <div style="opacity: 0.8">{{ $t('main_login_password') }}</div>
+                </div>
+              </template>
+              <template v-slot:append>
+                <q-icon :name="showUserPasswd ? 'visibility' : 'visibility_off'" size="1rem"
+                        class="cursor-pointer" @click="showUserPasswd = !showUserPasswd">
+                  <q-tooltip>
+                    {{ showUserPasswd ? $t('main_register_hide_passwd') : $t('main_register_show_passwd') }}
+                  </q-tooltip>
+                </q-icon>
+              </template>
+            </q-input>
+
+            <div class="q-mx-sm q-mt-xs" style="opacity: .5; font-size: .72rem">
               {{ $t('main_login_passwd_tips') }}
             </div>
 
-            <div class="row q-mx-lg q-mt-sm">
-              <div v-if="showUserPasswd" class=" cask-jump-link-in-text" style="font-size: .75rem"
-                   @click="showUserPasswd = false">
-                {{ $t('main_register_hide_passwd') }}
-              </div>
-              <div v-else class=" cask-jump-link-in-text" style="font-size: .75rem"
-                   @click="showUserPasswd = true">
-                {{ $t('main_register_show_passwd') }}
-              </div>
-            </div>
-
-
-          </div>
-
-
-          <div class="row justify-center">
-            <q-btn no-caps unelevated class="q-ma-md shadow-2 component-full-btn-grow"
-                   style="background-color: rgb(var(--semi-bg-container-background-color)) !important"
-                   @click="userLoginMethod">
-              <div class="row items-center">
-                <div class="q-mr-sm" style="font-size: 14px">
-                  {{ $t('main_login') }}
+            <q-input v-model="inputNick" dense outlined tabindex="0"
+                     class="q-mt-md q-mb-xs component-outline-input-grow-on-semi-trans">
+              <template v-slot:prepend>
+                <div class="row items-center">
+                  <q-icon class="q-mr-sm" name="fa-regular fa-user" size="1rem"/>
+                  <div style="opacity: 0.8">{{ $t('login.nick') }}</div>
                 </div>
-                <q-icon name="fa-solid fa-arrow-right-to-bracket" size="15px"/>
-              </div>
-            </q-btn>
-          </div>
-
-          <div class="q-mx-md q-mb-md row justify-evenly items-center">
-            <q-separator class="component-separator-base col-grow" inset size="1px"/>
-            <div style="opacity:.9">
-              {{ $t('main_login_more') }}
+              </template>
+            </q-input>
+            <div class="q-mx-sm q-mb-sm" style="opacity: .5; font-size: .72rem">
+              {{ $t('login.nick_hint') }}
             </div>
-            <q-separator class="component-separator-base col-grow" inset size="1px"/>
-          </div>
 
-
-          <div class="q-mb-lg row justify-evenly items-center">
-
-            <q-icon name="fa-brands fa-github" size="2rem" class="cursor-pointer"
-                    @click="notifyTopWarning($t('in_develop'))"/>
-
-
-            <div class="relative-position">
-              <button class="gsi-material-button" @click="notifyTopWarning($t('in_develop'))">
-                <div class="gsi-material-button-state"></div>
-                <div class="gsi-material-button-content-wrapper">
-                  <div class="gsi-material-button-icon">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
-                         xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
-                      <path fill="#EA4335"
-                            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                      <path fill="#4285F4"
-                            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                      <path fill="#FBBC05"
-                            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                      <path fill="#34A853"
-                            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                      <path fill="none" d="M0 0h48v48H0z"></path>
-                    </svg>
-                  </div>
+            <div class="row justify-center q-mt-md">
+              <q-btn no-caps unelevated class="shadow-2 component-full-btn-grow full-width"
+                     style="background-color: rgb(var(--semi-bg-container-background-color)) !important"
+                     @click="doRegister">
+                <div class="row items-center">
+                  <div class="q-mr-sm" style="font-size: 14px">{{ $t('login.sign_up') }}</div>
+                  <q-icon name="fa-solid fa-user-plus" size="15px"/>
                 </div>
-              </button>
+              </q-btn>
             </div>
 
-
-            <q-icon name="fa-brands fa-qq" size="2rem" class="cursor-pointer"
-                    @click="notifyTopWarning($t('in_develop'))" style="color: rgb(0, 153, 255)"/>
+            <div class="row justify-center q-my-md">
+              <span class="cask-jump-link-in-text" style="font-size: .85rem"
+                    @click="switchMode('login')">{{ $t('login.to_login') }}</span>
+            </div>
 
           </div>
-
-          <div class="q-mb-md row justify-center q-mx-md text-center items-center">
-            <q-checkbox v-model="isSaveLoginInfo" :val="true" class="component-ratio-base q-mr-sm" dense
-                        checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
-            <span style="opacity: .9">{{ $t('main_setting_save_login_data') }}</span>
-          </div>
-
-
         </div>
 
-
-      </div>
+      </transition>
     </div>
 
     <zyy-footer/>
@@ -181,80 +239,188 @@
 
 <script setup>
 
-import {onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import ZyyFooter from "@/ui/views/ZyyFooter.vue";
-import {switchLanguage} from "@/utils/global-tools.js";
+import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
 import {useRouter} from "vue-router";
 import {useGlobalStateStore} from "@/utils/global-state.js";
-
 import {backToHome} from "@/router/index.js";
 import {i18n} from "@/i18n/index.js";
+import {checkIsMail, checkIsPasswd} from "@/utils/format-check.js";
+import {portalGoogleLogin, portalLogin, portalRegister, portalSendCode} from "@/api/portal-auth.js";
+import {openLink} from "@/utils/base-tools.js";
 
 
 const t = i18n.global.t
 const globalState = useGlobalStateStore();
 const thisRouter = useRouter()
 
+// 'login' | 'register'
+const mode = ref('login')
 
 const inputMail = ref("")
 const inputPassword = ref("")
-const inputTenantName = ref("")
-const inputStoreName = ref("")
+const inputCode = ref("")
+const inputNick = ref("")
 
 const isSaveLoginInfo = ref(false)
 const showUserPasswd = ref(false)
-const currentBody = ref({})
+
+const countdown = ref(0)
+let countdownTimer = null
+
+const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
+    "?client_id=492008176739-tbal7ublv95g85jmee85oh043q48g93r.apps.googleusercontent.com" +
+    "&redirect_uri=https://www.zyyboh.com/auth/google/callback" +
+    "&response_type=code&scope=email profile&access_type=offline"
+
+
+function switchMode(target) {
+  mode.value = target
+  showUserPasswd.value = false
+}
 
 function saveLoginInfo() {
   if (isSaveLoginInfo.value) {
-    globalState.updateLoginInfo(currentBody.value)
+    globalState.updateLoginInfo({
+      mail: inputMail.value,
+      password: inputPassword.value,
+      isSaveLoginInfo: true,
+    })
   } else {
     globalState.updateLoginInfo(null)
   }
 }
 
-function userLoginMethod() {
-  if (!inputMail.value || !inputPassword.value || !inputTenantName.value) {
-    notifyTopWarning(t('main_login_message_empty'))
+function onLoginSuccess(userDto, successMsg) {
+  globalState.updateUserData(userDto)
+  saveLoginInfo()
+  notifyTopPositive(successMsg)
+  backToHome(thisRouter)
+}
+
+function doLogin() {
+  if (!inputMail.value || !inputPassword.value) {
+    notifyTopWarning(t('login.empty_login'))
     return
   }
-  // login
-  currentBody.value = {
-    mail: inputMail.value, password: inputPassword.value,
-    tenantName: inputTenantName.value, storeName: inputStoreName.value,
-    // 前端字段
-    isSaveLoginInfo: isSaveLoginInfo.value,
+  if (!checkIsMail(inputMail.value)) {
+    notifyTopWarning(t('login.email_invalid'))
+    return
   }
+  portalLogin({email: inputMail.value, password: inputPassword.value}).then(res => {
+    if (!res || !res.data || !res.data.data) {
+      return
+    }
+    onLoginSuccess(res.data.data, t('main_login_success'))
+  })
+}
 
-  // userLogin(currentBody.value).then(res => {
-  //   if (!res || !res.data || !res.data.data) {
-  //     return
-  //   }
-  //   globalState.updateUserData(res.data.data)
-  //   saveLoginInfo()
-  //   notifyTopPositive(t('main_login_success'))
-  //   if (currentBody.value.mail === currentBody.value.password) {
-  //     notifyTopWarning(t('yl_warning_passwd_init'), 30000)
-  //   }
-  //   backToHome(thisRouter)
-  // })
+function doRegister() {
+  if (!inputMail.value || !inputCode.value || !inputPassword.value) {
+    notifyTopWarning(t('login.empty_register'))
+    return
+  }
+  if (!checkIsMail(inputMail.value)) {
+    notifyTopWarning(t('login.email_invalid'))
+    return
+  }
+  if (!checkIsPasswd(inputPassword.value)) {
+    notifyTopWarning(t('login.password_invalid'))
+    return
+  }
+  portalRegister({
+    email: inputMail.value,
+    code: inputCode.value,
+    password: inputPassword.value,
+    nickName: inputNick.value || null,
+  }).then(res => {
+    if (!res || !res.data || !res.data.data) {
+      return
+    }
+    onLoginSuccess(res.data.data, t('login.register_success'))
+  })
+}
+
+function startCountdown(sec = 60) {
+  countdown.value = sec
+  countdownTimer = setInterval(() => {
+    countdown.value--
+    if (countdown.value <= 0) {
+      clearInterval(countdownTimer)
+      countdownTimer = null
+    }
+  }, 1000)
+}
+
+function doSendCode() {
+  if (countdown.value > 0) {
+    return
+  }
+  if (!inputMail.value) {
+    notifyTopWarning(t('login.empty_register'))
+    return
+  }
+  if (!checkIsMail(inputMail.value)) {
+    notifyTopWarning(t('login.email_invalid'))
+    return
+  }
+  portalSendCode({email: inputMail.value}).then(res => {
+    if (!res) {
+      return
+    }
+    notifyTopPositive(t('login.code_sent'))
+    startCountdown(60)
+  })
+}
+
+function handleGoogleCredential(idToken) {
+  if (!idToken) {
+    return
+  }
+  portalGoogleLogin({idToken}).then(res => {
+    if (!res || !res.data || !res.data.data) {
+      return
+    }
+    onLoginSuccess(res.data.data, t('main_login_success'))
+  })
+}
+
+function doGoogleLogin() {
+  if (!getGoogleClientId()) {
+    notifyTopWarning(t('login.google_not_config'))
+    return
+  }
+  if (!promptGoogleOneTap()) {
+    notifyTopWarning(t('login.google_failed'))
+  }
 }
 
 function checkLoginInfo() {
-  // info
   if (globalState.loginInfo) {
-    isSaveLoginInfo.value = globalState.loginInfo.isSaveLoginInfo
-    inputMail.value = globalState.loginInfo.mail
-    inputPassword.value = globalState.loginInfo.password
-    inputTenantName.value = globalState.loginInfo.tenantName
-    inputStoreName.value = globalState.loginInfo.storeName
+    isSaveLoginInfo.value = !!globalState.loginInfo.isSaveLoginInfo
+    inputMail.value = globalState.loginInfo.mail || ""
+    inputPassword.value = globalState.loginInfo.password || ""
   }
 }
 
 
 onMounted(() => {
   checkLoginInfo()
+  // 谷歌一键登录：配置了 client id 时初始化并自动弹出 One Tap
+  initGoogleOneTap(handleGoogleCredential).then(ok => {
+    if (ok) {
+      promptGoogleOneTap()
+    }
+  })
+})
+
+onBeforeUnmount(() => {
+  if (countdownTimer) {
+    clearInterval(countdownTimer)
+    countdownTimer = null
+  }
 })
 
 
@@ -263,20 +429,48 @@ onMounted(() => {
 
 <style lang="scss">
 
-.animated_duration_15 {
-  --animate-duration: 1.5s;
+.login-topbar {
+  height: 4rem;
+  color: rgb(var(--text-color));
 }
 
-.top-semi-trans-header-login {
+.login-body {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.75rem 1.5rem 0.75rem;
+}
+
+.login-card {
   width: 400px;
+  max-width: 92vw;
 
   color: rgb(var(--text-color));
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: rgb(var(--container-background-color));
   backdrop-filter: blur(30px);
-  padding: 40px 2px 10px 2px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .12);
+  padding: 28px 6px 10px 6px;
 
   font-size: .9rem;
+}
+
+// 登录 / 注册切换过渡
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: opacity .35s ease, transform .35s ease;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 
 
