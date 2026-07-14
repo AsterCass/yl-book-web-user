@@ -4,15 +4,6 @@
     <div class="top-semi-trans-header-base-content row justify-between items-center top-semi-trans-header-base-no-top">
 
       <div class="row items-center justify-start col">
-        <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs"
-               @click="upOneLevel">
-          <div class="row items-center">
-            <div class="q-ma-xs">
-              {{ $t('main_header_back_pre') }}
-            </div>
-          </div>
-        </q-btn>
-
 
       </div>
 
@@ -20,32 +11,11 @@
         {{ $t(thisRouter.currentRoute.value.meta.header)}}
       </div>
 
-      <div class="row items-center justify-end col">
 
-
-
-        <q-btn round style="margin: 0 1.5rem 0 1.5rem" color="transparent" size="11px" flat
-               @click="emitter.emit('showUserSettingEvent')">
-          <q-avatar size="33px">
-            <q-img src="/favicon.svg"/>
-          </q-avatar>
-
-        </q-btn>
-
-        <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchLanguage()">
-          <div class="row items-center q-ma-xs">
-            <q-icon name="fa-solid fa-language" size="1.75rem"/>
-          </div>
-        </q-btn>
-
-        <q-btn no-caps unelevated class="q-mx-xs" dense round @click="notifyTopWarning($t('in_develop'))">
-          <div class="row items-center q-ma-xs">
-            <q-icon name="fa-solid fa-gear" size="1.25rem"/>
-          </div>
-        </q-btn>
-
+      <div class="row items-center justify-start col">
 
       </div>
+
     </div>
 
 

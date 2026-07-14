@@ -26,7 +26,8 @@ const router = createRouter({
                     name: "dashboard",
                     component: ZyyDashboard,
                     meta: {
-                        title: 'yl_system_dashboard'
+                        title: 'yl_system_dashboard',
+                        header: "yl_system_dashboard",
                     },
                 },
             ]
