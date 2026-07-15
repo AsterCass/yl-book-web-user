@@ -127,7 +127,7 @@ const showUserPasswd = ref(false)
 
 const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
     "?client_id=492008176739-tbal7ublv95g85jmee85oh043q48g93r.apps.googleusercontent.com" +
-    "&redirect_uri=https://www.zyyboh.com/auth/google/callback" +
+    "&redirect_uri=https://booking.zyyboh.com/auth/google/callback" +
     "&response_type=code&scope=email profile&access_type=offline"
 
 
