@@ -1,45 +1,45 @@
 <template>
-  <q-header class="top-semi-trans-header-base-mini">
+  <q-header class="top-semi-trans-header-base-mini row items-center justify-center">
 
-    <div class="top-semi-trans-header-base-content row justify-between items-center top-semi-trans-header-base-no-top">
+    <div
+        class="col-lg-4 col top-semi-trans-header-base-content row justify-between items-center top-semi-trans-header-base-no-top">
 
-      <div class="row items-center justify-start col">
-
+      <div class="row items-center justify-start">
+        <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchLanguage()">
+          <q-icon name="fa-solid fa-language" size="1.6rem"/>
+        </q-btn>
+        <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchTheme()">
+          <q-icon name="fa-solid fa-circle-half-stroke" size="1.25rem"/>
+        </q-btn>
       </div>
 
-      <div class="row items-center justify-center " style="font-size: 1.15rem; font-weight: 500">
-        {{ $t(thisRouter.currentRoute.value.meta.header)}}
+      <div class="col">
       </div>
 
-
-      <div class="row items-center justify-start col">
-
+      <div class="row items-center justify-start">
+        <q-btn no-caps unelevated class=" component-full-btn-mini-mini-grow" :label="$t('main_logout')"
+               @click="logoutMethod">
+        </q-btn>
       </div>
-
     </div>
-
-
   </q-header>
 </template>
 
 <script setup>
 
 import {onMounted} from "vue";
-import {backToLogin, toParentPage} from "@/router/index.js";
 import {useRouter} from "vue-router";
-import {notifyTopWarning} from "@/utils/notification-tools.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
-import {switchLanguage} from "@/utils/global-tools.js";
-import emitter from "@/utils/bus.js";
+import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
+import {portalLogout} from "@/api/portal-auth.js";
+import {deleteCookie} from "@/utils/common.js";
+import {notifyTopPositive} from "@/utils/notification-tools.js";
+import {backToLogin} from "@/router/index.js";
 
 const t = i18n.global.t
 const thisRouter = useRouter()
 const globalState = useGlobalStateStore();
-
-function upOneLevel() {
-  toParentPage(thisRouter)
-}
 
 function checkLogin() {
   // const isLogin = checkLoginFromCookie()
@@ -51,6 +51,18 @@ function checkLogin() {
   //     backToLogin(thisRouter)
   //   }
   // })
+}
+
+function logoutMethod() {
+  portalLogout().then(res => {
+    if (!res || !res.data) {
+      return
+    }
+    deleteCookie()
+    globalState.updateUserData(null)
+    notifyTopPositive(t('main_login_success_logout'))
+    backToLogin(thisRouter)
+  })
 }
 
 onMounted(() => {
@@ -68,14 +80,12 @@ onMounted(() => {
   background-color: transparent;
   left: 0;
   right: 0;
-  margin: 1rem 4rem;
   min-height: 4rem;
   position: fixed;
 
   .top-semi-trans-header-base-content {
     min-height: 4rem;
     padding: 0 1rem;
-    border-radius: 8px;
     transition: background-color 1s ease, box-shadow 1s ease;
   }
 }

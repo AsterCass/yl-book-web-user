@@ -1,7 +1,7 @@
 <template>
 
-  <div>
-    {{ $t('dashboard.placeholder') }}
+  <div class="full-width full-height">
+
   </div>
 
 </template>

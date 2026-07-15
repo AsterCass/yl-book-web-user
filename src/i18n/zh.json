@@ -24,12 +24,16 @@
   "main_header_back_pre": "返回上级",
 
   "main_login": "登录",
+  "main_logout": "登出",
   "main_login_title": "预约系统",
   "main_login_mail": "邮箱",
   "main_login_password": "密码",
   "main_login_passwd_tips": "密码需 8-20 位，且包含大写字母、小写字母和数字",
   "main_login_more": "其他登录方式",
   "main_login_success": "登录成功",
+  "main_login_failed": "登录失败，请重试",
+  "main_in_login_auth": "正在登录中... 请勿离开当前页面 ...",
+  "main_login_google_client_fail": "获取用户信息失败",
   "main_login_success_copy": "复制成功",
   "main_login_fail_copy": "复制失败",
   "main_register_show_passwd": "显示密码",
@@ -57,8 +61,12 @@
     "password_invalid": "密码需 8-20 位，且包含大写字母、小写字母和数字",
     "code_sent": "验证码已发送，请查收邮箱。",
     "register_success": "注册成功，欢迎加入！",
-    "google_not_config": "谷歌登录暂未配置",
-    "google_failed": "谷歌登录失败，请重试"
+    "reset_title": "重置密码",
+    "reset_subtitle": "输入您的邮箱获取验证码，再设置新密码。",
+    "new_password": "新密码",
+    "reset_submit": "重置密码",
+    "reset_success": "密码重置成功",
+    "back_to_login": "返回登录"
   },
 
   "main_chat_new_message_browser_error": "此浏览器不支持新消息通知， 请更换现代浏览器",

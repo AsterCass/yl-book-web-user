@@ -24,12 +24,16 @@
   "main_header_back_pre": "Up One Level",
 
   "main_login": "Sign in",
+  "main_logout": "Sign out",
   "main_login_title": "Appointment System",
   "main_login_mail": "Mail",
   "main_login_password": "Password",
   "main_login_passwd_tips": "The password must be 8-20 characters long and include uppercase letters, lowercase letters, and numbers.",
   "main_login_more": "Or",
   "main_login_success": "Login successful",
+  "main_login_failed": "Login failed, please try again",
+  "main_in_login_auth": "Logging in... Please do not leave this page...",
+  "main_login_google_client_fail": "Get user info from Google fail",
   "main_login_success_copy": "Copied",
   "main_login_fail_copy": "Copy failed",
   "main_register_show_passwd": "Show Password",
@@ -57,8 +61,12 @@
     "password_invalid": "Password must be 8-20 characters incl. uppercase, lowercase letters and numbers",
     "code_sent": "Verification code sent. Please check your email.",
     "register_success": "Registered successfully. Welcome!",
-    "google_not_config": "Google sign-in is not configured yet",
-    "google_failed": "Google sign-in failed, please try again"
+    "reset_title": "Reset password",
+    "reset_subtitle": "Enter your email to get a verification code, then set a new password.",
+    "new_password": "New password",
+    "reset_submit": "Reset password",
+    "reset_success": "Password reset successfully",
+    "back_to_login": "Back to sign in"
   },
 
   "main_chat_new_message_browser_error": "This browser does not support new message notifications. Please switch to a modern browser",

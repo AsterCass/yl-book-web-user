@@ -5,8 +5,7 @@
 
     <zyy-header/>
 
-    <div class="col relative-position" style="margin: 2rem 0 1rem 0; overflow-x: hidden">
-      <!-- dataVersion 变化（切换租户/门店）时强制重挂载当前页面，重新执行各页面 onMounted 中的查询逻辑 -->
+    <div class="col relative-position" style="margin: 3rem 0 0 0; overflow-x: hidden">
       <router-view :key="globalState.dataVersion"/>
     </div>
 

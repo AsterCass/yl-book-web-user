@@ -450,11 +450,11 @@
 
 .component-full-btn-mini-mini-grow {
   @include component-full-btn-base(
-          $thisHeight: 1.8rem,
+          $thisHeight:2rem,
           $thisWidth: auto,
           $thisMinWidth: 4rem,
   );
-  font-size: .75rem !important;
+  font-size: .85rem !important;
 }
 
 .component-outline-btn-std {

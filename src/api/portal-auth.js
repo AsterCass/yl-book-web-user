@@ -44,6 +44,22 @@ export function portalGithubLogin(body) {
     })
 }
 
+export function portalResetPasswdSendCode(body) {
+    return serviceShiro({
+        url: `/portal/auth/resetPasswd/sendCode`,
+        data: body,
+        method: 'post',
+    })
+}
+
+export function portalResetPasswd(body) {
+    return serviceShiro({
+        url: `/portal/auth/resetPasswd`,
+        data: body,
+        method: 'post',
+    })
+}
+
 export function portalMe() {
     return serviceShiro({
         url: `/portal/auth/me`,
