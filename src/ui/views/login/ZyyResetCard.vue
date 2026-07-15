@@ -150,7 +150,7 @@ function doReset() {
   portalResetPasswd({
     email: inputMail.value,
     code: inputCode.value,
-    password: inputPassword.value,
+    newPassword: inputPassword.value,
   }).then(res => {
     if (!res || !res.data) {
       return
