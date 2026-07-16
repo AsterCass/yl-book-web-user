@@ -65,6 +65,12 @@ function checkIsPasswd(str) {
         && checkHaveCapLet(str) && checkHaveNUm(str) && checkHaveLowLet(str)
 }
 
+// 联系手机号：仅数字、最多20位（与后端 PortalCreateBookingParam.phone 的 ^[0-9]{0,20}$ 对齐）
+function checkIsPhone(str) {
+    const reg = new RegExp(`^[0-9]{0,20}$`)
+    return reg.test(str)
+}
+
 function checkAccount(str) {
     return checkEnAndNum(str) && checkLength(str, 8, 20)
 }
@@ -91,7 +97,7 @@ function checkTrue() {
 
 
 export {
-    checkIsMail, checkIsPasswd, checkAccount,
+    checkIsMail, checkIsPasswd, checkIsPhone, checkAccount,
     checkMotto, checkNickName, checkName,
     checkTrue, checkReply
 }

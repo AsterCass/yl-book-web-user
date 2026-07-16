@@ -2,7 +2,7 @@
   <q-header class="top-semi-trans-header-base-mini row items-center justify-center">
 
     <div
-        class="col-lg-4 col top-semi-trans-header-base-content row justify-between items-center top-semi-trans-header-base-no-top">
+        class="col-lg-6 col-md-8 col-12 top-semi-trans-header-base-content row justify-between items-center top-semi-trans-header-base-no-top">
 
       <div class="row items-center justify-start">
         <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchLanguage()">

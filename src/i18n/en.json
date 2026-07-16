@@ -16,8 +16,6 @@
     "404": {"title": "Error 404", "subtitle": "Page not found", "message": "The page address is incorrect. Please return to the homepage."}
   },
 
-  "dashboard": { "placeholder": "This is the dashboard, currently unused" },
-
   "main_company": "Yuanyuan Health Technology Group Co., Ltd",
   "main_footer_dev_mail": "Developer Email",
 
@@ -68,6 +66,63 @@
     "reset_submit": "Reset password",
     "reset_success": "Password reset successfully",
     "back_to_login": "Back to sign in"
+  },
+
+  "booking": {
+    "create": "Create a new booking",
+    "no_store": "No bookable store available",
+    "no_project": "No service available for this store",
+    "no_slot": "Fully booked on this date. Please try another day.",
+    "no_data": "No bookings yet",
+    "pick_date_first": "Please pick a date first",
+    "minutes": "min",
+    "total_minutes": "Estimated duration: {minutes} min",
+    "staff_note": "Staff is assigned based on actual schedules, so your preferred staff cannot be guaranteed.",
+    "staff_any": "No preference (assigned by the system)",
+    "time_note": "You can only book within the next {days} days.",
+    "prev": "Previous",
+    "next": "Next",
+    "confirm": "Confirm booking",
+    "cancel": "Cancel",
+    "pick_store": "Please select a store",
+    "pick_project": "Please select at least one service",
+    "pick_time": "Please select a time",
+    "incomplete": "Booking details are incomplete. Please go back and check.",
+    "create_success": "Booking created",
+    "cancel_booking": "Cancel booking",
+    "cancel_title": "Cancel booking",
+    "cancel_content": "Cancel the booking at {time}?",
+    "cancel_success": "Booking cancelled",
+    "dialog_cancel": "Keep it",
+    "dialog_confirm": "Confirm",
+    "phone_hint": "Optional. Digits only, up to 20. Leave blank to use your account phone.",
+    "phone_invalid": "Phone must be digits only, up to 20 characters",
+    "remark_hint": "Optional, up to 200 characters. Anything we should know in advance.",
+    "remark_too_long": "Remark must not exceed 200 characters",
+    "step": {
+      "store": "Select a store",
+      "project": "Select Services",
+      "staff": "Preferred staff",
+      "time": "Select a time",
+      "confirm": "Confirm your booking"
+    },
+    "field": {
+      "store": "Store",
+      "project": "Service",
+      "duration": "Duration",
+      "staff": "Preferred staff",
+      "time": "Time",
+      "phone": "Phone",
+      "remark": "Remark"
+    },
+    "status": {
+      "pre": "Pending",
+      "work": "Assigned",
+      "in_progress": "In progress",
+      "done": "Completed",
+      "expired": "Expired",
+      "cancel": "Cancelled"
+    }
   },
 
   "main_chat_new_message_browser_error": "This browser does not support new message notifications. Please switch to a modern browser",

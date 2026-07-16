@@ -16,8 +16,6 @@
     "404": {"title": "错误 404", "subtitle": "页面未找到", "message": "页面地址错咯，回到主页重新看看吧"}
   },
 
-  "dashboard": { "placeholder": "这里是仪表盘，暂时用不到" },
-
   "main_company": "远元健康科技集团有限公司",
   "main_footer_dev_mail": "开发者邮箱",
 
@@ -68,6 +66,63 @@
     "reset_submit": "重置密码",
     "reset_success": "密码重置成功",
     "back_to_login": "返回登录"
+  },
+
+  "booking": {
+    "create": "创建新预约",
+    "no_store": "暂无可预约门店",
+    "no_project": "该门店暂无可预约项目",
+    "no_slot": "当天已约满，请换一天试试",
+    "no_data": "还没有预约记录",
+    "pick_date_first": "请先选择日期",
+    "minutes": "分钟",
+    "total_minutes": "预计时长 {minutes} 分钟",
+    "staff_note": "系统会根据员工实际排班进行分配，不一定能安排到您偏好的员工。",
+    "staff_any": "不指定（由系统安排）",
+    "time_note": "仅可预约未来 {days} 天内的时间。",
+    "prev": "上一步",
+    "next": "下一步",
+    "confirm": "确认预约",
+    "cancel": "取消",
+    "pick_store": "请选择门店",
+    "pick_project": "请至少选择一个预约项目",
+    "pick_time": "请选择预约时间",
+    "incomplete": "预约信息不完整，请返回上一步检查",
+    "create_success": "预约创建成功",
+    "cancel_booking": "取消预约",
+    "cancel_title": "取消预约",
+    "cancel_content": "确认取消 {time} 的预约？",
+    "cancel_success": "预约已取消",
+    "dialog_cancel": "再想想",
+    "dialog_confirm": "确认",
+    "phone_hint": "选填，仅数字、最多 20 位；留空则使用账户手机号。",
+    "phone_invalid": "手机号只能是数字，且最多 20 位",
+    "remark_hint": "选填，最多 200 字符；有什么需要提前告知的可以写在这里。",
+    "remark_too_long": "备注不能超过 200 字符",
+    "step": {
+      "store": "选择门店",
+      "project": "选择预约项目",
+      "staff": "选择偏好员工",
+      "time": "选择预约时间",
+      "confirm": "确认预约信息"
+    },
+    "field": {
+      "store": "门店",
+      "project": "预约项目",
+      "duration": "预计时长",
+      "staff": "偏好员工",
+      "time": "预约时间",
+      "phone": "联系手机号",
+      "remark": "备注"
+    },
+    "status": {
+      "pre": "待分配",
+      "work": "已分配",
+      "in_progress": "进行中",
+      "done": "已完成",
+      "expired": "已过期",
+      "cancel": "已取消"
+    }
   },
 
   "main_chat_new_message_browser_error": "此浏览器不支持新消息通知， 请更换现代浏览器",
