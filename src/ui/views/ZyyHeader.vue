@@ -32,7 +32,7 @@ import {useRouter} from "vue-router";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
 import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
-import {portalLogout} from "@/api/portal-auth.js";
+import {portalLogout, portalMe} from "@/api/portal-auth.js";
 import {deleteCookie} from "@/utils/common.js";
 import {notifyTopPositive} from "@/utils/notification-tools.js";
 import {backToLogin} from "@/router/index.js";
@@ -42,15 +42,16 @@ const thisRouter = useRouter()
 const globalState = useGlobalStateStore();
 
 function checkLogin() {
-  // const isLogin = checkLoginFromCookie()
-  // if (!isLogin) {
-  //   backToLogin(thisRouter)
-  // }
-  // userIsLogin().then(res => {
-  //   if (!res || !res.data || !res.data.data) {
-  //     backToLogin(thisRouter)
-  //   }
-  // })
+  if (!globalState.userData) {
+    backToLogin(thisRouter)
+    return
+  }
+  portalMe().then(res => {
+    if (!res || !res.data || !res.data.data) {
+      backToLogin(thisRouter)
+    }
+    globalState.updateUserData(res.data.data);
+  })
 }
 
 function logoutMethod() {
