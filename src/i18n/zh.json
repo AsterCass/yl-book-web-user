@@ -95,7 +95,7 @@
     "cancel_success": "预约已取消",
     "dialog_cancel": "再想想",
     "dialog_confirm": "确认",
-    "phone_hint": "选填，仅数字、最多 20 位；留空则使用账户手机号。",
+    "phone_hint": "选填，请留下您的电话，方便特殊情况可以快速联系到您。",
     "phone_invalid": "手机号只能是数字，且最多 20 位",
     "remark_hint": "选填，最多 200 字符；有什么需要提前告知的可以写在这里。",
     "remark_too_long": "备注不能超过 200 字符",

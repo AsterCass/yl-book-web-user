@@ -95,7 +95,7 @@
     "cancel_success": "Booking cancelled",
     "dialog_cancel": "Keep it",
     "dialog_confirm": "Confirm",
-    "phone_hint": "Optional. Digits only, up to 20. Leave blank to use your account phone.",
+    "phone_hint": "Optional. Please leave your phone number so that we can quickly contact you in case of emergencies.",
     "phone_invalid": "Phone must be digits only, up to 20 characters",
     "remark_hint": "Optional, up to 200 characters. Anything we should know in advance.",
     "remark_too_long": "Remark must not exceed 200 characters",
