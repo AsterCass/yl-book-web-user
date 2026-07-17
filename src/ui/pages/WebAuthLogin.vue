@@ -33,6 +33,7 @@ import {portalGithubLogin, portalGoogleLogin} from "@/api/portal-auth.js";
 import {useI18n} from "vue-i18n";
 import {useGlobalStateStore} from "@/utils/global-state";
 import {useRouter} from "vue-router";
+import {buildAttributionParams} from "@/utils/landing-params.js";
 
 const globalState = useGlobalStateStore();
 const {t} = useI18n()
@@ -60,7 +61,8 @@ const loginText = ref(inLoginText)
 
 
 function googleLoginCallback(code) {
-  portalGoogleLogin({code: code}).then(res => {
+  // 首次 OAuth 即注册：带上站外投放归因（落地参数持久化在 globalState，故整页跳转后仍在）
+  portalGoogleLogin({code: code, ...buildAttributionParams()}).then(res => {
     if (!res || !res.data || !res.data.data) {
       loginText.value = loginFail
       disableHomeBtn.value = false
@@ -75,7 +77,7 @@ function googleLoginCallback(code) {
 }
 
 function googleGithubCallback(code) {
-  portalGithubLogin({code: code}).then(res => {
+  portalGithubLogin({code: code, ...buildAttributionParams()}).then(res => {
     if (!res || !res.data || !res.data.data) {
       loginText.value = loginFail
       disableHomeBtn.value = false

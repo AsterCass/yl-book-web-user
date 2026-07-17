@@ -25,8 +25,10 @@ export const useGlobalStateStore = defineStore('globalState', {
         loginInfo: null,
         // 页面数据版本号：作为顶层 router-view 的 key，自增即强制重挂载当前页面（重跑 onMounted 内的查询逻辑）
         dataVersion: 0,
-        // 预约日历卡片底色透明度（用户偏好，0 ~ 1）
-        calendarBgAlpha: 0.25,
+        // 站外投放落地参数（?platform= / ?ref=），注册时映射为 sourceCode / referralCode 上报。
+        // 随 store 持久化：未带参数的访问保留上次的值，也用于跨 OAuth 整页跳转存活
+        platform: '',
+        referralCode: '',
     }),
     getters: {
         // 当前用户拥有的权限码集合（兼容 userData 直接为用户对象或包一层 userData 两种结构）
@@ -92,8 +94,14 @@ export const useGlobalStateStore = defineStore('globalState', {
         updateLoginInfo(data) {
             this.loginInfo = data
         },
-        updateCalendarBgAlpha(alpha) {
-            this.calendarBgAlpha = alpha
+        // 落地参数各自独立覆盖：传 null 表示本次 URL 未携带该参数，保留旧值
+        updateLandingParams(platform, referralCode) {
+            if (platform !== null && platform !== undefined) {
+                this.platform = platform
+            }
+            if (referralCode !== null && referralCode !== undefined) {
+                this.referralCode = referralCode
+            }
         }
     },
 });

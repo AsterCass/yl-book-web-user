@@ -100,6 +100,7 @@ import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js
 import {i18n} from "@/i18n/index.js";
 import {checkIsMail, checkIsPasswd} from "@/utils/format-check.js";
 import {portalRegister, portalSendCode} from "@/api/portal-auth.js";
+import {buildAttributionParams} from "@/utils/landing-params.js";
 
 const emit = defineEmits(['success', 'switch'])
 
@@ -166,6 +167,8 @@ function doRegister() {
     code: inputCode.value,
     password: inputPassword.value,
     nickName: inputNick.value || null,
+    // 站外投放归因：无平台/推荐码时不下发对应字段
+    ...buildAttributionParams(),
   }).then(res => {
     if (!res || !res.data || !res.data.data) {
       return
