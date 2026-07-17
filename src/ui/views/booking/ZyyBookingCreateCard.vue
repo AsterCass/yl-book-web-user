@@ -36,11 +36,25 @@
         {{ $t('booking.no_store') }}
       </div>
       <div v-else class="column">
-        <div v-for="s in storeList" :key="s.id" class="booking-option row items-center q-my-xs"
+        <div v-for="s in storeList" :key="s.id" class="booking-option row items-center no-wrap q-my-xs"
              :class="{'booking-option-active': selectedStoreId === s.id}" @click="selectStore(s)">
-          <q-icon name="fa-solid fa-store" size="1rem" class="q-mr-sm"/>
-          <div class="col">{{ s.name }}</div>
-          <q-icon v-if="selectedStoreId === s.id" name="fa-solid fa-circle-check" size="1rem"/>
+          <div class="col column">
+            <!-- 图标与门店名同处一行并居中，二者必然水平对齐 -->
+            <div class="row items-center no-wrap q-mb-xs">
+              <q-icon name="fa-solid fa-store" size="1rem" class="q-mr-sm"/>
+              <div class="col">{{ s.name }}</div>
+            </div>
+            <div v-if="s.address" class="row items-start no-wrap booking-option-sub">
+              <q-icon name="fa-solid fa-location-dot" size=".7rem" class="q-mr-xs booking-option-sub-icon"/>
+              <div class="col">{{ s.address }}</div>
+            </div>
+            <div v-if="s.phone" class="row items-start no-wrap booking-option-sub">
+              <q-icon name="fa-solid fa-phone" size=".7rem" class="q-mr-xs booking-option-sub-icon"/>
+              <div class="col">{{ s.phone }}</div>
+            </div>
+          </div>
+          <!-- 打勾作为行的直接子元素，由外层 items-center 相对整个选项垂直居中 -->
+          <q-icon v-if="selectedStoreId === s.id" name="fa-solid fa-circle-check" size="1rem" class="q-ml-sm"/>
         </div>
       </div>
     </div>
@@ -563,6 +577,23 @@ function doCreate() {
 .booking-option-active {
   border-color: rgb(var(--text-color));
   background-color: rgba(var(--text-color), .07);
+}
+
+// 门店地址/电话：次要信息，地址可能较长需换行
+.booking-option-sub {
+  margin-top: 3px;
+  // 左缩进 = 门店图标 1rem + q-mr-sm .5rem，使副行与门店名左对齐
+  padding-left: 1.5rem;
+  opacity: .55;
+  font-size: .75rem;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+// 图标盒高度取副行行高（.75rem × 1.35），配合 items-start 让图标与首行文字居中对齐；
+// 地址换行成多行时图标仍贴首行，不会被拉到整段的垂直中间
+.booking-option-sub-icon {
+  height: 1.0125rem;
 }
 
 .booking-slot {
