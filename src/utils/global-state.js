@@ -26,8 +26,8 @@ export const useGlobalStateStore = defineStore('globalState', {
         loginInfo: null,
         // 页面数据版本号：作为顶层 router-view 的 key，自增即强制重挂载当前页面（重跑 onMounted 内的查询逻辑）
         dataVersion: 0,
-        // 站外投放落地参数（?platform= / ?ref=），注册时映射为 sourceCode / referralCode 上报。
-        // 随 store 持久化：未带参数的访问保留上次的值，也用于跨 OAuth 整页跳转存活
+        // 站外投放落地参数（?platform= / ?ref=），注册/下单时映射为 sourceCode / referralCode 上报。
+        // 每次进入本站以当前 URL 覆盖：未带对应参数即置空（不保留旧值）
         platform: '',
         referralCode: '',
     }),
@@ -102,14 +102,10 @@ export const useGlobalStateStore = defineStore('globalState', {
         updateLoginInfo(data) {
             this.loginInfo = data
         },
-        // 落地参数各自独立覆盖：传 null 表示本次 URL 未携带该参数，保留旧值
+        // 落地参数总是以本次 URL 为准覆盖：URL 未携带对应参数则置空字符串，不保留旧值
         updateLandingParams(platform, referralCode) {
-            if (platform !== null && platform !== undefined) {
-                this.platform = platform
-            }
-            if (referralCode !== null && referralCode !== undefined) {
-                this.referralCode = referralCode
-            }
+            this.platform = platform || ''
+            this.referralCode = referralCode || ''
         }
     },
 });

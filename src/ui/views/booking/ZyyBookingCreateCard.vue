@@ -210,6 +210,7 @@ import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js
 import {i18n} from "@/i18n/index.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {checkIsPhone} from "@/utils/format-check.js";
+import {buildAttributionParams} from "@/utils/landing-params.js";
 import {
   portalBookingCreate,
   portalBookingSkills,
@@ -501,6 +502,8 @@ function doCreate() {
     // 留空传 null：后端 @Pattern/@Size 跳过 null，且 phone 为空时回退账户手机号
     phone: inputPhone.value || null,
     remark: inputRemark.value || null,
+    // 站外投放归因（与注册同结构）：从 globalState 取，无 sourceCode/referralCode 则不下发，后端回退账户记录
+    ...buildAttributionParams(),
   }).then(res => {
     submitting.value = false
     if (!res) {
