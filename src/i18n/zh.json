@@ -66,7 +66,8 @@
     "new_password": "新密码",
     "reset_submit": "重置密码",
     "reset_success": "密码重置成功",
-    "back_to_login": "返回登录"
+    "back_to_login": "返回登录",
+    "poster_close": "关闭"
   },
 
   "booking": {

@@ -27,6 +27,15 @@
 
     <zyy-footer/>
 
+    <!-- 首次访问本站海报（q-dialog 自带遮罩，移动端自适应，带明显关闭按钮） -->
+    <q-dialog v-model="showPoster" transition-show="scale" transition-hide="fade">
+      <div class="login-poster relative-position">
+        <img src="/img/poster.jpg" alt="" class="login-poster-img"/>
+        <q-icon class="cask-cursor-pointer absolute-top-right  login-poster-close" name="fa-solid fa-xmark"
+                size="1.8rem" color="negative" @click="showPoster = false"/>
+      </div>
+    </q-dialog>
+
   </div>
 
 </template>
@@ -34,7 +43,7 @@
 
 <script setup>
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 import ZyyFooter from "@/ui/views/ZyyFooter.vue";
 import ZyyLoginCard from "@/ui/views/login/ZyyLoginCard.vue";
@@ -42,16 +51,28 @@ import ZyyRegisterCard from "@/ui/views/login/ZyyRegisterCard.vue";
 import ZyyResetCard from "@/ui/views/login/ZyyResetCard.vue";
 import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
 import {backToHome} from "@/router/index.js";
+import {useGlobalStateStore} from "@/utils/global-state.js";
 
 const thisRouter = useRouter()
+const globalState = useGlobalStateStore()
 
 // 'login' | 'register' | 'reset'
 const mode = ref('login')
+
+const showPoster = ref(false)
 
 // 各卡片自行完成鉴权与用户态写入，成功后父级统一跳转首页
 function handleSuccess() {
   backToHome(thisRouter)
 }
+
+onMounted(() => {
+  // 首次访问本站弹一次海报，随即持久化标记，刷新/再次进入不再弹
+  if (!globalState.visited) {
+    showPoster.value = true
+    globalState.markVisited()
+  }
+})
 
 </script>
 
@@ -102,4 +123,26 @@ function handleSuccess() {
   transform: translateY(-20px);
 }
 
+// 首次访问海报：等比缩放至视口内，桌面适中、移动端近满宽
+.login-poster {
+  position: relative;
+  display: flex;
+  max-width: 92vw;
+  max-height: 86vh;
+}
+
+.login-poster-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(92vw, 520px);
+  max-height: 86vh;
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+.login-poster-close {
+  right: .5rem !important;
+  top: .5rem !important;
+}
 </style>

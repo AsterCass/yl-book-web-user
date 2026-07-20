@@ -12,7 +12,7 @@ export function initGlobalState() {
     //show scroller bar
     document.documentElement.setAttribute('hide-scrollbar', String(globalState.hideScroller));
     //language
-    const lang = globalState.language ? globalState.language : navigator.language.slice(0, 2);
+    const lang = globalState.language ? globalState.language : 'en';
     setLocale(lang)
     if (lang === 'zh') {
         Quasar.lang.set(zh)

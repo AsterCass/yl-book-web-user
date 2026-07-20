@@ -30,6 +30,8 @@ export const useGlobalStateStore = defineStore('globalState', {
         // 每次进入本站以当前 URL 覆盖：未带对应参数即置空（不保留旧值）
         platform: '',
         referralCode: '',
+        // 是否已访问过本站（持久化到 localStorage）：登录页首次访问海报只弹一次
+        visited: false,
     }),
     getters: {
         // 当前用户拥有的权限码集合（兼容 userData 直接为用户对象或包一层 userData 两种结构）
@@ -106,6 +108,9 @@ export const useGlobalStateStore = defineStore('globalState', {
         updateLandingParams(platform, referralCode) {
             this.platform = platform || ''
             this.referralCode = referralCode || ''
+        },
+        markVisited() {
+            this.visited = true
         }
     },
 });
