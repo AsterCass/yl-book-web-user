@@ -155,8 +155,13 @@ function doReset() {
     if (!res || !res.data) {
       return
     }
-    // 后端重置成功后直接授予 cookie；如返回用户信息则一并写入
     if (res.data.data) {
+      const token = res.headers.get("Yl-Token")
+      if (!token) {
+        notifyTopWarning(t('login.token_missing'))
+        return
+      }
+      globalState.updateLoginToken(token)
       globalState.updateUserData(res.data.data)
     }
     notifyTopPositive(t('login.reset_success'))

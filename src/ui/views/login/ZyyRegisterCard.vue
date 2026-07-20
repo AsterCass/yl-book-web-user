@@ -173,6 +173,12 @@ function doRegister() {
     if (!res || !res.data || !res.data.data) {
       return
     }
+    const token = res.headers.get("Yl-Token")
+    if (!token) {
+      notifyTopWarning(t('login.token_missing'))
+      return
+    }
+    globalState.updateLoginToken(token)
     globalState.updateUserData(res.data.data)
     notifyTopPositive(t('login.register_success'))
     emit('success')

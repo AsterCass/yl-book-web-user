@@ -14,17 +14,3 @@ export function rawPCMToAudioBuffer(arrayBuffer, sampleRate = 24000) {
     return audioBuffer;
 }
 
-export function checkLoginFromCookie() {
-    const token = getCookie('YToken')
-    return !!token;
-}
-
-export function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
-    return match ? decodeURIComponent(match[2]) : null
-}
-
-export function deleteCookie(name = 'YToken') {
-    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-}
-

@@ -58,6 +58,7 @@
     "empty_register": "Please enter your email, code and password",
     "email_invalid": "Invalid email format",
     "password_invalid": "Password must be 8-20 characters incl. uppercase, lowercase letters and numbers",
+    "token_missing": "Sign-in failed: no auth token received. Please try again or contact the administrator.",
     "code_sent": "Verification code sent. Please check your email.",
     "register_success": "Registered successfully. Welcome!",
     "reset_title": "Reset password",

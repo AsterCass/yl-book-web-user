@@ -58,6 +58,7 @@
     "empty_register": "请输入邮箱、验证码和密码",
     "email_invalid": "邮箱格式不正确",
     "password_invalid": "密码需 8-20 位，且包含大写字母、小写字母和数字",
+    "token_missing": "登录失败：未获取到登录凭证，请重试或联系管理员",
     "code_sent": "验证码已发送，请查收邮箱。",
     "register_success": "注册成功，欢迎加入！",
     "reset_title": "重置密码",

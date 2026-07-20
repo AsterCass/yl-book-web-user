@@ -33,7 +33,6 @@ import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
 import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
 import {portalLogout, portalMe} from "@/api/portal-auth.js";
-import {deleteCookie} from "@/utils/common.js";
 import {notifyTopPositive} from "@/utils/notification-tools.js";
 import {backToLogin} from "@/router/index.js";
 
@@ -59,7 +58,7 @@ function logoutMethod() {
     if (!res || !res.data) {
       return
     }
-    deleteCookie()
+    globalState.updateLoginToken(null)
     globalState.updateUserData(null)
     notifyTopPositive(t('main_login_success_logout'))
     backToLogin(thisRouter)

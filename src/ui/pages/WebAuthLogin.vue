@@ -68,6 +68,14 @@ function googleLoginCallback(code) {
       disableHomeBtn.value = false
       return
     }
+    const token = res.headers.get("Yl-Token")
+    if (!token) {
+      loginText.value = loginFail
+      disableHomeBtn.value = false
+      notifyTopWarning(t('login.token_missing'))
+      return
+    }
+    globalState.updateLoginToken(token)
     globalState.updateUserData(res.data.data)
     loginText.value = loginSuccess
     disableHomeBtn.value = false
@@ -83,6 +91,14 @@ function googleGithubCallback(code) {
       disableHomeBtn.value = false
       return
     }
+    const token = res.headers.get("Yl-Token")
+    if (!token) {
+      loginText.value = loginFail
+      disableHomeBtn.value = false
+      notifyTopWarning(t('login.token_missing'))
+      return
+    }
+    globalState.updateLoginToken(token)
     globalState.updateUserData(res.data.data)
     loginText.value = loginSuccess
     disableHomeBtn.value = false

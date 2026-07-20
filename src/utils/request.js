@@ -2,27 +2,17 @@ import axios from 'axios'
 import Qs from 'qs'
 import {notifyTopWarning} from "@/utils/notification-tools";
 import {i18n} from '@/i18n';
-import {deleteCookie} from "@/utils/common.js";
 import router, {backToLogin} from '@/router'
 import {useGlobalStateStore} from "@/utils/global-state.js";
 
 const t = i18n.global.t
 const BASE_ADD = import.meta.env.VITE_APP_BASE_ADD
 
-// 登录态相关接口不携带租户/门店信息
-const TENANT_FREE_URLS = ['/user/login', '/user/logout', '/user/isLogin', "/user/m"]
 
 const requestConfig = config => {
-    const url = config.url || ''
-    if (TENANT_FREE_URLS.some(path => url.startsWith(path))) {
-        return config
-    }
-    const userData = useGlobalStateStore().userData
-    if (userData && userData.tenantId) {
-        config.headers['X-Tenant-Id'] = userData.tenantId
-    }
-    if (userData && userData.storeId) {
-        config.headers['X-Store-Id'] = userData.storeId
+    const globalState = useGlobalStateStore()
+    if (globalState.loginToken) {
+        config.headers.set('Yl-Token', globalState.loginToken)
     }
     return config
 }
@@ -36,7 +26,7 @@ const responseConfig = response => {
             bizStatus = serverData.status
             if (600 === bizStatus) {
                 notifyTopWarning(t('no_login'))
-                deleteCookie()
+                useGlobalStateStore().updateLoginToken(null)
                 backToLogin(router)
                 return null
             }
