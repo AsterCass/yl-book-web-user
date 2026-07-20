@@ -32,7 +32,7 @@
       <div class="login-poster relative-position">
         <img src="/img/poster.jpg" alt="" class="login-poster-img"/>
         <q-icon class="cask-cursor-pointer absolute-top-right  login-poster-close" name="fa-solid fa-xmark"
-                size="1.8rem" color="negative" @click="showPoster = false"/>
+                size="1.25rem" color="negative" @click="showPoster = false"/>
       </div>
     </q-dialog>
 
@@ -127,16 +127,16 @@ onMounted(() => {
 .login-poster {
   position: relative;
   display: flex;
-  max-width: 92vw;
-  max-height: 86vh;
+  max-width: 80vw;
+  max-height: 80vh;
 }
 
 .login-poster-img {
   display: block;
   width: auto;
   height: auto;
-  max-width: min(92vw, 520px);
-  max-height: 86vh;
+  max-width: min(80vw, 500px);
+  max-height: 80vh;
   border-radius: 12px;
   object-fit: contain;
 }
