@@ -200,17 +200,22 @@
 
   </div>
 
+  <cask-dialog-judgment v-model="showOverlapDialog" :dialog-judgment-data="overlapDialogData"
+                        :callback-method="onOverlapConfirm"/>
+
 </template>
 
 
 <script setup>
 
 import {computed, ref, watch} from "vue";
+import CaskDialogJudgment from "@/ui/components/CaskDialogJudgment.vue";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
 import {i18n} from "@/i18n/index.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {checkIsPhone} from "@/utils/format-check.js";
 import {buildAttributionParams} from "@/utils/landing-params.js";
+import {BookStatusEnum} from "@/constants/enums/book.js";
 import {
   portalBookingCreate,
   portalBookingSkills,
@@ -220,6 +225,14 @@ import {
 } from "@/api/portal-booking.js";
 
 const emit = defineEmits(['created'])
+
+const props = defineProps({
+  // 父级（仪表盘）当前已加载的历史预约，用于下单前的宽松重合检查（不额外请求后端）
+  loadedBookings: {
+    type: Array,
+    default: () => [],
+  },
+})
 
 const t = i18n.global.t
 const globalState = useGlobalStateStore();
@@ -241,6 +254,9 @@ const STEP_TITLES = [
 const expanded = ref(false)
 const step = ref(1)
 const submitting = ref(false)
+
+const showOverlapDialog = ref(false)
+const overlapDialogData = ref({title: "", content: "", falseLabel: "", trueLabel: ""})
 
 const storeList = ref([])
 const skillList = ref([])
@@ -493,6 +509,61 @@ function doCreate() {
     notifyTopWarning(t('booking.remark_too_long'))
     return
   }
+  // 宽松重合检查：仅对已加载的历史预约（不请求后端），发现重合先确认，仍允许创建（可能为朋友代约）
+  const overlapped = findOverlapBooking()
+  if (overlapped) {
+    overlapDialogData.value = {
+      title: t('booking.overlap.title'),
+      content: t('booking.overlap.content', {
+        store: overlapped.storeName || '',
+        time: overlapped.bookingTime,
+      }),
+      falseLabel: t('booking.overlap.cancel'),
+      trueLabel: t('booking.overlap.confirm'),
+    }
+    showOverlapDialog.value = true
+    return
+  }
+  submitCreate()
+}
+
+// 在门店本地墙钟字符串（yyyy-MM-dd HH:mm）上加分钟数，仅做本地历法运算，不涉及时区换算
+function addMinutesToWallClock(timeStr, minutes) {
+  const [datePart, timePart] = timeStr.split(' ')
+  const [y, mo, d] = datePart.split('-').map(Number)
+  const [h, mi] = timePart.split(':').map(Number)
+  const dt = new Date(y, mo - 1, d, h, mi + minutes)
+  const pad = n => String(n).padStart(2, '0')
+  return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`
+}
+
+// 找出第一条与新预约时间重合的已加载历史预约（不算已取消）。
+// 时间为各门店本地墙钟，格式统一（yyyy-MM-dd HH:mm），字典序即时间序，直接字符串比较；
+// 跨时区门店的墙钟对比并不严格，但本检查本就是宽松提示，不作为硬拦截
+function findOverlapBooking() {
+  const newStart = selectedSlot.value
+  const newEnd = addMinutesToWallClock(newStart, totalMinutes.value)
+  for (const booking of props.loadedBookings) {
+    if (!booking || booking.status === BookStatusEnum.CANCEL.code || !booking.bookingTime) {
+      continue
+    }
+    const existStart = booking.bookingTime
+    const existEnd = booking.endTime || booking.bookingTime
+    if (newStart < existEnd && newEnd > existStart) {
+      return booking
+    }
+  }
+  return null
+}
+
+function onOverlapConfirm(confirmed) {
+  showOverlapDialog.value = false
+  if (confirmed) {
+    submitCreate()
+  }
+}
+
+function submitCreate() {
   submitting.value = true
   portalBookingCreate({
     storeId: selectedStoreId.value,

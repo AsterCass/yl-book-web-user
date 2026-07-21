@@ -105,6 +105,12 @@
     "cancel_success": "Booking cancelled",
     "dialog_cancel": "Keep it",
     "dialog_confirm": "Confirm",
+    "overlap": {
+      "title": "Overlapping booking",
+      "content": "You already have a booking at {store} on {time} that overlaps with this one. Create it anyway? (Booking for a friend together is fine.)",
+      "cancel": "Go back",
+      "confirm": "Create anyway"
+    },
     "phone_hint": "Optional. Please leave your phone number so that we can quickly contact you in case of emergencies.",
     "phone_invalid": "Phone must be digits only, up to 20 characters",
     "remark_hint": "Optional, up to 200 characters. Anything we should know in advance.",

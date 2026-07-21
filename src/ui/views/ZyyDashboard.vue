@@ -5,8 +5,8 @@
     <div class="row justify-center q-mt-lg q-px-md q-pt-sm q-pb-xl">
       <div class="col-lg-6 col-md-8 col-12">
 
-        <!-- 最上方：新建预约入口 -->
-        <zyy-booking-create-card class="q-mb-lg" @created="reloadList"/>
+        <!-- 最上方：新建预约入口（传入已加载的历史预约供下单前的宽松重合检查） -->
+        <zyy-booking-create-card class="q-mb-lg" :loaded-bookings="bookingList" @created="reloadList"/>
 
         <div v-if="firstLoading" class="row justify-center q-mt-xl">
           <q-spinner-pie size="60px"/>

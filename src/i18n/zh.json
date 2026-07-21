@@ -105,6 +105,12 @@
     "cancel_success": "预约已取消",
     "dialog_cancel": "再想想",
     "dialog_confirm": "确认",
+    "overlap": {
+      "title": "预约时间重合",
+      "content": "您在【{store}】已有 {time} 的预约，与本次预约时间重合。是否仍要继续创建？（为朋友一起预约可继续创建）",
+      "cancel": "返回修改",
+      "confirm": "仍要创建"
+    },
     "phone_hint": "选填，请留下您的电话，方便特殊情况可以快速联系到您。",
     "phone_invalid": "手机号只能是数字，且最多 20 位",
     "remark_hint": "选填，最多 200 字符；有什么需要提前告知的可以写在这里。",
