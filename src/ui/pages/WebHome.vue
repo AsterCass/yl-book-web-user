@@ -18,7 +18,9 @@
 
       <!-- 首屏：本应用是做什么的、给谁用、提供什么功能 -->
       <div class="home-hero column items-center text-center">
-        <h2>{{ $t('home.hero_title') }}</h2>
+        <!-- 应用名固定展示拉丁品牌名，须与 Google OAuth 同意屏幕的应用名称完全一致 -->
+        <h2>{{ BRAND_NAME }}</h2>
+        <div class="cask-general-little-title" style="opacity: .85">{{ $t('home.hero_tagline') }}</div>
         <div class="home-hero-sub q-mt-sm">{{ $t('home.what') }}</div>
         <div class="home-hero-sub q-mt-xs">{{ $t('home.who') }}</div>
 
@@ -56,6 +58,8 @@
           </div>
         </div>
       </div>
+
+
 
       <!-- 服务项目（按类别分组，配置见 constants/home-content.js） -->
       <div class="home-section">
@@ -121,6 +125,31 @@
         </div>
       </div>
 
+      <!-- 应用用途与 Google 数据使用说明（品牌验证要求：首页须说明应用用途及所请求 Google 用户数据的用法） -->
+      <div class="home-section">
+        <div class="row justify-center"><h3>{{ $t('home.google.title') }}</h3></div>
+        <div class="home-card column">
+          <div class="q-my-xs">{{ $t('home.google.purpose') }}</div>
+          <div class="q-my-xs">{{ $t('home.google.intro') }}</div>
+          <div class="row items-start q-my-xs">
+            <q-icon name="fa-regular fa-envelope" size=".9rem" class="q-mr-sm q-mt-xs" style="opacity: .6"/>
+            <div class="col">{{ $t('home.google.use_mail') }}</div>
+          </div>
+          <div class="row items-start q-my-xs">
+            <q-icon name="fa-regular fa-user" size=".9rem" class="q-mr-sm q-mt-xs" style="opacity: .6"/>
+            <div class="col">{{ $t('home.google.use_name') }}</div>
+          </div>
+          <div class="row items-start q-my-xs">
+            <q-icon name="fa-solid fa-shield-halved" size=".9rem" class="q-mr-sm q-mt-xs" style="opacity: .6"/>
+            <div class="col">{{ $t('home.google.no_share') }}</div>
+          </div>
+          <div class="q-mt-xs">
+            {{ $t('home.google.more_pre') }}<router-link :to="{name: 'policyPrivacy'}"
+                                                         class="cask-jump-link-in-text">{{ $t('policy.privacy') }}</router-link>{{ $t('home.google.more_post') }}
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <zyy-footer/>
@@ -138,7 +167,7 @@ import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
 import {toSpecifyPage} from "@/router/index.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
-import {HOME_SERVICE_GROUPS, HOME_STORES} from "@/constants/home-content.js";
+import {BRAND_NAME, HOME_SERVICE_GROUPS, HOME_STORES} from "@/constants/home-content.js";
 
 const globalState = useGlobalStateStore()
 const thisRouter = useRouter()

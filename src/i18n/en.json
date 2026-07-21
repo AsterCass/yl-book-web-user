@@ -79,7 +79,7 @@
   },
 
   "home": {
-    "hero_title": "Zhengyuanyuan Foot Spa · Online Booking",
+    "hero_tagline": "Online Booking Platform",
     "what": "This is the official online booking platform of Zhengyuanyuan Foot Spa — one of China's most trusted wellness brands. Find each store's address and contact below; more locations are on the way.",
     "who": "Built for customers who want to enjoy traditional Chinese foot care, full-body massage and acupuncture in store.",
     "cta_book": "Book Now",
@@ -90,6 +90,16 @@
       "f2_desc": "Pick a store, services, preferred therapist and visit time — done in a few steps.",
       "f3_title": "Manage your bookings",
       "f3_desc": "Check your booking history and status anytime, and cancel online when plans change."
+    },
+    "google": {
+      "title": "About This App & Google Data Use",
+      "purpose": "Purpose of this app: it lets customers register an account, book in-store services (foot care, massage, acupuncture and more) at Zhengyuanyuan Foot Spa stores online, and view or cancel their bookings at any time.",
+      "intro": "You can sign in with your Google Account. When you choose Google sign-in, we request only your basic profile information (name) and email address, and we use them as follows:",
+      "use_mail": "Email address — used as your account identifier to create and sign in to your booking account, and to send booking-related emails such as confirmations.",
+      "use_name": "Name — used as your display name inside the app.",
+      "no_share": "We do not sell your Google user data, and we do not share it with third parties except as necessary to provide the booking service.",
+      "more_pre": "For details, see our ",
+      "more_post": "."
     },
     "services_title": "Services",
     "services_note": "Bookable services vary by store, and prices at the store prevail (cash only; card payments incur extra fees).",

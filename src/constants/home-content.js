@@ -3,6 +3,10 @@
 // 新增门店：在 HOME_STORES 追加一个条目即可；可本地化字段统一用 {zh, en} 结构，
 // 由页面按当前语言取值（见 WebHome.vue 的 lv()）。
 
+// 对外品牌名（须与 Google OAuth 同意屏幕配置的应用名称完全一致，勿加后缀；
+// 各语言页面均原样展示该拉丁名，品牌审核按此核对）
+export const BRAND_NAME = 'Zhengyuanyuan Foot Spa'
+
 export const HOME_STORES = [
     {
         id: 'manhattan',
