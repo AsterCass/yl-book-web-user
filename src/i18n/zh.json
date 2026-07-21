@@ -23,7 +23,7 @@
 
   "main_login": "登录",
   "main_logout": "登出",
-  "main_login_title": "郑远元预约",
+  "main_login_title": "郑远元足浴",
   "main_login_mail": "邮箱",
   "main_login_password": "密码",
   "main_login_passwd_tips": "密码需 8-20 位，且包含大写字母、小写字母和数字",
@@ -76,6 +76,30 @@
     "privacy_title": "隐私政策",
     "storage_note_pre": "本站使用浏览器存储保持您的登录状态。详见",
     "storage_note_post": "。"
+  },
+
+  "home": {
+    "hero_title": "郑远元足浴 · 在线预约",
+    "what": "这里是郑远元修脚·足浴的官方在线预约平台，品牌源自中国备受信赖的健康养生连锁。各门店地址与联系方式见下方门店信息，更多城市门店持续开设中。",
+    "who": "面向希望到店体验传统中式足疗、全身按摩与针灸理疗的顾客。",
+    "cta_book": "立即预约",
+    "feature": {
+      "f1_title": "浏览门店与服务",
+      "f1_desc": "查看可预约门店、服务项目、时长与价格，信息一目了然。",
+      "f2_title": "在线创建预约",
+      "f2_desc": "选择门店、项目、偏好技师与到店时间，几步完成预约。",
+      "f3_title": "管理我的预约",
+      "f3_desc": "随时查看历史预约与状态，行程有变可在线取消。"
+    },
+    "services_title": "服务项目",
+    "services_note": "以实际门店可约服务项目为准，价格以到店为准（仅支持现金，刷卡另收手续费）。",
+    "info_title": "门店信息",
+    "info": {
+      "address_label": "地址：",
+      "phone_label": "电话：",
+      "hours_label": "营业时间：",
+      "insurance_label": "支持医保："
+    }
   },
 
   "booking": {

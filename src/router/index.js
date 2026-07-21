@@ -9,21 +9,32 @@ import ZyyLogin from "@/ui/pages/ZyyLogin.vue";
 import ZyyDashboard from "@/ui/views/ZyyDashboard.vue";
 import WebAuthLogin from "@/ui/pages/WebAuthLogin.vue";
 import WebPolicy from "@/ui/pages/WebPolicy.vue";
+import WebHome from "@/ui/pages/WebHome.vue";
 
 
 const router = createRouter({
     // history: createWebHashHistory(process.env.BASE_URL),
     history: createWebHistory(import.meta.env.VITE_BASE_URL),
     routes: [
+        // 官网首页（落地页）：免登录可访问，向访客说明本平台是什么、给谁用、提供什么功能
         {
             path: "/",
+            alias: "/index",
+            name: "index",
+            component: WebHome,
+            meta: {
+                title: 'main_login_title'
+            },
+        },
+        // 预约应用壳：登录成功 / backToHome 仍指向 name "main"（重定向到仪表盘）
+        {
+            path: "/dashboard",
             name: "main",
             component: ZyyMain,
-            // 正常应该导航到仪表盘，但是这里仪表盘前期没有做的必要
             redirect: {name: 'dashboard'},
             children: [
                 {
-                    path: "dashboard",
+                    path: "",
                     name: "dashboard",
                     component: ZyyDashboard,
                     meta: {

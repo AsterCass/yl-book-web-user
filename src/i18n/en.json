@@ -23,7 +23,7 @@
 
   "main_login": "Sign in",
   "main_logout": "Sign out",
-  "main_login_title": "Zhengyuanyuan Booking",
+  "main_login_title": "Zhengyuanyuan Foot Spa",
   "main_login_mail": "Mail",
   "main_login_password": "Password",
   "main_login_passwd_tips": "The password must be 8-20 characters long and include uppercase letters, lowercase letters, and numbers.",
@@ -76,6 +76,30 @@
     "privacy_title": "Privacy Policy",
     "storage_note_pre": "This site uses browser storage to keep you signed in. See our ",
     "storage_note_post": "."
+  },
+
+  "home": {
+    "hero_title": "Zhengyuanyuan Foot Spa · Online Booking",
+    "what": "This is the official online booking platform of Zhengyuanyuan Foot Spa — one of China's most trusted wellness brands. Find each store's address and contact below; more locations are on the way.",
+    "who": "Built for customers who want to enjoy traditional Chinese foot care, full-body massage and acupuncture in store.",
+    "cta_book": "Book Now",
+    "feature": {
+      "f1_title": "Browse stores & services",
+      "f1_desc": "See bookable stores, service items, durations and prices at a glance.",
+      "f2_title": "Book online",
+      "f2_desc": "Pick a store, services, preferred therapist and visit time — done in a few steps.",
+      "f3_title": "Manage your bookings",
+      "f3_desc": "Check your booking history and status anytime, and cancel online when plans change."
+    },
+    "services_title": "Services",
+    "services_note": "Bookable services vary by store, and prices at the store prevail (cash only; card payments incur extra fees).",
+    "info_title": "Our Stores",
+    "info": {
+      "address_label": "Address: ",
+      "phone_label": "Phone: ",
+      "hours_label": "Hours: ",
+      "insurance_label": "Insurance accepted: "
+    }
   },
 
   "booking": {
