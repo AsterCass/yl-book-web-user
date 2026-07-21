@@ -1,15 +1,20 @@
 <template>
 
-  <div class="row items-center text-center q-my-sm" style="font-size: .8rem">
-    <q-checkbox v-model="agreed" :val="true" class="component-ratio-base q-mr-sm q-my-xs" dense
-                checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
-    <span style="opacity: .9">{{ $t('policy.agree_pre') }}</span>
-    <span class="cask-jump-link-in-text" @click="openDoc('terms')">&nbsp;{{ $t('policy.terms') }}&nbsp;</span>
-    <span style="opacity: .9">{{ $t('policy.and') }}</span>
-    <span class="cask-jump-link-in-text" @click="openDoc('privacy')">&nbsp;{{ $t('policy.privacy') }}&nbsp;</span>
-  </div>
+  <!-- 单根节点：避免多根 fragment 导致父级传入属性无法继承 -->
+  <div>
 
-  <zyy-policy-dialog v-model="showDoc" :doc-type="docType"/>
+    <div class="row items-center text-center q-my-sm" style="font-size: .8rem">
+      <q-checkbox v-model="agreed" :val="true" class="component-ratio-base q-mr-sm q-my-xs" dense
+                  checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
+      <span style="opacity: .9">{{ $t('policy.agree_pre') }}</span>
+      <span class="cask-jump-link-in-text" @click="openDoc('terms')">&nbsp;{{ $t('policy.terms') }}&nbsp;</span>
+      <span style="opacity: .9">{{ $t('policy.and') }}</span>
+      <span class="cask-jump-link-in-text" @click="openDoc('privacy')">&nbsp;{{ $t('policy.privacy') }}&nbsp;</span>
+    </div>
+
+    <zyy-policy-dialog v-model="showDoc" :doc-type="docType"/>
+
+  </div>
 
 </template>
 

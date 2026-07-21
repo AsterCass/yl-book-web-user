@@ -1,5 +1,8 @@
 <template>
 
+  <!-- 单根节点：确保父级传入的 class（如 q-mb-lg）能被正常继承（多根 fragment 会丢弃属性并告警） -->
+  <div>
+
   <!-- 收起态：列表最上方的「新建预约」入口卡片 -->
   <div v-if="!expanded" class="booking-card booking-create-cta row items-center justify-center"
        @click="expand">
@@ -202,6 +205,8 @@
 
   <cask-dialog-judgment v-model="showOverlapDialog" :dialog-judgment-data="overlapDialogData"
                         :callback-method="onOverlapConfirm"/>
+
+  </div>
 
 </template>
 
