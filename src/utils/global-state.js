@@ -32,6 +32,8 @@ export const useGlobalStateStore = defineStore('globalState', {
         referralCode: '',
         // 是否已访问过本站（持久化到 localStorage）：登录页首次访问海报只弹一次
         visited: false,
+        // 是否已勾选同意《服务条款》《隐私政策》（持久化到 localStorage）：勾选过则登录/注册无需重复勾选
+        policyAgreed: false,
     }),
     getters: {
         // 当前用户拥有的权限码集合（兼容 userData 直接为用户对象或包一层 userData 两种结构）
@@ -111,6 +113,9 @@ export const useGlobalStateStore = defineStore('globalState', {
         },
         markVisited() {
             this.visited = true
+        },
+        updatePolicyAgreed(agreed) {
+            this.policyAgreed = !!agreed
         }
     },
 });

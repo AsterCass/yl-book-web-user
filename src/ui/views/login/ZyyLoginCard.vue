@@ -44,6 +44,8 @@
               @click="emit('switch', 'reset')">{{ $t('login.forgot') }}</span>
       </div>
 
+      <zyy-policy-agreement/>
+
       <div class="row justify-center q-mt-sm">
         <q-btn no-caps unelevated class="shadow-2 component-full-btn-grow full-width"
                style="background-color: rgb(var(--semi-bg-container-background-color)) !important"
@@ -63,12 +65,8 @@
 
       <div class="row justify-evenly items-center q-mb-md">
 
-        <q-icon name="fa-brands fa-github" size="2rem" class="cursor-pointer"
-                @click="notifyTopWarning($t('in_develop'))">
-        </q-icon>
-
         <div class="relative-position">
-          <button class="gsi-material-button" @click="openLink(googleLoginUrl, false)">
+          <button class="gsi-material-button" @click="doGoogleLogin">
             <div class="gsi-material-button-state"></div>
             <div class="gsi-material-button-content-wrapper">
               <div class="gsi-material-button-icon">
@@ -89,10 +87,6 @@
           </button>
         </div>
 
-        <q-icon name="fa-brands fa-qq" size="2rem" class="cursor-pointer"
-                style="color: rgb(0, 153, 255)" @click="notifyTopWarning($t('in_develop'))">
-        </q-icon>
-
       </div>
 
       <div class="row justify-center q-mb-md">
@@ -109,6 +103,7 @@
 <script setup>
 
 import {ref} from "vue";
+import ZyyPolicyAgreement from "@/ui/views/login/ZyyPolicyAgreement.vue";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
 import {i18n} from "@/i18n/index.js";
@@ -131,7 +126,21 @@ const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
     "&response_type=code&scope=email profile&access_type=offline"
 
 
+// 谷歌一键登录同样要求先勾选协议
+function doGoogleLogin() {
+  if (!globalState.policyAgreed) {
+    notifyTopWarning(t('policy.required'))
+    return
+  }
+  openLink(googleLoginUrl, false)
+}
+
+
 function doLogin() {
+  if (!globalState.policyAgreed) {
+    notifyTopWarning(t('policy.required'))
+    return
+  }
   if (!inputMail.value || !inputPassword.value) {
     notifyTopWarning(t('login.empty_login'))
     return

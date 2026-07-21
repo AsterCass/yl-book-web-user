@@ -51,9 +51,6 @@
     "to_register": "还没有账号？立即注册",
     "to_login": "已有账号？返回登录",
     "forgot": "忘记密码？",
-    "github": "GitHub 登录",
-    "google": "谷歌登录",
-    "qq": "QQ 登录",
     "empty_login": "请输入邮箱和密码",
     "empty_register": "请输入邮箱、验证码和密码",
     "email_invalid": "邮箱格式不正确",
@@ -66,8 +63,19 @@
     "new_password": "新密码",
     "reset_submit": "重置密码",
     "reset_success": "密码重置成功",
-    "back_to_login": "返回登录",
-    "poster_close": "关闭"
+    "back_to_login": "返回登录"
+  },
+
+  "policy": {
+    "agree_pre": "我已阅读并同意",
+    "terms": "《服务条款》",
+    "and": "和",
+    "privacy": "《隐私政策》",
+    "required": "请先阅读并同意《服务条款》和《隐私政策》",
+    "terms_title": "服务条款",
+    "privacy_title": "隐私政策",
+    "storage_note_pre": "本站使用浏览器存储保持您的登录状态。详见",
+    "storage_note_post": "。"
   },
 
   "booking": {

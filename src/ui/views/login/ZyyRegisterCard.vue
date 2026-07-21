@@ -70,6 +70,8 @@
         {{ $t('login.nick_hint') }}
       </div>
 
+      <zyy-policy-agreement/>
+
       <div class="row justify-center q-mt-md">
         <q-btn no-caps unelevated class="shadow-2 component-full-btn-grow full-width"
                style="background-color: rgb(var(--semi-bg-container-background-color)) !important"
@@ -95,6 +97,7 @@
 <script setup>
 
 import {onBeforeUnmount, ref} from "vue";
+import ZyyPolicyAgreement from "@/ui/views/login/ZyyPolicyAgreement.vue";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
 import {i18n} from "@/i18n/index.js";
@@ -150,6 +153,10 @@ function doSendCode() {
 }
 
 function doRegister() {
+  if (!globalState.policyAgreed) {
+    notifyTopWarning(t('policy.required'))
+    return
+  }
   if (!inputMail.value || !inputCode.value || !inputPassword.value) {
     notifyTopWarning(t('login.empty_register'))
     return

@@ -51,9 +51,6 @@
     "to_register": "No account yet? Sign up",
     "to_login": "Already have an account? Sign in",
     "forgot": "Forgot password?",
-    "github": "Sign in with GitHub",
-    "google": "Sign in with Google",
-    "qq": "Sign in with QQ",
     "empty_login": "Please enter your email and password",
     "empty_register": "Please enter your email, code and password",
     "email_invalid": "Invalid email format",
@@ -66,8 +63,19 @@
     "new_password": "New password",
     "reset_submit": "Reset password",
     "reset_success": "Password reset successfully",
-    "back_to_login": "Back to sign in",
-    "poster_close": "Close"
+    "back_to_login": "Back to sign in"
+  },
+
+  "policy": {
+    "agree_pre": "I have read and agree to the ",
+    "terms": "Terms of Service",
+    "and": " and ",
+    "privacy": "Privacy Policy",
+    "required": "Please read and agree to the Terms of Service and Privacy Policy first",
+    "terms_title": "Terms of Service",
+    "privacy_title": "Privacy Policy",
+    "storage_note_pre": "This site uses browser storage to keep you signed in. See our ",
+    "storage_note_post": "."
   },
 
   "booking": {
