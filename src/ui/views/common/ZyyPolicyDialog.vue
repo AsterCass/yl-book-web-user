@@ -32,9 +32,9 @@
 <script setup>
 
 import {ref, watch} from "vue";
-import {marked} from "marked";
 import {notifyTopWarning} from "@/utils/notification-tools.js";
 import {i18n} from "@/i18n/index.js";
+import {loadPolicyDoc} from "@/utils/policy-doc.js";
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -54,14 +54,6 @@ const props = defineProps({
 
 const t = i18n.global.t
 
-const DOC_URLS = {
-  privacy: '/doc/privacy-policy.md',
-  terms: '/doc/terms-of-service.md',
-}
-
-// 文档解析结果按类型缓存，重复打开不再拉取
-const docCache = {}
-
 const loading = ref(false)
 const contentHtml = ref('')
 
@@ -69,20 +61,9 @@ watch(() => [props.modelValue, props.docType], async () => {
   if (!props.modelValue) {
     return
   }
-  const docType = props.docType
-  if (docCache[docType]) {
-    contentHtml.value = docCache[docType]
-    return
-  }
   loading.value = true
   try {
-    const resp = await fetch(DOC_URLS[docType] || DOC_URLS.privacy)
-    if (!resp.ok) {
-      throw new Error(`load doc failed: ${resp.status}`)
-    }
-    const text = await resp.text()
-    docCache[docType] = marked.parse(text)
-    contentHtml.value = docCache[docType]
+    contentHtml.value = await loadPolicyDoc(props.docType)
   } catch (e) {
     notifyTopWarning(t('error_request'))
     emit('update:modelValue', false)
@@ -95,8 +76,7 @@ watch(() => [props.modelValue, props.docType], async () => {
 
 
 <style lang="scss">
-// 非 scoped：v-html 渲染的内容不带 scoped 标记，样式须全局命中 .component-marked-view
-@use "@/styles/base-marked";
+// .component-marked-view（v-html 内容）的样式由 App.vue 全局引入 base-marked 提供
 
 .zyy-policy-dialog-card {
   width: min(92vw, 760px);

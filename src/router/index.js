@@ -8,6 +8,7 @@ import ZyyMain from "../ui/pages/ZyyMain.vue";
 import ZyyLogin from "@/ui/pages/ZyyLogin.vue";
 import ZyyDashboard from "@/ui/views/ZyyDashboard.vue";
 import WebAuthLogin from "@/ui/pages/WebAuthLogin.vue";
+import WebPolicy from "@/ui/pages/WebPolicy.vue";
 
 
 const router = createRouter({
@@ -39,6 +40,25 @@ const router = createRouter({
             meta: {
                 title: 'yl_system_login'
             },
+        },
+        // 独立政策页：公开可访问，供第三方品牌注册 / 应用审核直链
+        {
+            path: "/terms",
+            name: "policyTerms",
+            component: WebPolicy,
+            meta: {
+                title: 'policy.terms_title'
+            },
+            props: {docType: 'terms'},
+        },
+        {
+            path: "/privacy",
+            name: "policyPrivacy",
+            component: WebPolicy,
+            meta: {
+                title: 'policy.privacy_title'
+            },
+            props: {docType: 'privacy'},
         },
         {
             path: "/404",

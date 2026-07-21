@@ -32,6 +32,8 @@ onBeforeUnmount(() => {
 @use "@/styles/base-components";
 @use "@/styles/extra-components";
 @use "@/styles/override-components";
+// markdown 渲染样式（政策弹窗 / 独立政策页共用，v-html 内容须全局命中）
+@use "@/styles/base-marked";
 
 
 </style>
