@@ -10,6 +10,7 @@ import ZyyDashboard from "@/ui/views/ZyyDashboard.vue";
 import WebAuthLogin from "@/ui/pages/WebAuthLogin.vue";
 import WebPolicy from "@/ui/pages/WebPolicy.vue";
 import WebHome from "@/ui/pages/WebHome.vue";
+import WebPromo from "@/ui/pages/WebPromo.vue";
 
 
 const router = createRouter({
@@ -22,6 +23,15 @@ const router = createRouter({
             alias: "/index",
             name: "index",
             component: WebHome,
+            meta: {
+                title: 'main_login_title'
+            },
+        },
+        // 推广页：免登录可访问，版式与图片参照 buildhealth 官网，数据来自 home-content 配置
+        {
+            path: "/promo",
+            name: "promo",
+            component: WebPromo,
             meta: {
                 title: 'main_login_title'
             },

@@ -112,6 +112,32 @@
     }
   },
 
+  "promo": {
+    "tagline": "Traditional Chinese Massage · Acupuncture · Foot Care",
+    "about_title": "About Us",
+    "about": {
+      "p1": "Zhengyuanyuan Foot Spa is proud to bring one of China's most trusted wellness brands to the United States. Our stores carry on the craft of a massage and traditional wellness company that has earned nationwide recognition in China for its healing touch, authentic practices, and modern professionalism.",
+      "p2": "We specialize in traditional Chinese massage, acupuncture, and unique TCM-inspired therapies that blend the best of massage with Eastern medicine. Whether you're coming in for a rejuvenating foot reflexology session, a relaxing herbal foot bath, or a therapeutic cupping or scraping treatment, you'll experience time-honored techniques used to restore energy, improve circulation, and support full-body balance.",
+      "p3": "Our signature offerings also include Chinese medicinal \"pedicures\", where skilled practitioners use specially prepared herbal soaks and tools to promote detoxification and foot health. These services are based on Traditional Chinese Medicine (TCM) principles and have long been cherished in China for their wellness benefits."
+    },
+    "locations_title": "Our Locations",
+    "services_title": "Services & Prices",
+    "notes": {
+      "n1": "Listed prices are for cash only. Payment by credit card subject to additional fees.",
+      "n2": "Every Wednesday is Member Day! Enjoy a special 32% off on Foot Care services.",
+      "n3": "Ask our front desk about our VIP Membership program.",
+      "n4": "We accept insurance from Aetna, United Healthcare, and BlueCross BlueShield — contact us to check if your plan is eligible."
+    },
+    "cta_title": "Book your moment of relaxation",
+    "book_btn": "Book Appointment",
+    "testimonials_title": "Testimonials",
+    "testimonials_sub": "What our customers say about us:",
+    "footer": {
+      "links": "Links",
+      "rights": "All rights reserved."
+    }
+  },
+
   "booking": {
     "create": "Create a new booking",
     "no_store": "No bookable store available",
