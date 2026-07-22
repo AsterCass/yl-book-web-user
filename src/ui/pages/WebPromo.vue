@@ -139,6 +139,34 @@
       </div>
     </div>
 
+    <!-- 应用用途与 Google 数据使用说明：本页现为站点首页（/），该板块为 Google OAuth 品牌验证
+         对首页的硬性要求（说明应用用途 + 所请求 Google 用户数据的用法），请勿移除 -->
+    <div class="promo-block">
+      <div class="promo-container">
+        <h2 class="promo-h2 text-center">{{ $t('home.google.title') }}</h2>
+        <div class="promo-google-card">
+          <div class="q-my-xs">{{ $t('home.google.purpose') }}</div>
+          <div class="q-my-xs">{{ $t('home.google.intro') }}</div>
+          <div class="row items-start q-my-xs">
+            <q-icon name="fa-regular fa-envelope" size=".9rem" class="q-mr-sm q-mt-xs promo-accent"/>
+            <div class="col">{{ $t('home.google.use_mail') }}</div>
+          </div>
+          <div class="row items-start q-my-xs">
+            <q-icon name="fa-regular fa-user" size=".9rem" class="q-mr-sm q-mt-xs promo-accent"/>
+            <div class="col">{{ $t('home.google.use_name') }}</div>
+          </div>
+          <div class="row items-start q-my-xs">
+            <q-icon name="fa-solid fa-shield-halved" size=".9rem" class="q-mr-sm q-mt-xs promo-accent"/>
+            <div class="col">{{ $t('home.google.no_share') }}</div>
+          </div>
+          <div class="q-mt-xs">
+            {{ $t('home.google.more_pre') }}<router-link :to="{name: 'policyPrivacy'}"
+              class="promo-map-link promo-accent">{{ $t('policy.privacy') }}</router-link>{{ $t('home.google.more_post') }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 预约 CTA 红色横幅 -->
     <div class="promo-cta-band column items-center text-center q-px-md">
       <h2 class="promo-cta-title">{{ $t('promo.cta_title') }}</h2>
@@ -452,6 +480,16 @@ $promo-red: #cc2e2d;
 .promo-price {
   font-weight: 800;
   color: $promo-red;
+}
+
+// ===== Google 数据使用说明 =====
+.promo-google-card {
+  background: #fff;
+  border: 1px solid #e6e8ec;
+  border-radius: 1rem;
+  padding: 1.4rem;
+  color: #4d5460;
+  line-height: 1.75;
 }
 
 // ===== 顾客评价 =====

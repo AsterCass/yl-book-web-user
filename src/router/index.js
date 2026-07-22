@@ -17,21 +17,22 @@ const router = createRouter({
     // history: createWebHashHistory(process.env.BASE_URL),
     history: createWebHistory(import.meta.env.VITE_BASE_URL),
     routes: [
-        // 官网首页（落地页）：免登录可访问，向访客说明本平台是什么、给谁用、提供什么功能
+        // 官网首页 = 推广页（免登录）：版式参照 buildhealth 官网，数据来自 home-content 配置；
+        // 页内保留「应用用途与 Google 数据使用」板块以满足 Google OAuth 品牌验证对首页的要求
         {
             path: "/",
-            alias: "/index",
+            alias: ["/index", "/promo"],
             name: "index",
-            component: WebHome,
+            component: WebPromo,
             meta: {
                 title: 'main_login_title'
             },
         },
-        // 推广页：免登录可访问，版式与图片参照 buildhealth 官网，数据来自 home-content 配置
+        // 旧版首页存档（仅留档不入导航）。注：/doc/*.md 为 public 静态文件、优先于该路由，互不冲突
         {
-            path: "/promo",
-            name: "promo",
-            component: WebPromo,
+            path: "/doc",
+            name: "docArchive",
+            component: WebHome,
             meta: {
                 title: 'main_login_title'
             },
