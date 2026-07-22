@@ -12,6 +12,8 @@ export const HOME_STORES = [
         id: 'manhattan',
         name: {zh: '曼哈顿店（唐人街）', en: 'Manhattan · Chinatown'},
         address: '196 Hester St., New York, NY 10013',
+        // 谷歌商家分享链接（可空）：配置后门店地址可点击、新标签页打开；未配置则地址为纯文本、无点击交互
+        mapUrl: 'https://share.google/gNwyFF37aPQR2Wpka',
         phone: '(646) 208-7397',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 am – 10:00 pm'},
         insurance: 'Aetna, United Healthcare, BlueCross BlueShield',
@@ -21,6 +23,7 @@ export const HOME_STORES = [
         id: 'brooklyn',
         name: {zh: '布鲁克林店', en: 'Brooklyn'},
         address: '189 Court St., Brooklyn, NY 11201',
+        mapUrl: 'https://g.co/kgs/UbrEGJD',
         phone: '(718) 400-9189',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 am – 10:00 pm'},
         insurance: 'Aetna, United Healthcare, BlueCross BlueShield',

@@ -9,9 +9,6 @@
       <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchLanguage()">
         <q-icon name="fa-solid fa-language" size="1.6rem"/>
       </q-btn>
-      <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchTheme()">
-        <q-icon name="fa-solid fa-circle-half-stroke" size="1.25rem"/>
-      </q-btn>
     </div>
 
     <!-- Hero：整幅实景 + 站点图标 + 品牌名（i18n） + 预约按钮（参照其样式但更醒目） -->
@@ -30,7 +27,7 @@
     <div class="promo-block">
       <div class="promo-container row items-center">
         <div class="col-12 col-md-5 q-pa-md">
-          <q-img src="/img/promo/promo-about.webp" :ratio="1" fit="cover" class="promo-photo"/>
+          <q-img src="/img/promo/promo-about.jpg" :ratio="1" fit="cover" class="promo-photo"/>
         </div>
         <div class="col-12 col-md-7 q-pa-md">
           <h2 class="promo-h2">{{ $t('promo.about_title') }}</h2>
@@ -53,7 +50,13 @@
                 <div class="promo-store-name q-mb-sm">{{ lv(store.name) }}</div>
                 <div class="row items-start q-my-xs">
                   <q-icon name="fa-solid fa-location-dot" size=".95rem" class="q-mr-sm q-mt-xs promo-accent"/>
-                  <div class="col">{{ store.address }}</div>
+                  <!-- 配置了 mapUrl 才有点击交互（新标签页打开谷歌商家页），未配置为纯文本 -->
+                  <div class="col" :class="store.mapUrl ? 'promo-map-link' : ''"
+                       @click="store.mapUrl && openLink(store.mapUrl)">
+                    {{ store.address }}
+                    <q-icon v-if="store.mapUrl" name="fa-solid fa-arrow-up-right-from-square"
+                            size=".7rem" class="q-ml-xs"/>
+                  </div>
                 </div>
                 <div class="row items-center q-my-xs">
                   <q-icon name="fa-solid fa-phone" size=".95rem" class="q-mr-sm promo-accent"/>
@@ -156,7 +159,11 @@
         </div>
         <div v-for="store in storeList" :key="store.id" class="col-12 col-sm-6 col-md-3 q-pa-md">
           <div class="promo-footer-title">{{ lv(store.name) }}</div>
-          <div class="promo-footer-muted q-mt-xs">{{ store.address }}</div>
+          <div class="promo-footer-muted q-mt-xs" :class="store.mapUrl ? 'promo-map-link' : ''"
+               @click="store.mapUrl && openLink(store.mapUrl)">
+            {{ store.address }}
+            <q-icon v-if="store.mapUrl" name="fa-solid fa-arrow-up-right-from-square" size=".65rem" class="q-ml-xs"/>
+          </div>
           <div class="promo-footer-muted q-mt-xs">{{ store.phone }}</div>
           <div class="promo-footer-muted q-mt-xs">{{ lv(store.hours) }}</div>
         </div>
@@ -187,6 +194,7 @@
 
 import {useRouter} from "vue-router";
 import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
+import {openLink} from "@/utils/base-tools.js";
 import {toSpecifyPage} from "@/router/index.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
@@ -235,6 +243,21 @@ $promo-red: #cc2e2d;
 }
 
 .promo-accent {
+  color: $promo-red;
+}
+
+// 配置了 mapUrl 的门店地址：可点击（悬停下划线；亮色分区内悬停变主色）
+.promo-map-link {
+  cursor: pointer;
+  color: $promo-red;
+
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.promo-store-card .promo-map-link:hover {
   color: $promo-red;
 }
 
