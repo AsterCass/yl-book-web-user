@@ -228,7 +228,8 @@
 import {useRouter} from "vue-router";
 import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
 import {openLink} from "@/utils/base-tools.js";
-import {toSpecifyPage} from "@/router/index.js";
+import {toSpecifyPage, toSpecifyPageWithQuery} from "@/router/index.js";
+import {currentLandingQuery} from "@/utils/landing-params.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
 import {HOME_SERVICE_GROUPS, HOME_STORES, HOME_TESTIMONIALS} from "@/constants/home-content.js";
@@ -248,7 +249,12 @@ function lv(field) {
 }
 
 function goBook() {
-  toSpecifyPage(thisRouter, globalState.userData ? 'main' : 'login')
+  if (globalState.userData) {
+    toSpecifyPage(thisRouter, 'main')
+    return
+  }
+  // 未登录跳登录页：携带当前落地参数（/login 为接受页，刷新/分享该链接不丢归因）
+  toSpecifyPageWithQuery(thisRouter, 'login', currentLandingQuery())
 }
 
 </script>

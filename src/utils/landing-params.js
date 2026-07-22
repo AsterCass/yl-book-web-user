@@ -2,9 +2,14 @@ import {useGlobalStateStore} from "@/utils/global-state.js";
 
 // 站外投放落地参数：?platform=xx&ref=xx
 // platform -> 注册来源 sourceCode，ref -> 推荐码 referralCode，注册/下单时上报。
-// 每次进入本站都以当前 URL 为准覆盖：URL 未携带对应参数即置空，不保留上一次的值。
-// 注意：谷歌 OAuth 回调地址（/auth/google/callback?code=...）不含 platform/ref，
-// 因此整页跳转回来时会把落地参数清空——OAuth 注册不会带上跳转前的落地归因。
+//
+// 仅「首页（/ 及别名 /index、/promo）与 /login」接受该参数：
+//   - 在这两类页面整页加载时，以当前 URL 为准覆盖（未携带即置空，不保留旧值）；
+//   - 其他页面（如 /dashboard、/auth/*/callback、/terms 等）不接受该参数，
+//     也不会因 URL 未携带而重置 localStorage 中已存的值——
+//     因此谷歌 OAuth 整页跳转回来后，跳转前捕获的落地归因得以保留。
+// 首页跳转登录页时会把当前落地参数带入 /login 的 query（见 currentLandingQuery），
+// 这样刷新/分享登录页链接也不丢归因。
 
 // 平台参数 -> 后端 sourceCode，与 com.yl.base.enums.UserSourceEnum 对齐：
 // TIKTOK(1) INSTAGRAM(2) YOUTUBE(3) FACEBOOK(4)
@@ -24,19 +29,43 @@ export function platformToSourceCode(platform) {
     return code === undefined ? null : code
 }
 
+// 接受落地参数的路径（整页加载时按 window.location.pathname 判定）
+const LANDING_CAPTURE_PATHS = new Set(['/', '/index', '/promo', '/login'])
+
 /**
  * 从当前 URL 抓取落地参数写入 globalState。
  *
- * 必须在 app.use(router) 之前调用：router 安装即触发首次导航，而 "/" 会 redirect 到 dashboard，
- * vue-router 不保留 query，等到组件 onMounted 时 window.location.search 已被清掉。
+ * 在 app.use(router) 之前调用（main.js）：早于任何路由重定向读取原始 URL。
+ * 仅在 LANDING_CAPTURE_PATHS 内的页面生效；其他页面直接返回，不覆盖也不清空已存值。
  */
 export function captureLandingParams() {
+    // 去掉末尾斜杠归一化（/login/ 与 /login 等价），根路径保留 "/"
+    const path = window.location.pathname.replace(/\/+$/, '') || '/'
+    if (!LANDING_CAPTURE_PATHS.has(path)) {
+        return
+    }
     const query = new URLSearchParams(window.location.search)
-    // URL 未携带（或为空）对应参数则为空字符串，直接覆盖旧值，不保留
+    // 接受页内：URL 未携带（或为空）对应参数则为空字符串，直接覆盖旧值，不保留
     useGlobalStateStore().updateLandingParams(
         (query.get('platform') || '').trim(),
         (query.get('ref') || '').trim(),
     )
+}
+
+/**
+ * 当前已存的落地参数 -> 路由 query（空的不带）。首页跳转 /login 时携带，
+ * 使登录页 URL 刷新/被分享后仍能在 /login（接受页）重新捕获归因。
+ */
+export function currentLandingQuery() {
+    const globalState = useGlobalStateStore()
+    const query = {}
+    if (globalState.platform) {
+        query.platform = globalState.platform
+    }
+    if (globalState.referralCode) {
+        query.ref = globalState.referralCode
+    }
+    return query
 }
 
 /**

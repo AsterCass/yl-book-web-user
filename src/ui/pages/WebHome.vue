@@ -164,7 +164,8 @@
 import {useRouter} from "vue-router";
 import ZyyFooter from "@/ui/views/ZyyFooter.vue";
 import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
-import {toSpecifyPage} from "@/router/index.js";
+import {toSpecifyPage, toSpecifyPageWithQuery} from "@/router/index.js";
+import {currentLandingQuery} from "@/utils/landing-params.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
 import {BRAND_NAME, HOME_SERVICE_GROUPS, HOME_STORES} from "@/constants/home-content.js";
@@ -186,9 +187,13 @@ function lv(field) {
   return field[i18n.global.locale.value === 'zh' ? 'zh' : 'en']
 }
 
-// 已登录直接进预约（仪表盘），未登录去登录页
+// 已登录直接进预约（仪表盘），未登录去登录页（携带落地参数，/login 为接受页）
 function goBook() {
-  toSpecifyPage(thisRouter, globalState.userData ? 'main' : 'login')
+  if (globalState.userData) {
+    toSpecifyPage(thisRouter, 'main')
+    return
+  }
+  toSpecifyPageWithQuery(thisRouter, 'login', currentLandingQuery())
 }
 
 </script>
