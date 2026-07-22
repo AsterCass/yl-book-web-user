@@ -64,6 +64,9 @@
 
     <!-- ===== 步骤 2：选择预约项目（可多选） ===== -->
     <div v-else-if="step === 2">
+      <div class="q-mb-md q-ml-sm" style="opacity: .5">
+        {{ $t('booking.price_note') }}
+      </div>
       <div v-if="loadingSkills" class="row justify-center q-py-lg">
         <q-spinner-pie size="40px"/>
       </div>
@@ -76,17 +79,24 @@
           <q-icon :name="selectedSkillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
                   size="1rem" class="q-mr-sm"/>
           <div class="col">{{ sk.name }}</div>
-          <div style="opacity: .5; font-size: .75rem">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
+          <div class="column items-end">
+            <!-- serviceAmount 可空：为 null 时该项不展示价格 -->
+            <div v-if="sk.serviceAmount != null" style="font-size: .85rem">
+              ${{ sk.serviceAmount }}
+            </div>
+            <div style="opacity: .5; font-size: .75rem">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
+          </div>
         </div>
-        <div class="row justify-end q-mt-sm" style="opacity: .6; font-size: .78rem">
-          {{ $t('booking.total_minutes', {minutes: totalMinutes}) }}
+        <div class="column items-end q-mt-sm" style="opacity: .6; font-size: .78rem">
+          <div>{{ $t('booking.total_minutes', {minutes: totalMinutes}) }}</div>
+          <div v-if="totalAmount != null">{{ $t('booking.total_amount', {amount: '$' + totalAmount}) }}</div>
         </div>
       </div>
     </div>
 
     <!-- ===== 步骤 3：选择偏好员工（可不指定） ===== -->
     <div v-else-if="step === 3">
-      <div class="q-mb-md" style="opacity: .5">
+      <div class="q-mb-md q-ml-sm" style="opacity: .5">
         {{ $t('booking.staff_note') }}
       </div>
       <div v-if="loadingStaffs" class="row justify-center q-py-lg">
@@ -110,7 +120,7 @@
 
     <!-- ===== 步骤 4：选择预约时间（仅未来 14 天） ===== -->
     <div v-else-if="step === 4">
-      <div class="q-mb-lg" style="opacity: .5">
+      <div class="q-mb-lg q-ml-sm" style="opacity: .5">
         {{ $t('booking.time_note', {days: MAX_ADVANCE_DAYS}) }}
       </div>
       <div class="row justify-center">
@@ -151,6 +161,10 @@
         <div style="opacity: .5">{{ $t('booking.field.duration') }}</div>
         <div class="text-right">{{ totalMinutes }} {{ $t('booking.minutes') }}</div>
       </div>
+      <div v-if="totalAmount != null" class="row justify-between items-start q-my-sm">
+        <div style="opacity: .5">{{ $t('booking.field.amount') }}</div>
+        <div class="text-right">${{ totalAmount }}</div>
+      </div>
       <div class="row justify-between items-start q-my-sm">
         <div style="opacity: .5">{{ $t('booking.field.staff') }}</div>
         <div class="text-right">{{ selectedStaffName || $t('booking.staff_any') }}</div>
@@ -158,6 +172,9 @@
       <div class="row justify-between items-start q-my-sm">
         <div style="opacity: .5">{{ $t('booking.field.time') }}</div>
         <div class="text-right">{{ selectedSlot }}</div>
+      </div>
+      <div v-if="totalAmount != null" class="q-mt-xs" style="opacity: .5; font-size: .75rem">
+        {{ $t('booking.price_note') }}
       </div>
 
       <q-separator class="component-separator-base q-my-md" size="1px"/>
@@ -303,6 +320,17 @@ const selectedStaffName = computed(() => {
 const chosenSkills = computed(() => skillList.value.filter(sk => selectedSkillIds.value.includes(sk.id)))
 const totalMinutes = computed(() => chosenSkills.value.reduce((sum, sk) => sum + (sk.consumeMinutes || 0), 0))
 const selectedSkillNames = computed(() => chosenSkills.value.map(sk => sk.name).join(', '))
+
+// 预估总价：仅累加已配置 serviceAmount 的项目；全部未配置则为 null（不展示）。
+// 两位小数取整规避浮点误差；仅作参考，最终价格以门店实际价格为准
+const totalAmount = computed(() => {
+  const priced = chosenSkills.value.filter(sk => sk.serviceAmount != null)
+  if (!priced.length) {
+    return null
+  }
+  const sum = priced.reduce((acc, sk) => acc + Number(sk.serviceAmount), 0)
+  return Math.round(sum * 100) / 100
+})
 
 // 门店本地「今天」：预约窗口按门店时区算（后端用门店本地墙钟）
 const minDate = computed(() => todayInTz(selectedStore.value ? selectedStore.value.timezone : ''))

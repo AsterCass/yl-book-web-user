@@ -24,6 +24,12 @@
       <div class="col">{{ projectNames }}</div>
     </div>
 
+    <!-- amount 可空：为 null 时不展示金额行 -->
+    <div v-if="booking.amount != null" class="row items-center q-my-xs">
+      <q-icon name="fa-solid fa-money-bill-wave" size=".85rem" class="q-mr-sm" style="opacity: .5"/>
+      <div>${{ booking.amount }}</div>
+    </div>
+
     <div v-if="booking.phone" class="row items-center q-my-xs">
       <q-icon name="fa-solid fa-phone" size=".85rem" class="q-mr-sm" style="opacity: .5"/>
       <div>{{ booking.phone }}</div>
