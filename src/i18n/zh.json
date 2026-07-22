@@ -130,12 +130,20 @@
     },
     "cta_title": "预约您的专属放松时光",
     "book_btn": "立即预约",
+    "vip_offer_pre": "VIP 专属优惠：",
+    "vip_offer_off": "5 折！",
     "testimonials_title": "顾客评价",
     "testimonials_sub": "听听顾客怎么说：",
     "footer": {
       "links": "链接",
       "rights": "版权所有"
     }
+  },
+
+  "timezone": {
+    "shanghai": "上海时间",
+    "new_york": "纽约时间（美东）",
+    "california": "洛杉矶时间（美西）"
   },
 
   "booking": {
@@ -152,6 +160,7 @@
     "staff_note": "系统会根据员工实际排班进行分配，不一定能安排到您偏好的员工。",
     "staff_any": "不指定（由系统安排）",
     "time_note": "仅可预约未来 {days} 天内的时间。",
+    "timezone_note": "以下时间均为门店当地时间（{zone}）。",
     "prev": "上一步",
     "next": "下一步",
     "confirm": "确认预约",

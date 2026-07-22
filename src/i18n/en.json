@@ -130,12 +130,20 @@
     },
     "cta_title": "Book your moment of relaxation",
     "book_btn": "Book Appointment",
+    "vip_offer_pre": "Exclusive VIP Offer:",
+    "vip_offer_off": "50% Off!",
     "testimonials_title": "Testimonials",
     "testimonials_sub": "What our customers say about us:",
     "footer": {
       "links": "Links",
       "rights": "All rights reserved."
     }
+  },
+
+  "timezone": {
+    "shanghai": "Shanghai Time",
+    "new_york": "New York Time (ET)",
+    "california": "Los Angeles Time (PT)"
   },
 
   "booking": {
@@ -152,6 +160,7 @@
     "staff_note": "Staff is assigned based on actual schedules, so your preferred staff cannot be guaranteed.",
     "staff_any": "No preference (assigned by the system)",
     "time_note": "You can only book within the next {days} days.",
+    "timezone_note": "Times shown are the store's local time ({zone}).",
     "prev": "Previous",
     "next": "Next",
     "confirm": "Confirm booking",

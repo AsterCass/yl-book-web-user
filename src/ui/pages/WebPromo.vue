@@ -18,6 +18,11 @@
         <h1 class="promo-hero-title">{{ $t('main_login_title') }}</h1>
       </div>
       <div class="promo-hero-tagline q-mt-sm">{{ $t('promo.tagline') }}</div>
+      <!-- VIP 专属优惠横幅（红 + 金，白底保证压图可读） -->
+      <div class="promo-vip-banner q-mt-md">
+        <span class="promo-vip-pre">{{ $t('promo.vip_offer_pre') }}</span>
+        <span class="promo-vip-off">&nbsp;{{ $t('promo.vip_offer_off') }}</span>
+      </div>
       <button class="promo-book-btn promo-book-btn-hero q-mt-lg" @click="goBook">
         {{ $t('promo.book_btn') }}
       </button>
@@ -331,6 +336,26 @@ $promo-red: #cc2e2d;
   font-size: clamp(.95rem, 2.5vw, 1.2rem);
   opacity: .95;
   text-shadow: 0 1px 8px rgba(0, 0, 0, .5);
+}
+
+// ===== VIP 优惠横幅：红 + 金双色（对应宣传图），无底色，白色描边保证压图可读 =====
+// 用 8 向 text-shadow 模拟描边：不吃字形、各浏览器表现一致（-webkit-text-stroke 居中描边会侵蚀笔画）
+.promo-vip-banner {
+  font-weight: 800;
+  font-size: clamp(1.05rem, 3.5vw, 1.7rem);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  text-shadow:
+    -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff,
+    -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;
+}
+
+.promo-vip-pre {
+  color: $promo-red;
+}
+
+.promo-vip-off {
+  color: #c9971e;
 }
 
 // ===== 预约按钮：官网同款（红底白字白描边），但更大、更醒目 =====

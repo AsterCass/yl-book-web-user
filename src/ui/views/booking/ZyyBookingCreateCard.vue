@@ -121,7 +121,11 @@
     <!-- ===== 步骤 4：选择预约时间（仅未来 14 天） ===== -->
     <div v-else-if="step === 4">
       <div class="q-mb-lg q-ml-sm" style="opacity: .5">
-        {{ $t('booking.time_note', {days: MAX_ADVANCE_DAYS}) }}
+        <div>{{ $t('booking.time_note', {days: MAX_ADVANCE_DAYS}) }}</div>
+        <!-- 标注当前预约时间的时区（所选门店的当地时间） -->
+        <div v-if="storeTimezoneName" class="q-mt-xs">
+          {{ $t('booking.timezone_note', {zone: storeTimezoneName}) }}
+        </div>
       </div>
       <div class="row justify-center">
         <q-date class="no-shadow bg-transparent" v-model="selectedDate" mask="YYYY-MM-DD" minimal :options="dateOptions"
@@ -238,6 +242,7 @@ import {useGlobalStateStore} from "@/utils/global-state.js";
 import {checkIsPhone} from "@/utils/format-check.js";
 import {buildAttributionParams} from "@/utils/landing-params.js";
 import {BookStatusEnum} from "@/constants/enums/book.js";
+import {TimezoneOptEnum} from "@/constants/enums/common.js";
 import {
   portalBookingCreate,
   portalBookingSkills,
@@ -330,6 +335,16 @@ const totalAmount = computed(() => {
   }
   const sum = priced.reduce((acc, sk) => acc + Number(sk.serviceAmount), 0)
   return Math.round(sum * 100) / 100
+})
+
+// 所选门店时区的展示名：枚举内取 i18n 名称，枚举外回退展示原始 IANA id
+const storeTimezoneName = computed(() => {
+  const tz = selectedStore.value ? selectedStore.value.timezone : ''
+  if (!tz) {
+    return ''
+  }
+  const item = TimezoneOptEnum.fromCode(tz)
+  return item ? t(item.name) : tz
 })
 
 // 门店本地「今天」：预约窗口按门店时区算（后端用门店本地墙钟）
