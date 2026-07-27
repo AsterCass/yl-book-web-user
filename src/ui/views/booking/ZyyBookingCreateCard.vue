@@ -195,6 +195,18 @@
       <div class="q-mx-sm q-mt-xs" style="opacity: .5; font-size: .75rem">
         {{ $t('booking.phone_hint') }}
       </div>
+      <!-- 填写手机号即需主动勾选短信同意（不填不要求）；纯前端拦截，后端约定：传入手机号即视为同意接收通知短信。
+           同意文案后跟服务条款/隐私政策链接（独立政策页，新标签打开） -->
+      <div v-if="inputPhone" class="row items-center q-mx-sm q-mt-xs" style="font-size: .8rem">
+        <q-checkbox v-model="smsConsent" :val="true" class="component-ratio-base q-mr-sm q-my-xs" dense
+                    checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
+        <span style="opacity: .9; cursor: pointer" @click="smsConsent = !smsConsent">
+          {{ $t('booking.sms_consent') }}
+        </span>
+        <span class="cask-jump-link-in-text" @click="openPolicyTab('terms')">&nbsp;{{ $t('policy.terms') }}&nbsp;</span>
+        <span style="opacity: .9">{{ $t('policy.and') }}</span>
+        <span class="cask-jump-link-in-text" @click="openPolicyTab('privacy')">&nbsp;{{ $t('policy.privacy') }}&nbsp;</span>
+      </div>
 
       <q-input v-model="inputRemark" dense outlined tabindex="0" type="textarea" autogrow
                :maxlength="REMARK_MAX" class="q-mt-md component-outline-input-grow-on-semi-trans">
@@ -235,6 +247,7 @@
 <script setup>
 
 import {computed, ref, watch} from "vue";
+import {useRouter} from "vue-router";
 import CaskDialogJudgment from "@/ui/components/CaskDialogJudgment.vue";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
 import {i18n} from "@/i18n/index.js";
@@ -263,6 +276,7 @@ const props = defineProps({
 
 const t = i18n.global.t
 const globalState = useGlobalStateStore();
+const thisRouter = useRouter()
 
 // 与后端 PortalBookingServiceImpl.MAX_ADVANCE_DAYS 对齐
 const MAX_ADVANCE_DAYS = 14
@@ -301,6 +315,14 @@ const selectedStaffId = ref("")
 const selectedDate = ref("")
 const selectedSlot = ref("")
 const inputPhone = ref("")
+// 短信同意勾选：填写手机号时必须主动勾选才可提交（不填手机号不要求）；每次提交流程重置、不持久化
+const smsConsent = ref(false)
+
+// 新标签打开独立政策页（/terms、/privacy 公开可访问）
+function openPolicyTab(type) {
+  const target = thisRouter.resolve({name: type === 'terms' ? 'policyTerms' : 'policyPrivacy'})
+  window.open(target.href, '_blank')
+}
 const inputRemark = ref("")
 
 // 手机号仅数字：输入/粘贴即净化，所见即所发
@@ -396,6 +418,7 @@ function collapseAndReset() {
   selectedSlot.value = ""
   inputPhone.value = ""
   inputRemark.value = ""
+  smsConsent.value = false
   skillList.value = []
   staffList.value = []
   slotList.value = []
@@ -551,6 +574,11 @@ function doCreate() {
   }
   if (!checkIsPhone(inputPhone.value)) {
     notifyTopWarning(t('booking.phone_invalid'))
+    return
+  }
+  // 填了手机号必须主动勾选短信同意（纯前端拦截；后端约定：传入手机号即视为同意接收通知短信）
+  if (inputPhone.value && !smsConsent.value) {
+    notifyTopWarning(t('booking.sms_consent_required'))
     return
   }
   if (inputRemark.value.length > REMARK_MAX) {
