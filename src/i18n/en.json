@@ -16,7 +16,7 @@
     "404": {"title": "Error 404", "subtitle": "Page not found", "message": "The page address is incorrect. Please return to the homepage."}
   },
 
-  "main_company": "Yuanyuan Health Technology Group Co., Ltd",
+  "main_company": "BOH TECHNOLOGY CONSULTING & TRADING INC",
   "main_footer_dev_mail": "Developer Email",
 
   "main_header_back_pre": "Up One Level",
@@ -184,7 +184,8 @@
     },
     "phone_hint": "Optional. Please leave your phone number so that we can quickly contact you in case of emergencies.",
     "phone_invalid": "Phone must be digits only, up to 20 characters",
-    "sms_consent": "I agree to receive text messages and agree to the",
+    "sms_consent": "I agree to receive appointment notification text messages from [Zhengyuanyuan] (operated by [BOH TECHNOLOGY CONSULTING & TRADING INC]) at the phone number provided, including booking confirmations, reminders, reschedule notices and cancellation notices. Consent is not a condition of purchase. Message frequency varies. Msg & data rates may apply. Reply STOP to unsubscribe. See our ",
+    "sms_consent_suffix": ".",
     "sms_consent_required": "Please agree to receive text messages, or leave the phone number empty",
     "remark_hint": "Optional, up to 200 characters. Anything we should know in advance.",
     "remark_too_long": "Remark must not exceed 200 characters",

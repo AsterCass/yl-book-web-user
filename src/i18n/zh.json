@@ -16,7 +16,7 @@
     "404": {"title": "错误 404", "subtitle": "页面未找到", "message": "页面地址错咯，回到主页重新看看吧"}
   },
 
-  "main_company": "远元健康科技集团有限公司",
+  "main_company": "博鸿科技咨询与贸易有限公司",
   "main_footer_dev_mail": "开发者邮箱",
 
   "main_header_back_pre": "返回上级",
@@ -184,7 +184,8 @@
     },
     "phone_hint": "选填，请留下您的电话，方便特殊情况可以快速联系到您。",
     "phone_invalid": "手机号只能是数字，且最多 20 位",
-    "sms_consent": "我同意接收短信通知，并同意",
+    "sms_consent": "我同意通过所填写的手机号接收来自 [Zhengyuanyuan]（运营方：[BOH TECHNOLOGY CONSULTING & TRADING INC]）的预约通知短信，包括预约确认、提醒、改期及取消通知。同意并非购买的前提条件。短信频率不定，可能产生短信及数据费用。回复 STOP 可退订。详见我们的",
+    "sms_consent_suffix": "。",
     "sms_consent_required": "填写手机号需勾选同意接收短信通知",
     "remark_hint": "选填，最多 200 字符；有什么需要提前告知的可以写在这里。",
     "remark_too_long": "备注不能超过 200 字符",

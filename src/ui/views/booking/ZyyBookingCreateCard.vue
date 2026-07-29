@@ -195,17 +195,14 @@
       <div class="q-mx-sm q-mt-xs" style="opacity: .5; font-size: .75rem">
         {{ $t('booking.phone_hint') }}
       </div>
-      <!-- 填写手机号即需主动勾选短信同意（不填不要求）；纯前端拦截，后端约定：传入手机号即视为同意接收通知短信。
-           同意文案后跟服务条款/隐私政策链接（独立政策页，新标签打开） -->
-      <div v-if="inputPhone" class="row items-center q-mx-sm q-mt-xs" style="font-size: .8rem">
+      <!-- 短信同意勾选框常显；仅填写了手机号时才强制勾选（纯前端拦截，后端约定：传入手机号即视为同意接收通知短信）。
+           同意文案内嵌隐私政策/服务条款链接（不展示原始 URL，独立政策页，新标签打开）；点击链接不触发勾选 -->
+      <div class="row items-start no-wrap q-mx-sm q-mt-xs" style="font-size: .8rem">
         <q-checkbox v-model="smsConsent" :val="true" class="component-ratio-base q-mr-sm q-my-xs" dense
                     checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
-        <span style="opacity: .9; cursor: pointer" @click="smsConsent = !smsConsent">
-          {{ $t('booking.sms_consent') }}
-        </span>
-        <span class="cask-jump-link-in-text" @click="openPolicyTab('terms')">&nbsp;{{ $t('policy.terms') }}&nbsp;</span>
-        <span style="opacity: .9">{{ $t('policy.and') }}</span>
-        <span class="cask-jump-link-in-text" @click="openPolicyTab('privacy')">&nbsp;{{ $t('policy.privacy') }}&nbsp;</span>
+        <div class="col" style="opacity: .9; cursor: pointer" @click="smsConsent = !smsConsent">
+          {{ $t('booking.sms_consent') }}<span class="cask-jump-link-in-text" @click.stop="openPolicyTab('privacy')">{{ $t('policy.privacy') }}</span>{{ $t('policy.and') }}<span class="cask-jump-link-in-text" @click.stop="openPolicyTab('terms')">{{ $t('policy.terms') }}</span>{{ $t('booking.sms_consent_suffix') }}
+        </div>
       </div>
 
       <q-input v-model="inputRemark" dense outlined tabindex="0" type="textarea" autogrow
