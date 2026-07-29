@@ -55,6 +55,11 @@ const router = createRouter({
                 },
             ]
         },
+        // 短链入口：访问 /my 跳转到仪表盘
+        {
+            path: "/my",
+            redirect: {name: 'dashboard'},
+        },
         {
             path: "/login",
             name: "login",
