@@ -67,6 +67,24 @@ export function portalMe() {
     })
 }
 
+// body: {phone: '1xxxxxxxxxx'}（不带 + 的 11 位美加号码）；需登录，限流：同号码 5 次/时、同 IP 10 次/时
+export function portalPhoneSendCode(body) {
+    return serviceShiro({
+        url: `/portal/auth/phone/sendCode`,
+        data: body,
+        method: 'post',
+    })
+}
+
+// body: {phone, code}；需登录，限流：同 IP 20 次/时。通过后 30 分钟内可用该号码下单
+export function portalPhoneVerify(body) {
+    return serviceShiro({
+        url: `/portal/auth/phone/verify`,
+        data: body,
+        method: 'post',
+    })
+}
+
 export function portalLogout() {
     return serviceShiro({
         url: `/portal/auth/logout`,

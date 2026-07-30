@@ -183,18 +183,45 @@
 
       <q-separator class="component-separator-base q-my-md" size="1px"/>
 
-      <q-input v-model="inputPhone" dense outlined tabindex="0" inputmode="numeric" :maxlength="PHONE_MAX"
+      <!-- 手机号必填：固定 +1（美加），仅输 10 位本地号码；传后端时补国家码 1、不带 + -->
+      <q-input v-model="inputPhone" dense outlined tabindex="0" inputmode="numeric" :maxlength="PHONE_LEN"
                class="component-outline-input-grow-on-semi-trans">
         <template v-slot:prepend>
           <div class="row items-center">
             <q-icon class="q-mr-sm" name="fa-solid fa-phone" size="1rem"/>
             <div>{{ $t('booking.field.phone') }}</div>
+            <div class="q-ml-sm">+1</div>
           </div>
         </template>
       </q-input>
       <div class="q-mx-sm q-mt-xs" style="opacity: .5; font-size: .75rem">
         {{ $t('booking.phone_hint') }}
       </div>
+
+      <!-- 非账号默认手机号：需短信验证码验证真实性（账号默认手机号免验证） -->
+      <template v-if="needsPhoneVerify">
+        <div class="row items-center no-wrap q-mt-sm">
+          <q-input v-model="inputPhoneCode" dense outlined inputmode="numeric" :maxlength="CODE_LEN"
+                   class="component-outline-input-grow-on-semi-trans col"
+                   :placeholder="$t('booking.phone_code_placeholder')">
+            <template v-slot:prepend>
+              <div class="row items-center">
+                <q-icon class="q-mr-sm" name="fa-solid fa-shield-halved" size="1rem"/>
+                <div>{{ $t('booking.field.phone_code') }}</div>
+              </div>
+            </template>
+          </q-input>
+          <q-btn no-caps unelevated class="shadow-1 component-outline-btn-grow q-ml-sm"
+                 :disable="codeCountdown > 0" :loading="sendingPhoneCode"
+                 :label="codeCountdown > 0
+                     ? $t('booking.phone_code_resend_in', {s: codeCountdown})
+                     : $t('booking.phone_code_send')"
+                 @click="sendPhoneCode"/>
+        </div>
+        <div class="q-mx-sm q-mt-xs" style="opacity: .5; font-size: .75rem">
+          {{ $t('booking.phone_verify_hint') }}
+        </div>
+      </template>
       <!-- 短信同意勾选框常显；仅填写了手机号时才强制勾选（纯前端拦截，后端约定：传入手机号即视为同意接收通知短信）。
            同意文案内嵌隐私政策/服务条款链接（不展示原始 URL，独立政策页，新标签打开）；点击链接不触发勾选 -->
       <div class="row items-start no-wrap q-mx-sm q-mt-xs" style="font-size: .8rem">
@@ -236,6 +263,34 @@
   <cask-dialog-judgment v-model="showOverlapDialog" :dialog-judgment-data="overlapDialogData"
                         :callback-method="onOverlapConfirm"/>
 
+  <!-- 手机号验证通过后的三选一：保存为账号默认手机号并预约 / 不保存直接预约 / 取消 -->
+  <q-dialog v-model="showSavePhoneDialog" transition-show="fade" transition-hide="fade">
+    <q-card class="component-cask-dialog-judgement-std">
+
+      <h5 style="font-weight: 600!important; margin-left: .5rem !important;">
+        {{ $t('booking.save_phone.title') }}
+      </h5>
+
+      <q-separator class="component-separator-base" inset spaced="1rem"/>
+
+      <div class="q-mx-lg q-mt-lg q-mb-xs">
+        <div class="text-center">
+          {{ $t('booking.save_phone.content', {phone: '+1 ' + inputPhone}) }}
+        </div>
+
+        <div class="column items-center q-mt-xl q-mb-md">
+          <q-btn no-caps unelevated class="shadow-1 component-full-btn-grow q-mb-md"
+                 :label="$t('booking.save_phone.save_and_book')" @click="onSavePhoneChoice(true)"/>
+          <q-btn no-caps unelevated class="shadow-1 component-outline-btn-grow q-mb-md"
+                 :label="$t('booking.save_phone.book_only')" @click="onSavePhoneChoice(false)"/>
+          <q-btn no-caps unelevated class="shadow-1 component-outline-btn-grow q-mb-md"
+                 :label="$t('booking.save_phone.cancel')" @click="showSavePhoneDialog = false"/>
+        </div>
+      </div>
+
+    </q-card>
+  </q-dialog>
+
   </div>
 
 </template>
@@ -243,7 +298,7 @@
 
 <script setup>
 
-import {computed, ref, watch} from "vue";
+import {computed, onBeforeUnmount, ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import CaskDialogJudgment from "@/ui/components/CaskDialogJudgment.vue";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
@@ -260,6 +315,7 @@ import {
   portalBookingStaffs,
   portalBookingStores
 } from "@/api/portal-booking.js";
+import {portalPhoneSendCode, portalPhoneVerify} from "@/api/portal-auth.js";
 
 const emit = defineEmits(['created'])
 
@@ -277,8 +333,11 @@ const thisRouter = useRouter()
 
 // 与后端 PortalBookingServiceImpl.MAX_ADVANCE_DAYS 对齐
 const MAX_ADVANCE_DAYS = 14
-// 与后端 PortalCreateBookingParam 的 @Pattern(^[0-9]{0,20}$) / @Size(max = 200) 对齐
-const PHONE_MAX = 20
+// 手机号：固定 +1 的 10 位美加本地号码（后端 @Pattern(^1[0-9]{10}$)，传参补国家码 1）；备注对齐 @Size(max = 200)
+const PHONE_LEN = 10
+const CODE_LEN = 6
+// 验证码重发冷却（秒）；后端另有限流：同号码 5 次/时、同 IP 10 次/时
+const RESEND_COOLDOWN = 60
 const REMARK_MAX = 200
 const TOTAL_STEP = 5
 const STEP_TITLES = [
@@ -312,8 +371,17 @@ const selectedStaffId = ref("")
 const selectedDate = ref("")
 const selectedSlot = ref("")
 const inputPhone = ref("")
-// 短信同意勾选：填写手机号时必须主动勾选才可提交（不填手机号不要求）；每次提交流程重置、不持久化
+// 短信同意勾选：手机号必填，提交前必须主动勾选；每次提交流程重置、不持久化
 const smsConsent = ref(false)
+
+// 手机号短信验证（非账号默认手机号时要求）
+const inputPhoneCode = ref("")
+const sendingPhoneCode = ref(false)
+const codeCountdown = ref(0)
+let countdownTimer = null
+// 本次流程已通过短信验证的号码：Twilio 验证码校验通过即消费，重复校验会失败，故记录避免二次调用
+const verifiedPhone = ref("")
+const showSavePhoneDialog = ref(false)
 
 // 新标签打开独立政策页（/terms、/privacy 公开可访问）
 function openPolicyTab(type) {
@@ -322,13 +390,27 @@ function openPolicyTab(type) {
 }
 const inputRemark = ref("")
 
-// 手机号仅数字：输入/粘贴即净化，所见即所发
+// 手机号仅数字：输入/粘贴即净化，所见即所发（10 位本地号码，+1 由界面固定展示）
 watch(inputPhone, (val) => {
-  const cleaned = (val || '').replace(/\D/g, '').slice(0, PHONE_MAX)
+  const cleaned = (val || '').replace(/\D/g, '').slice(0, PHONE_LEN)
   if (cleaned !== val) {
     inputPhone.value = cleaned
   }
 })
+
+// 归一化为 10 位本地号码：历史数据可能带国家码 1 或分隔符
+function normalizeNational(p) {
+  const digits = (p || '').replace(/\D/g, '')
+  return digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits
+}
+
+// 账号默认手机号（10 位本地号码口径）
+const accountPhoneNational = computed(() =>
+    normalizeNational(globalState.userData ? globalState.userData.phone : ''))
+
+// 是否需要短信验证：账号无默认手机号，或本次填写与默认不一致（默认手机号视为有效，免验证）
+const needsPhoneVerify = computed(() =>
+    !accountPhoneNational.value || accountPhoneNational.value !== inputPhone.value)
 
 
 const stepTitle = computed(() => STEP_TITLES[step.value - 1])
@@ -399,9 +481,8 @@ function dateOptions(dateStr) {
 function expand() {
   expanded.value = true
   step.value = 1
-  // 预填账户手机号（后端在 phone 留空时同样回退用账户手机号，这里预填让该行为可见、可改）
-  const accountPhone = globalState.userData ? globalState.userData.phone : ''
-  inputPhone.value = (accountPhone || '').replace(/\D/g, '').slice(0, PHONE_MAX)
+  // 预填账号默认手机号（视为已验证，免短信验证；用户改号则需验证）
+  inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
   loadStores()
 }
 
@@ -416,6 +497,9 @@ function collapseAndReset() {
   inputPhone.value = ""
   inputRemark.value = ""
   smsConsent.value = false
+  inputPhoneCode.value = ""
+  verifiedPhone.value = ""
+  showSavePhoneDialog.value = false
   skillList.value = []
   staffList.value = []
   slotList.value = []
@@ -569,13 +653,19 @@ function doCreate() {
     notifyTopWarning(t('booking.incomplete'))
     return
   }
+  // 手机号必填：10 位美加本地号码
   if (!checkIsPhone(inputPhone.value)) {
     notifyTopWarning(t('booking.phone_invalid'))
     return
   }
-  // 填了手机号必须主动勾选短信同意（纯前端拦截；后端约定：传入手机号即视为同意接收通知短信）
-  if (inputPhone.value && !smsConsent.value) {
+  // 必须主动勾选短信同意（纯前端拦截；后端约定：传入手机号即视为同意接收通知短信）
+  if (!smsConsent.value) {
     notifyTopWarning(t('booking.sms_consent_required'))
+    return
+  }
+  // 非账号默认手机号且尚未验证过：必须先填入短信验证码
+  if (needsPhoneVerify.value && verifiedPhone.value !== inputPhone.value && !inputPhoneCode.value) {
+    notifyTopWarning(t('booking.phone_code_required'))
     return
   }
   if (inputRemark.value.length > REMARK_MAX) {
@@ -597,7 +687,72 @@ function doCreate() {
     showOverlapDialog.value = true
     return
   }
-  submitCreate()
+  proceedCreate()
+}
+
+function sendPhoneCode() {
+  if (!checkIsPhone(inputPhone.value)) {
+    notifyTopWarning(t('booking.phone_invalid'))
+    return
+  }
+  sendingPhoneCode.value = true
+  portalPhoneSendCode({phone: '1' + inputPhone.value}).then(res => {
+    sendingPhoneCode.value = false
+    if (!res) {
+      return
+    }
+    notifyTopPositive(t('booking.phone_code_sent'))
+    startCodeCountdown()
+  })
+}
+
+function startCodeCountdown() {
+  clearCodeCountdown()
+  codeCountdown.value = RESEND_COOLDOWN
+  countdownTimer = setInterval(() => {
+    codeCountdown.value--
+    if (codeCountdown.value <= 0) {
+      clearCodeCountdown()
+    }
+  }, 1000)
+}
+
+function clearCodeCountdown() {
+  if (countdownTimer) {
+    clearInterval(countdownTimer)
+    countdownTimer = null
+  }
+  codeCountdown.value = 0
+}
+
+onBeforeUnmount(clearCodeCountdown)
+
+// 重合确认后的统一入口：账号默认手机号直接下单；改号先走短信验证，通过后询问是否保存为默认
+function proceedCreate() {
+  if (!needsPhoneVerify.value) {
+    submitCreate(null)
+    return
+  }
+  // 已验证过同号码（如上次在询问框点了取消）：跳过校验直接进入询问，避免验证码被重复消费
+  if (verifiedPhone.value === inputPhone.value) {
+    showSavePhoneDialog.value = true
+    return
+  }
+  submitting.value = true
+  portalPhoneVerify({phone: '1' + inputPhone.value, code: inputPhoneCode.value}).then(res => {
+    submitting.value = false
+    if (!res) {
+      return
+    }
+    verifiedPhone.value = inputPhone.value
+    showSavePhoneDialog.value = true
+  })
+}
+
+// 三选一询问框回调：true=保存为账号默认手机号并预约，false=不保存直接预约（取消由对话框直接关闭）
+function onSavePhoneChoice(save) {
+  showSavePhoneDialog.value = false
+  submitCreate(save)
 }
 
 // 在门店本地墙钟字符串（yyyy-MM-dd HH:mm）上加分钟数，仅做本地历法运算，不涉及时区换算
@@ -632,19 +787,21 @@ function findOverlapBooking() {
 function onOverlapConfirm(confirmed) {
   showOverlapDialog.value = false
   if (confirmed) {
-    submitCreate()
+    proceedCreate()
   }
 }
 
-function submitCreate() {
+// saveAsDefaultPhone：true=保存为账号默认手机号，false=不保存，null=号码即账号默认（无需保存动作）
+function submitCreate(saveAsDefaultPhone) {
   submitting.value = true
   portalBookingCreate({
     storeId: selectedStoreId.value,
     bookTimeStr: selectedSlot.value,
     skillIdList: selectedSkillIds.value,
     preferredStaffId: selectedStaffId.value || null,
-    // 留空传 null：后端 @Pattern/@Size 跳过 null，且 phone 为空时回退账户手机号
-    phone: inputPhone.value || null,
+    // 必填：补国家码 1、不带 +（后端 ^1[0-9]{10}$）
+    phone: '1' + inputPhone.value,
+    saveAsDefaultPhone: saveAsDefaultPhone === true,
     remark: inputRemark.value || null,
     // 站外投放归因（与注册同结构）：从 globalState 取，无 sourceCode/referralCode 则不下发，后端回退账户记录
     ...buildAttributionParams(),
@@ -652,6 +809,10 @@ function submitCreate() {
     submitting.value = false
     if (!res) {
       return
+    }
+    // 保存为默认成功后同步本地用户数据：本次号码即成为账号默认，下次预约免验证
+    if (saveAsDefaultPhone === true && globalState.userData) {
+      globalState.updateUserData({...globalState.userData, phone: '1' + inputPhone.value})
     }
     notifyTopPositive(t('booking.create_success'))
     collapseAndReset()

@@ -65,9 +65,9 @@ function checkIsPasswd(str) {
         && checkHaveCapLet(str) && checkHaveNUm(str) && checkHaveLowLet(str)
 }
 
-// 联系手机号：仅数字、最多20位（与后端 PortalCreateBookingParam.phone 的 ^[0-9]{0,20}$ 对齐）
+// 联系手机号：10 位美加本地号码（界面固定 +1 前缀；传后端补国家码 1，对齐 ^1[0-9]{10}$）
 function checkIsPhone(str) {
-    const reg = new RegExp(`^[0-9]{0,20}$`)
+    const reg = new RegExp(`^[0-9]{10}$`)
     return reg.test(str)
 }
 

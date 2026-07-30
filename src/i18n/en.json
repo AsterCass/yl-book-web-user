@@ -182,11 +182,24 @@
       "cancel": "Go back",
       "confirm": "Create anyway"
     },
-    "phone_hint": "Optional. Please leave your phone number so that we can quickly contact you in case of emergencies.",
-    "phone_invalid": "Phone must be digits only, up to 20 characters",
-    "sms_consent": "I agree to receive appointment notification text messages from [Zhengyuanyuan] (operated by [BOH TECHNOLOGY CONSULTING & TRADING INC]) at the phone number provided, including booking confirmations, reminders, reschedule notices and cancellation notices. Consent is not a condition of purchase. Message frequency varies. Msg & data rates may apply. Reply STOP to unsubscribe. See our ",
+    "phone_hint": "Required. US/Canada mobile number only, so that we can quickly contact you in case of emergencies.",
+    "phone_invalid": "Please enter a valid 10-digit US/Canada mobile number",
+    "phone_verify_hint": "Tap \"Send code\" and enter the SMS code to verify it.",
+    "phone_code_placeholder": "SMS code",
+    "phone_code_send": "Send code",
+    "phone_code_sent": "Verification code sent",
+    "phone_code_resend_in": "Resend ({s}s)",
+    "phone_code_required": "Please enter the SMS verification code",
+    "save_phone": {
+      "title": "Save this phone number?",
+      "content": "{phone} has been verified. Would you like to save it as your account's default phone number?",
+      "save_and_book": "Save as default & book",
+      "book_only": "Book without saving",
+      "cancel": "Cancel"
+    },
+    "sms_consent": "I agree to receive appointment notification text messages from [Zhengyuanyuan] (operated by [BOH TECHNOLOGY CONSULTING & TRADING INC]) at the phone number provided, including booking confirmations, reminders, reschedule notices and cancellation notices. Consent is not a condition of purchase. Message frequency varies. Reply STOP to unsubscribe. See our ",
     "sms_consent_suffix": ".",
-    "sms_consent_required": "Please agree to receive text messages, or leave the phone number empty",
+    "sms_consent_required": "Please agree to receive text messages at the provided phone number",
     "remark_hint": "Optional, up to 200 characters. Anything we should know in advance.",
     "remark_too_long": "Remark must not exceed 200 characters",
     "step": {
@@ -204,6 +217,7 @@
       "staff": "Preferred staff",
       "time": "Time",
       "phone": "Phone",
+      "phone_code": "Code",
       "remark": "Remark"
     },
     "status": {
