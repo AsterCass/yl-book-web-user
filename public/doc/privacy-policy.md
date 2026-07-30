@@ -3,7 +3,7 @@
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 
 **Effective Date:** July 21, 2026
-**Last Updated:** July 21, 2026
+**Last Updated:** July 30, 2026
 
 ---
 
@@ -40,13 +40,13 @@ You must create an account to make a booking. You may do so either by registerin
 - A display name or nickname of your choosing (required)
 - A password (required — stored only in salted, one-way hashed form; we never store your password in plain text and cannot recover it)
 - A profile picture, if you choose to upload one (optional)
-- Your mobile telephone number (optional — see Section 5 regarding text messages)
+- Your mobile telephone number (not required to create an account, but **required to complete a booking** — used to verify your number by one-time passcode and to send booking-related text messages; see Section 5)
 
 **If you sign in with a third-party account,** the provider will send us a set of information about your account. Depending on the provider and on the permissions you grant, this may include a unique account identifier, your email address and whether the provider has verified it, your name as it appears on that account, and your profile picture. We store this information and use your provider-supplied name and picture to populate your profile. You may change your display name and picture at any time in your account settings; doing so affects only your BOH profile and does not change anything on your third-party account.
 
 We do not receive your password for your third-party account, and we cannot access any part of that account beyond the information described above. Your relationship with that provider is governed by the provider's own terms and privacy policy, not by this Policy. You may disconnect a third-party account at any time by contacting us, though if it is your only sign-in method you will need to set a password first.
 
-**Booking information.** When you submit a booking request, we record the Service you selected, your requested date and time, the status of the booking, and any subsequent changes or cancellations. This is associated with your account.
+**Booking information.** When you submit a booking request, we record the Service you selected, your requested date and time, the status of the booking, and any subsequent changes or cancellations. This is associated with your account. At the final step of booking you must provide a mobile telephone number, which we verify by sending a one-time passcode. We also record whether you checked the optional marketing opt-in checkbox, together with a timestamp and the exact consent wording displayed to you at that time (see Section 5).
 
 **Communications.** If you contact us by email or through the Site, we retain the contents of that correspondence and any information you choose to include in it.
 
@@ -107,8 +107,10 @@ We use the information we collect for the following purposes:
 | Creating, authenticating, and maintaining your account | Email address, password or third-party account identifier, display name, profile picture |
 | Displaying your profile to you within the Site | Display name, profile picture |
 | Scheduling, confirming, modifying, and canceling appointments | Display name, email, phone number, booking details |
+| Verifying that you control the phone number you provide (one-time passcode) | Phone number |
 | Sending appointment confirmations, reminders, and change notifications | Email, phone number |
-| Sending account and security notices, such as password resets | Email |
+| Sending account and security notices, such as password resets and verification codes | Email, phone number |
+| Sending promotional offers and coupons, **only where you have separately opted in** | Email, phone number, booking history |
 | Responding to your questions and support requests | Contact details, correspondence |
 | Preventing fraud, abuse, no-shows, and unauthorized access | All of the above, plus server logs |
 | Maintaining the security and proper functioning of the Site | Server logs |
@@ -121,21 +123,23 @@ We do **not** use your information to build advertising profiles, and we do not 
 
 ## 5. Text Messages and Email Communications
 
-**Transactional messages.** If you provide a mobile telephone number, we may send you text messages relating directly to your bookings — confirmations, reminders, and notices of schedule changes or cancellations. Providing your phone number is optional; if you do not provide it, you will not receive text notifications, and we will rely on email or the Site itself to communicate with you.
+**Verification and transactional messages.** A mobile telephone number is required to complete a booking. When you provide your number at the final step of booking, we send a one-time passcode by text message to verify that you control that number, and we send text messages relating directly to your bookings — confirmations, reminders, and notices of schedule changes or cancellations. By providing your number and completing a booking, you consent to receive these verification and booking-related messages at that number, including messages sent using an automatic telephone dialing system. This consent is disclosed in plain language directly below the phone number field on the booking form.
 
-**Consent.** By providing your mobile number and opting in during registration or booking, you consent to receive such messages from us at that number, including messages sent using an automatic telephone dialing system. **Consent to receive marketing text messages is not a condition of purchasing any goods or services from us.**
+**Marketing messages — separate, optional consent.** Separately, and only if you check a dedicated opt-in checkbox on the booking form, we may send you occasional promotional offers and coupons by text message. This checkbox is unchecked by default and entirely optional. **Consent to receive marketing text messages is optional and is not a condition of booking or purchasing any goods or services from us.** You can complete a booking without checking it, and if you do not check it you will receive verification and booking-related messages only. We record each consent with a timestamp and the exact wording displayed to you. Promotional messages may contain links, which will only ever point to our own website (booking.zyyboh.com).
 
-**Message frequency and cost.** Message frequency varies based on your booking activity. Message and data rates may apply according to your mobile carrier plan. We are not responsible for charges imposed by your carrier.
+**Message frequency and cost.** Message frequency varies based on your booking activity — typically one to four messages per appointment, plus occasional offers if you opted in to marketing. Message and data rates may apply according to your mobile carrier plan. We are not responsible for charges imposed by your carrier.
 
-**Opting out.** You may opt out of text messages at any time by replying **STOP** to any message from us, or by removing your phone number from your account settings, or by emailing us at legal@zyyboh.com. After you opt out, we may send one final message confirming your opt-out. Please note that opting out of text messages may affect your ability to receive timely appointment reminders. Reply **HELP** for assistance.
+**Opting out.** You may opt out of text messages at any time by replying **STOP** to any message from us, or by emailing us at legal@zyyboh.com. After you opt out, we may send one final message confirming your opt-out. You may also withdraw marketing consent alone — by replying STOP to a promotional message or emailing us — without affecting booking-related messages, by telling us which you wish to stop. Please note that opting out of all text messages will prevent you from receiving verification codes and appointment reminders, which may require you to contact us by email or telephone to complete future bookings. Reply **HELP** for assistance.
 
-**Email.** Because an email address is required to hold an account, we will send you transactional emails relating to your account and your bookings — including confirmations, reminders, password resets, and security notices. These are necessary to provide the service and cannot be unsubscribed from while your account remains open. If we later introduce promotional or marketing emails, those will be separate: every such email will include an unsubscribe link, and unsubscribing from marketing will not affect transactional messages.
+**Email.** Because an email address is required to hold an account, we will send you transactional emails relating to your account and your bookings — including verification codes, confirmations, reminders, password resets, and security notices. These are necessary to provide the service and cannot be unsubscribed from while your account remains open. Where you have opted in to marketing communications, we may also send occasional promotional offers and coupons by email. Marketing emails are separate from transactional emails: every marketing email will include an unsubscribe link, and unsubscribing from marketing will not affect transactional messages. Links in our emails will only ever point to our own website (booking.zyyboh.com).
 
 ---
 
 ## 6. How We Share Your Information
 
 **We do not sell your personal information. We do not share your personal information with advertisers, data brokers, or any third party for cross-context behavioral advertising.**
+
+**No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.** Text messaging originator opt-in data and consent will not be shared with any third parties, excluding vendors and service providers acting on our behalf solely to deliver messages (such as our text messaging delivery provider).
 
 We disclose personal information only in the following limited circumstances:
 

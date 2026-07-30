@@ -3,7 +3,7 @@
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 
 **Effective Date:** July 21, 2026
-**Last Updated:** July 21, 2026
+**Last Updated:** July 30, 2026
 
 ---
 
@@ -67,6 +67,8 @@ BOH offers wellness services at our physical location, which may include foot ba
 
 **Booking requests.** When you submit a booking through the Site, you are requesting an appointment for the selected Service at the selected date and time.
 
+**Phone number and verification.** A mobile telephone number is required at the final step of booking. We will send a one-time passcode by text message to that number, and you must enter the code to complete your booking. This verifies that you control the number and allows us to send you booking-related messages. See Section 8 and our Privacy Policy for details on text message communications, including the separate, optional consent for marketing messages.
+
 **Do not submit health information through the Site.** The booking process asks only for your account details and your choice of Service, date, and time. Please do not submit information about your health conditions, symptoms, injuries, medications, or medical history through the Site or by email. If you have a health condition, allergy, pregnancy, recent injury, or medication that may be relevant to your Service, raise it with your practitioner in person at the start of your session, or telephone us in advance.
 
 **Confirmation.** A booking is not final until we confirm it. We will send a confirmation through the Site and, where you have provided contact details, by text message or email. If you do not receive a confirmation, please assume your appointment is not secured and contact us.
@@ -103,11 +105,13 @@ If we later integrate membership into the Site, we will update these Terms accor
 
 ## 8. Text Message and Email Communications
 
-By providing a mobile telephone number, you consent to receive text messages from us relating to your bookings, including confirmations, reminders, and notices of change or cancellation. These messages may be sent using an automatic telephone dialing system. **Consent to receive marketing messages is not a condition of receiving any Service.**
+**Verification and booking messages.** A mobile telephone number is required to complete a booking. By providing your number and completing a booking, you consent to receive a one-time verification passcode and text messages from us relating to your bookings, including confirmations, reminders, and notices of change or cancellation. These messages may be sent using an automatic telephone dialing system.
 
-Message frequency varies based on your booking activity. Message and data rates may apply. Reply **STOP** to opt out or **HELP** for help. Opting out may prevent you from receiving appointment reminders.
+**Marketing messages.** Separately, and only if you check the dedicated opt-in checkbox on the booking form, we may send you occasional promotional offers and coupons by text message. That checkbox is unchecked by default and entirely optional. **Consent to receive marketing messages is optional and is not a condition of booking or receiving any Service.** You may withdraw marketing consent at any time without affecting your bookings or booking-related messages.
 
-By providing an email address, you consent to receive transactional emails regarding your account and bookings. See our Privacy Policy for further detail.
+Message frequency varies based on your booking activity, typically one to four messages per appointment, plus occasional offers if you opted in to marketing. Message and data rates may apply. Reply **STOP** to opt out or **HELP** for help. Opting out of all text messages will prevent you from receiving verification codes and appointment reminders, and you may need to contact us by email or telephone to complete future bookings; your existing bookings remain valid.
+
+By providing an email address, you consent to receive transactional emails regarding your account and bookings, including verification codes. Marketing emails are sent only where you have opted in and always include an unsubscribe link. See our Privacy Policy for further detail.
 
 ---
 
