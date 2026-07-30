@@ -197,9 +197,9 @@
       "book_only": "不保存，直接预约",
       "cancel": "取消"
     },
-    "sms_consent": "我同意通过所填写的手机号接收来自 [Zhengyuanyuan]（运营方：[BOH TECHNOLOGY CONSULTING & TRADING INC]）的预约通知短信，包括预约确认、提醒、改期及取消通知。同意并非购买的前提条件。回复 STOP 可退订。详见我们的",
-    "sms_consent_suffix": "。",
-    "sms_consent_required": "请勾选同意通过所填手机号接收短信通知",
+    "sms_disclosure": "提供手机号并完成本次预约，即表示您同意接收来自 Zhengyuanyuan（运营方：BOH TECHNOLOGY CONSULTING & TRADING INC）的一次性验证码及预约相关短信（预约确认、提醒、改期及取消通知）。短信频率不定，可能产生短信及数据费用。回复 STOP 可退订，回复 HELP 获取帮助。详见我们的",
+    "sms_disclosure_suffix": "。",
+    "marketing_consent": "我也愿意通过短信接收来自 Zhengyuanyuan 的不定期优惠与折扣券。是否同意不影响预约或购买。可随时回复 STOP 退订。",
     "remark_hint": "选填，最多 200 字符；有什么需要提前告知的可以写在这里。",
     "remark_too_long": "备注不能超过 200 字符",
     "step": {

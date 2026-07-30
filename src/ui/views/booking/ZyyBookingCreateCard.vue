@@ -197,6 +197,11 @@
       <div class="q-mx-sm q-mt-xs" style="opacity: .5; font-size: .75rem">
         {{ $t('booking.phone_hint') }}
       </div>
+      <!-- 合规披露（紧跟手机号字段的静态声明，非勾选项）：提供手机号并完成预约即同意接收一次性验证码
+           与预约相关短信。文案内嵌隐私政策/服务条款链接（独立政策页，新标签打开） -->
+      <div class="q-mx-sm q-mt-sm" style="opacity: .8; font-size: .8rem; line-height: 1.5">
+        {{ $t('booking.sms_disclosure') }}<span class="cask-jump-link-in-text" @click="openPolicyTab('privacy')">{{ $t('policy.privacy') }}</span>{{ $t('policy.and') }}<span class="cask-jump-link-in-text" @click="openPolicyTab('terms')">{{ $t('policy.terms') }}</span>{{ $t('booking.sms_disclosure_suffix') }}
+      </div>
 
       <!-- 非账号默认手机号：需短信验证码验证真实性（账号默认手机号免验证） -->
       <template v-if="needsPhoneVerify">
@@ -222,13 +227,13 @@
           {{ $t('booking.phone_verify_hint') }}
         </div>
       </template>
-      <!-- 短信同意勾选框常显；仅填写了手机号时才强制勾选（纯前端拦截，后端约定：传入手机号即视为同意接收通知短信）。
-           同意文案内嵌隐私政策/服务条款链接（不展示原始 URL，独立政策页，新标签打开）；点击链接不触发勾选 -->
-      <div class="row items-start no-wrap q-mx-sm q-mt-xs" style="font-size: .8rem">
-        <q-checkbox v-model="smsConsent" :val="true" class="component-ratio-base q-mr-sm q-my-xs" dense
+      <!-- 营销短信同意：独立勾选框，默认不勾选、完全可选，不勾选也可正常预约。
+           目前仅界面收集：不随下单上送、后端不处理，也不会实际发送营销短信 -->
+      <div class="row items-center no-wrap q-mx-sm q-mt-sm" style="font-size: .8rem">
+        <q-checkbox v-model="marketingConsent" :val="true" class="component-ratio-base q-mr-sm q-my-xs" dense
                     checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
-        <div class="col" style="opacity: .9; cursor: pointer" @click="smsConsent = !smsConsent">
-          {{ $t('booking.sms_consent') }}<span class="cask-jump-link-in-text" @click.stop="openPolicyTab('privacy')">{{ $t('policy.privacy') }}</span>{{ $t('policy.and') }}<span class="cask-jump-link-in-text" @click.stop="openPolicyTab('terms')">{{ $t('policy.terms') }}</span>{{ $t('booking.sms_consent_suffix') }}
+        <div class="col" style="opacity: .9; cursor: pointer" @click="marketingConsent = !marketingConsent">
+          {{ $t('booking.marketing_consent') }}
         </div>
       </div>
 
@@ -371,8 +376,9 @@ const selectedStaffId = ref("")
 const selectedDate = ref("")
 const selectedSlot = ref("")
 const inputPhone = ref("")
-// 短信同意勾选：手机号必填，提交前必须主动勾选；每次提交流程重置、不持久化
-const smsConsent = ref(false)
+// 营销短信同意（可选、默认不勾选，不影响预约提交）：目前仅界面收集，不随下单上送、后端不处理；
+// 预约/验证码类短信的同意由手机号下方的静态披露声明覆盖（提供号码并完成预约即同意），无需勾选
+const marketingConsent = ref(false)
 
 // 手机号短信验证（非账号默认手机号时要求）
 const inputPhoneCode = ref("")
@@ -496,7 +502,7 @@ function collapseAndReset() {
   selectedSlot.value = ""
   inputPhone.value = ""
   inputRemark.value = ""
-  smsConsent.value = false
+  marketingConsent.value = false
   inputPhoneCode.value = ""
   verifiedPhone.value = ""
   showSavePhoneDialog.value = false
@@ -656,11 +662,6 @@ function doCreate() {
   // 手机号必填：10 位美加本地号码
   if (!checkIsPhone(inputPhone.value)) {
     notifyTopWarning(t('booking.phone_invalid'))
-    return
-  }
-  // 必须主动勾选短信同意（纯前端拦截；后端约定：传入手机号即视为同意接收通知短信）
-  if (!smsConsent.value) {
-    notifyTopWarning(t('booking.sms_consent_required'))
     return
   }
   // 非账号默认手机号且尚未验证过：必须先填入短信验证码

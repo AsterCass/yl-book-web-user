@@ -197,9 +197,9 @@
       "book_only": "Book without saving",
       "cancel": "Cancel"
     },
-    "sms_consent": "I agree to receive appointment notification text messages from [Zhengyuanyuan] (operated by [BOH TECHNOLOGY CONSULTING & TRADING INC]) at the phone number provided, including booking confirmations, reminders, reschedule notices and cancellation notices. Consent is not a condition of purchase. Message frequency varies. Reply STOP to unsubscribe. See our ",
-    "sms_consent_suffix": ".",
-    "sms_consent_required": "Please agree to receive text messages at the provided phone number",
+    "sms_disclosure": "By providing your phone number and completing this booking, you agree to receive a one-time verification code and appointment-related text messages (confirmations, reminders, reschedule and cancellation notices) from Zhengyuanyuan, operated by BOH TECHNOLOGY CONSULTING & TRADING INC. Message frequency varies. Msg & data rates may apply. Reply STOP to unsubscribe, HELP for help. See our ",
+    "sms_disclosure_suffix": ".",
+    "marketing_consent": "I would also like to receive occasional promotional offers and coupons from Zhengyuanyuan by text message. Consent is not a condition of booking or purchase. Reply STOP to unsubscribe at any time.",
     "remark_hint": "Optional, up to 200 characters. Anything we should know in advance.",
     "remark_too_long": "Remark must not exceed 200 characters",
     "step": {
