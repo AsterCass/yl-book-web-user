@@ -9,6 +9,7 @@ import ZyyLogin from "@/ui/pages/ZyyLogin.vue";
 import ZyyDashboard from "@/ui/views/ZyyDashboard.vue";
 import WebAuthLogin from "@/ui/pages/WebAuthLogin.vue";
 import WebPolicy from "@/ui/pages/WebPolicy.vue";
+import WebSurvey from "@/ui/pages/WebSurvey.vue";
 import WebHome from "@/ui/pages/WebHome.vue";
 import WebPromo from "@/ui/pages/WebPromo.vue";
 
@@ -86,6 +87,16 @@ const router = createRouter({
                 title: 'policy.privacy_title'
             },
             props: {docType: 'privacy'},
+        },
+        {
+            // 服务评价页：免登录，凭邮件链接 token 访问（token 3 天有效、提交后失效）
+            path: "/survey/:token",
+            name: "survey",
+            component: WebSurvey,
+            meta: {
+                title: 'survey.title'
+            },
+            props: ($route) => ({token: $route.params.token}),
         },
         {
             path: "/404",

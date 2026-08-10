@@ -146,6 +146,25 @@
     "california": "洛杉矶时间（美西）"
   },
 
+  "survey": {
+    "title": "服务评价",
+    "invalid": "链接已失效",
+    "invalid_desc": "该评价链接无效、已过期或已完成提交。感谢您的支持！",
+    "intro": "感谢您的光临！请为本次服务打分，您的反馈对我们非常重要。",
+    "field_store": "门店",
+    "field_time": "时间",
+    "field_service": "项目",
+    "content_placeholder": "建议、投诉或表扬都可以写在这里（选填，最多 1000 字符）",
+    "content_too_long": "评价内容不能超过 1000 字符",
+    "anonymous": "匿名提交",
+    "anonymous_off_note": "当前为实名提交：运营人员可以立刻看到该反馈，并视情况与您联系。",
+    "anonymous_on_note": "当前为匿名提交：系统将在 3-10 天（随机）后才向运营人员展示该反馈，不会因提交时间被追踪到具体提交人，也不会显示您的联系方式。",
+    "submit": "提交评价",
+    "score_required": "请选择 1-5 星评分",
+    "submitted": "感谢您的反馈！",
+    "submitted_desc": "评价已提交成功，本链接已失效。"
+  },
+
   "booking": {
     "create": "创建新预约",
     "no_store": "暂无可预约门店",

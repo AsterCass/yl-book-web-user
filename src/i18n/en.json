@@ -146,6 +146,25 @@
     "california": "Los Angeles Time (PT)"
   },
 
+  "survey": {
+    "title": "Service Feedback",
+    "invalid": "This link is no longer available",
+    "invalid_desc": "This feedback link is invalid, has expired, or has already been submitted. Thank you for your support!",
+    "intro": "Thank you for your visit! Please rate our service — your feedback matters to us.",
+    "field_store": "Store",
+    "field_time": "Time",
+    "field_service": "Service",
+    "content_placeholder": "Suggestions, complaints or compliments are all welcome (optional, up to 1000 characters)",
+    "content_too_long": "Feedback must not exceed 1000 characters",
+    "anonymous": "Submit anonymously",
+    "anonymous_off_note": "Non-anonymous: the operations team can see this feedback immediately and may contact you if needed.",
+    "anonymous_on_note": "Anonymous: this feedback will be shown to the operations team only after a random delay of 3-10 days, so it cannot be traced back to you by submission time, and your contact information will not be shown.",
+    "submit": "Submit Feedback",
+    "score_required": "Please select a rating of 1-5 stars",
+    "submitted": "Thank you for your feedback!",
+    "submitted_desc": "Your feedback has been submitted. This link is no longer available."
+  },
+
   "booking": {
     "create": "Create a new booking",
     "no_store": "No bookable store available",
