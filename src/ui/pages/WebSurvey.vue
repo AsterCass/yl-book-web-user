@@ -74,7 +74,7 @@
         </div>
 
 
-        <!-- 匿名选择与对应说明：实名=运营可立即看到并可能联系；匿名=3-10 天随机延迟展示、不可被追踪 -->
+        <!-- 匿名选择与对应说明：实名=运营可立即看到并可能联系；匿名=1-3 天随机延迟展示、不可被追踪 -->
         <div class="row items-center q-mt-md" style="font-size: .95rem;">
           <q-checkbox v-model="anonymous" :val="true" class="component-ratio-base q-mr-sm" dense
                       checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
