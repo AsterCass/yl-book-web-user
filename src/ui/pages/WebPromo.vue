@@ -226,15 +226,13 @@
 <script setup>
 
 import {useRouter} from "vue-router";
-import {switchLanguage, switchTheme} from "@/utils/global-tools.js";
+import {switchLanguage} from "@/utils/global-tools.js";
 import {openLink} from "@/utils/base-tools.js";
 import {toSpecifyPage, toSpecifyPageWithQuery} from "@/router/index.js";
 import {currentLandingQuery} from "@/utils/landing-params.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
 import {HOME_SERVICE_GROUPS, HOME_STORES, HOME_TESTIMONIALS} from "@/constants/home-content.js";
-import { track } from '@/utils/pixel'
-import {onMounted} from "vue";
 
 const globalState = useGlobalStateStore()
 const thisRouter = useRouter()
@@ -259,10 +257,6 @@ function goBook() {
   toSpecifyPageWithQuery(thisRouter, 'login', currentLandingQuery())
 }
 
-
-onMounted(() => {
-  track('InitiateCheckout', { content_name: '进入首页' })
-})
 
 </script>
 
