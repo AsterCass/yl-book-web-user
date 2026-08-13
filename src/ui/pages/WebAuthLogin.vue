@@ -34,6 +34,7 @@ import {useI18n} from "vue-i18n";
 import {useGlobalStateStore} from "@/utils/global-state";
 import {useRouter} from "vue-router";
 import {buildAttributionParams} from "@/utils/landing-params.js";
+import {track} from "@/utils/pixel.js";
 
 const globalState = useGlobalStateStore();
 const {t} = useI18n()
@@ -98,6 +99,7 @@ function googleGithubCallback(code) {
       notifyTopWarning(t('login.token_missing'))
       return
     }
+    track('UserLogin')
     globalState.updateLoginToken(token)
     globalState.updateUserData(res.data.data)
     loginText.value = loginSuccess

@@ -104,6 +104,7 @@ import {i18n} from "@/i18n/index.js";
 import {checkIsMail, checkIsPasswd} from "@/utils/format-check.js";
 import {portalRegister, portalSendCode} from "@/api/portal-auth.js";
 import {buildAttributionParams} from "@/utils/landing-params.js";
+import {track} from "@/utils/pixel.js";
 
 const emit = defineEmits(['success', 'switch'])
 
@@ -185,6 +186,7 @@ function doRegister() {
       notifyTopWarning(t('login.token_missing'))
       return
     }
+    track('CompleteRegistration')
     globalState.updateLoginToken(token)
     globalState.updateUserData(res.data.data)
     notifyTopPositive(t('login.register_success'))

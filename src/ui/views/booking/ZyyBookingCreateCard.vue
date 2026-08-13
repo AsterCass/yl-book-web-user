@@ -491,7 +491,7 @@ function expand() {
   // 预填账号默认手机号（视为已验证，免短信验证；用户改号则需验证）
   inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
   loadStores()
-  track('InitiateCheckout')
+  track('SubmitApplication')
 }
 
 function collapseAndReset() {
