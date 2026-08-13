@@ -129,12 +129,15 @@
       </div>
       <div class="row justify-center">
         <q-date class="no-shadow bg-transparent" v-model="selectedDate" mask="YYYY-MM-DD" minimal :options="dateOptions"
-                @update:model-value="loadSlots"/>
+                @update:model-value="selectedSlot = ''"/>
       </div>
 
       <div class="q-mt-md">
         <div v-if="loadingSlots" class="row justify-center q-py-md">
           <q-spinner-pie size="30px"/>
+        </div>
+        <div v-else-if="noSlotInWindow" class="text-center q-py-sm" style="opacity: .5">
+          {{ $t('booking.no_slot_range', {days: MAX_ADVANCE_DAYS}) }}
         </div>
         <div v-else-if="!selectedDate" class="text-center q-py-sm" style="opacity: .5">
           {{ $t('booking.pick_date_first') }}
@@ -316,7 +319,7 @@ import {TimezoneOptEnum} from "@/constants/enums/common.js";
 import {
   portalBookingCreate,
   portalBookingSkills,
-  portalBookingSlots,
+  portalBookingSlotsBatch,
   portalBookingStaffs,
   portalBookingStores
 } from "@/api/portal-booking.js";
@@ -364,7 +367,9 @@ const overlapDialogData = ref({title: "", content: "", falseLabel: "", trueLabel
 const storeList = ref([])
 const skillList = ref([])
 const staffList = ref([])
-const slotList = ref([])
+// 未来 14 天可约时间：dateStr -> ['yyyy-MM-dd HH:mm']。进入选时间步骤时一次拉取整窗，
+// 无可约时间的日期在日历上直接置灰，避免客户逐天点开才发现没有时间
+const slotsByDate = ref({})
 
 const loadingStores = ref(false)
 const loadingSkills = ref(false)
@@ -376,6 +381,13 @@ const selectedSkillIds = ref([])
 const selectedStaffId = ref("")
 const selectedDate = ref("")
 const selectedSlot = ref("")
+// 当前所选日期的可约时间：直接取批量结果，点日期不再请求后端
+const slotList = computed(() => selectedDate.value ? (slotsByDate.value[selectedDate.value] || []) : [])
+// 批量结果已返回但窗口内所有日期都不可约（整窗置灰时给出提示文案）
+const noSlotInWindow = computed(() => {
+  const days = Object.keys(slotsByDate.value)
+  return days.length > 0 && days.every(d => !slotsByDate.value[d].length)
+})
 const inputPhone = ref("")
 // 营销短信同意（可选、默认不勾选，不影响预约提交）：目前仅界面收集，不随下单上送、后端不处理；
 // 预约/验证码类短信的同意由手机号下方的静态披露声明覆盖（提供号码并完成预约即同意），无需勾选
@@ -455,33 +467,12 @@ const storeTimezoneName = computed(() => {
   return item ? t(item.name) : tz
 })
 
-// 门店本地「今天」：预约窗口按门店时区算（后端用门店本地墙钟）
-const minDate = computed(() => todayInTz(selectedStore.value ? selectedStore.value.timezone : ''))
-const maxDate = computed(() => shiftDate(minDate.value, MAX_ADVANCE_DAYS))
-
-
-function todayInTz(tz) {
-  try {
-    // en-CA 输出 YYYY-MM-DD
-    return new Intl.DateTimeFormat('en-CA', {
-      timeZone: tz || undefined, year: 'numeric', month: '2-digit', day: '2-digit',
-    }).format(new Date())
-  } catch (e) {
-    return new Intl.DateTimeFormat('en-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}).format(new Date())
-  }
-}
-
-function shiftDate(dateStr, days) {
-  const [y, m, d] = dateStr.split('-').map(Number)
-  const dt = new Date(Date.UTC(y, m - 1, d))
-  dt.setUTCDate(dt.getUTCDate() + days)
-  return dt.toISOString().slice(0, 10)
-}
-
-// q-date 的 options 回调固定收到 YYYY/MM/DD
+// q-date 的 options 回调固定收到 YYYY/MM/DD。可点日期 = 批量结果中当天有可约时间；
+// 窗口（未来 14 天，门店本地日期）由后端返回的键集合决定，窗口外/无时间的日期一律置灰
 function dateOptions(dateStr) {
   const d = dateStr.replace(/\//g, '-')
-  return d >= minDate.value && d <= maxDate.value
+  const slots = slotsByDate.value[d]
+  return !!(slots && slots.length)
 }
 
 
@@ -510,7 +501,7 @@ function collapseAndReset() {
   showSavePhoneDialog.value = false
   skillList.value = []
   staffList.value = []
-  slotList.value = []
+  slotsByDate.value = {}
 }
 
 function loadStores() {
@@ -551,16 +542,13 @@ function loadStaffs() {
   })
 }
 
-function loadSlots() {
+// 一次拉取未来 14 天全部可约时间（进入选时间步骤时调用；点日期只读缓存、不再请求）
+function loadSlotsBatch() {
   selectedSlot.value = ""
-  slotList.value = []
-  if (!selectedDate.value) {
-    return
-  }
+  slotsByDate.value = {}
   loadingSlots.value = true
-  portalBookingSlots({
+  portalBookingSlotsBatch({
     storeId: selectedStoreId.value,
-    dateStr: selectedDate.value,
     skillIdList: selectedSkillIds.value,
     preferredStaffId: selectedStaffId.value || undefined,
   }).then(res => {
@@ -568,7 +556,15 @@ function loadSlots() {
     if (!res || !res.data || !res.data.data) {
       return
     }
-    slotList.value = res.data.data
+    const map = {}
+    for (const day of res.data.data) {
+      map[day.dateStr] = day.slotList || []
+    }
+    slotsByDate.value = map
+    // 回退改过条件后原选中日期可能已不可约：清空，避免停留在置灰日期上
+    if (selectedDate.value && !(map[selectedDate.value] || []).length) {
+      selectedDate.value = ""
+    }
   })
 }
 
@@ -584,7 +580,7 @@ function selectStore(s) {
   selectedSlot.value = ""
   skillList.value = []
   staffList.value = []
-  slotList.value = []
+  slotsByDate.value = {}
 }
 
 // 项目影响总时长，已选时间失效
@@ -596,7 +592,7 @@ function toggleSkill(id) {
     selectedSkillIds.value.push(id)
   }
   selectedSlot.value = ""
-  slotList.value = []
+  slotsByDate.value = {}
 }
 
 function selectStaff(id) {
@@ -605,7 +601,7 @@ function selectStaff(id) {
   }
   selectedStaffId.value = id
   selectedSlot.value = ""
-  slotList.value = []
+  slotsByDate.value = {}
 }
 
 function nextStep() {
@@ -635,10 +631,8 @@ function nextStep() {
   }
   if (step.value === 3) {
     step.value = 4
-    // 回退改过条件时，重新拉取当天可约时间
-    if (selectedDate.value) {
-      loadSlots()
-    }
+    // 每次进入选时间步骤都重拉整窗：可能回退改过门店/项目/偏好雇员，且时间敏感数据宜取最新
+    loadSlotsBatch()
     trackCustom('StaffSelected')
     return
   }

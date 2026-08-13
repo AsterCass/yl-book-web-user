@@ -28,11 +28,12 @@ export function portalBookingStaffs(params) {
     })
 }
 
-// params: {storeId, dateStr: 'yyyy-MM-dd', skillIdList: [], preferredStaffId?}
-// 返回当天可下单的 'yyyy-MM-dd HH:mm' 列表（每 30 分钟一个候选，无合格雇员有空则为空）
-export function portalBookingSlots(params) {
+// params: {storeId, skillIdList: [], preferredStaffId?}
+// 一次返回未来 14 天（含今天，门店本地）每天的可约时间：[{dateStr, slotList: ['yyyy-MM-dd HH:mm']}]
+// 窗口内每天必有一条，slotList 为空 = 当天不可约（前端置灰），避免逐天请求浪费客户时间
+export function portalBookingSlotsBatch(params) {
     return serviceShiro({
-        url: `/portal/booking/slots`,
+        url: `/portal/booking/slots/batch`,
         params: params,
         method: 'get',
     })

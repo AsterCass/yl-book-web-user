@@ -170,6 +170,7 @@
     "no_store": "No bookable store available",
     "no_project": "No service available for this store",
     "no_slot": "Fully booked on this date. Please try another day.",
+    "no_slot_range": "No available times in the next {days} days. Please check back later.",
     "no_data": "No bookings yet",
     "pick_date_first": "Please pick a date first",
     "minutes": "min",

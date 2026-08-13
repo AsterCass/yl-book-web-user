@@ -170,6 +170,7 @@
     "no_store": "暂无可预约门店",
     "no_project": "该门店暂无可预约项目",
     "no_slot": "当天已约满，请换一天试试",
+    "no_slot_range": "未来 {days} 天暂无可约时间，请稍后再来看看",
     "no_data": "还没有预约记录",
     "pick_date_first": "请先选择日期",
     "minutes": "分钟",
