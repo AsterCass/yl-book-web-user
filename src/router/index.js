@@ -12,6 +12,7 @@ import WebPolicy from "@/ui/pages/WebPolicy.vue";
 import WebSurvey from "@/ui/pages/WebSurvey.vue";
 import WebHome from "@/ui/pages/WebHome.vue";
 import WebPromo from "@/ui/pages/WebPromo.vue";
+import {trackPageView} from '@/utils/pixel'
 
 
 const router = createRouter({
@@ -220,10 +221,16 @@ router.beforeEach((to, from) => {
     }
 })
 
-router.afterEach(() => {
-    // make sure scroller site right for header style
+let lastPath = ''
+
+router.afterEach((to, from, failure) => {
     window.scrollTo(0, 0)
+    if (failure) return
+    if (to.path === lastPath) return   // 只有 query 变化,不重复上报
+    lastPath = to.path
+    trackPageView()
 })
+
 
 
 export function backToHome(thisRouter) {

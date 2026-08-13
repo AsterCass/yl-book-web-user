@@ -12,6 +12,7 @@ import App from './App.vue'
 import {createPinia} from 'pinia'
 import {createPersistedStatePlugin} from "@/utils/global-state";
 import {captureLandingParams} from "@/utils/landing-params";
+import {initPixel} from '@/utils/pixel'
 
 
 const app = createApp(App)
@@ -32,5 +33,6 @@ app.use(i18n)
 captureLandingParams()
 
 app.use(router)
+initPixel()
 
 app.mount('#app')

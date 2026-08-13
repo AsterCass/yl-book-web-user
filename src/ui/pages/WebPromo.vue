@@ -233,6 +233,8 @@ import {currentLandingQuery} from "@/utils/landing-params.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
 import {HOME_SERVICE_GROUPS, HOME_STORES, HOME_TESTIMONIALS} from "@/constants/home-content.js";
+import { track } from '@/utils/pixel'
+import {onMounted} from "vue";
 
 const globalState = useGlobalStateStore()
 const thisRouter = useRouter()
@@ -256,6 +258,11 @@ function goBook() {
   // 未登录跳登录页：携带当前落地参数（/login 为接受页，刷新/分享该链接不丢归因）
   toSpecifyPageWithQuery(thisRouter, 'login', currentLandingQuery())
 }
+
+
+onMounted(() => {
+  track('InitiateCheckout', { content_name: '进入首页' })
+})
 
 </script>
 

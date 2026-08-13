@@ -321,6 +321,7 @@ import {
   portalBookingStores
 } from "@/api/portal-booking.js";
 import {portalPhoneSendCode, portalPhoneVerify} from "@/api/portal-auth.js";
+import {track} from "@/utils/pixel.js";
 
 const emit = defineEmits(['created'])
 
@@ -490,6 +491,7 @@ function expand() {
   // 预填账号默认手机号（视为已验证，免短信验证；用户改号则需验证）
   inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
   loadStores()
+  track('create', { content_name: '创建新预约' })
 }
 
 function collapseAndReset() {
@@ -616,6 +618,7 @@ function nextStep() {
     if (!skillList.value.length) {
       loadSkills()
     }
+    track('storeSelected', { content_name: '门店选择完成' })
     return
   }
   if (step.value === 2) {
@@ -627,6 +630,7 @@ function nextStep() {
     if (!staffList.value.length) {
       loadStaffs()
     }
+    track('serviceSelected', { content_name: '项目选择完成' })
     return
   }
   if (step.value === 3) {
@@ -635,6 +639,7 @@ function nextStep() {
     if (selectedDate.value) {
       loadSlots()
     }
+    track('staffSelected', { content_name: '雇员选择完成' })
     return
   }
   if (step.value === 4) {
@@ -643,6 +648,7 @@ function nextStep() {
       return
     }
     step.value = 5
+    track('dateSelected', { content_name: '日期选择完成' })
   }
 }
 
@@ -689,6 +695,7 @@ function doCreate() {
     return
   }
   proceedCreate()
+  track('bookingCreated', { content_name: '正式创建预约' })
 }
 
 function sendPhoneCode() {
