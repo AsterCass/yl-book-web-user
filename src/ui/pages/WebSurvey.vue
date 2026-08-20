@@ -17,7 +17,7 @@
       <div class="row items-center justify-center no-wrap">
         <h4 class="survey-brand-title">{{ $t('main_login_title') }}</h4>
       </div>
-      <div class="survey-subtitle q-mt-sm">{{ $t('survey.title') }}</div>
+      <div class="survey-subtitle q-mt-md">{{ $t('survey.title') }}</div>
     </div>
 
     <div class="survey-card column q-my-lg">
@@ -46,7 +46,6 @@
 
         <!-- 本次到店信息（仅对外名称，未设置的字段整行隐藏）：首页 notes 卡片同款浅红底。
              勾选匿名后整卡隐去（门店/时间/项目一并收起）——匿名的直观反馈：页面上不再显示你这一单是哪一单 -->
-        <q-slide-transition>
           <div v-if="showBookingInfo" class="survey-notes q-px-md q-py-sm q-mb-md">
             <div v-if="info.storeName" class="row items-start q-my-xs">
               <q-icon name="fa-solid fa-location-dot" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
@@ -61,7 +60,6 @@
               <div class="col">{{ info.skillNames.join(', ') }}</div>
             </div>
           </div>
-        </q-slide-transition>
 
         <!-- 评星（主色红星） -->
         <div class="row items-center justify-center q-mb-md survey-rating">
