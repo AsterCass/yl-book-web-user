@@ -12,10 +12,10 @@
     </div>
 
     <!-- 品牌头（同首页 Hero 的图标 + 品牌名，白底紧凑版） -->
-    <div class="column items-center q-mt-lg q-px-md text-center">
+    <div class="column items-center q-px-md text-center">
+      <img src="/favicon.svg" alt="" class="survey-brand-icon"/>
       <div class="row items-center justify-center no-wrap">
-        <img src="/favicon.svg" alt="" class="survey-brand-icon q-mr-md"/>
-        <h1 class="survey-brand-title">{{ $t('main_login_title') }}</h1>
+        <h4 class="survey-brand-title">{{ $t('main_login_title') }}</h4>
       </div>
       <div class="survey-subtitle q-mt-sm">{{ $t('survey.title') }}</div>
     </div>
@@ -44,22 +44,24 @@
       <div v-else class="column">
         <div class="survey-muted q-mb-md text-center">{{ $t('survey.intro') }}</div>
 
-        <!-- 本次到店信息（仅对外名称，未设置的字段整行隐藏）：首页 notes 卡片同款浅红底 -->
-        <div v-if="info.storeName || info.bookingTime || (info.skillNames && info.skillNames.length)"
-             class="survey-notes q-px-md q-py-sm q-mb-md">
-          <div v-if="info.storeName" class="row items-start q-my-xs">
-            <q-icon name="fa-solid fa-location-dot" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
-            <div class="col">{{ info.storeName }}</div>
+        <!-- 本次到店信息（仅对外名称，未设置的字段整行隐藏）：首页 notes 卡片同款浅红底。
+             勾选匿名后整卡隐去（门店/时间/项目一并收起）——匿名的直观反馈：页面上不再显示你这一单是哪一单 -->
+        <q-slide-transition>
+          <div v-if="showBookingInfo" class="survey-notes q-px-md q-py-sm q-mb-md">
+            <div v-if="info.storeName" class="row items-start q-my-xs">
+              <q-icon name="fa-solid fa-location-dot" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
+              <div class="col">{{ info.storeName }}</div>
+            </div>
+            <div v-if="info.bookingTime" class="row items-start q-my-xs">
+              <q-icon name="fa-regular fa-clock" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
+              <div class="col">{{ info.bookingTime }}</div>
+            </div>
+            <div v-if="info.skillNames && info.skillNames.length" class="row items-start q-my-xs">
+              <q-icon name="fa-solid fa-spa" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
+              <div class="col">{{ info.skillNames.join(', ') }}</div>
+            </div>
           </div>
-          <div v-if="info.bookingTime" class="row items-start q-my-xs">
-            <q-icon name="fa-regular fa-clock" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
-            <div class="col">{{ info.bookingTime }}</div>
-          </div>
-          <div v-if="info.skillNames && info.skillNames.length" class="row items-start q-my-xs">
-            <q-icon name="fa-solid fa-spa" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
-            <div class="col">{{ info.skillNames.join(', ') }}</div>
-          </div>
-        </div>
+        </q-slide-transition>
 
         <!-- 评星（主色红星） -->
         <div class="row items-center justify-center q-mb-md survey-rating">
@@ -106,7 +108,7 @@
 
 <script setup>
 
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {switchLanguage} from "@/utils/global-tools.js";
 import {notifyTopWarning} from "@/utils/notification-tools.js";
 import {i18n} from "@/i18n/index.js";
@@ -134,6 +136,11 @@ const content = ref('')
 const anonymous = ref(false)
 // 提交中：按钮禁用+loading，防重复提交
 const submitting = ref(false)
+
+// 本次到店信息卡片：勾选匿名即整卡隐去（仅前端展示效果，让匿名有直观反馈；提交内容不受影响）
+const showBookingInfo = computed(() => !anonymous.value
+    && !!(info.value.storeName || info.value.bookingTime
+        || (info.value.skillNames && info.value.skillNames.length)))
 
 onMounted(() => {
   portalSurveyInfo(props.token).then(res => {
@@ -255,7 +262,7 @@ $survey-red: #cc2e2d;
 }
 
 .survey-subtitle {
-  font-size: .85rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: $survey-red;
 }
