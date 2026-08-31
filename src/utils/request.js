@@ -2,7 +2,6 @@ import axios from 'axios'
 import Qs from 'qs'
 import {notifyTopWarning} from "@/utils/notification-tools";
 import {i18n} from '@/i18n';
-import router, {backToLogin} from '@/router'
 import {useGlobalStateStore} from "@/utils/global-state.js";
 
 const t = i18n.global.t
@@ -25,9 +24,12 @@ const responseConfig = response => {
         if (serverData instanceof Object) {
             bizStatus = serverData.status
             if (600 === bizStatus) {
-                notifyTopWarning(t('no_login'))
-                useGlobalStateStore().updateLoginToken(null)
-                backToLogin(router)
+                // 会话失效：清掉本地登录态即可，<b>不提示、不跳转</b>。
+                // 客户端已无登录页与「我的预约」页，唯一需要身份的动作是提交预约，
+                // 表单会自动回落到「邮箱 + 手机号验证」再自动登录的路径——客户全程不需要理解「登录」
+                const globalState = useGlobalStateStore()
+                globalState.updateLoginToken(null)
+                globalState.updateUserData(null)
                 return null
             }
             if (400 === bizStatus) {

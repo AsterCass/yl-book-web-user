@@ -4,11 +4,13 @@
        数据（门店/服务/评价）全部来自 constants/home-content.js 配置 -->
   <div class="promo-page column relative-position">
 
-    <!-- 顶部悬浮：语言 / 主题切换（压在 Hero 图上） -->
+    <!-- 顶部悬浮：语言切换 + 账户入口（压在 Hero 图上）。
+         预约按钮已改为滚到页内预约区，故这里保留进「我的预约」/ 登录的入口 -->
     <div class="promo-topbar full-width row items-center q-px-md">
       <q-btn no-caps unelevated class="component-none-btn-grow q-mx-xs" @click="switchLanguage()">
         <q-icon name="fa-solid fa-language" size="1.6rem"/>
       </q-btn>
+      <q-space/>
     </div>
 
     <!-- Hero：整幅实景 + 站点图标 + 品牌名（i18n） + 预约按钮（参照其样式但更醒目） -->
@@ -172,13 +174,8 @@
       </div>
     </div>
 
-    <!-- 预约 CTA 红色横幅 -->
-    <div class="promo-cta-band column items-center text-center q-px-md">
-      <h2 class="promo-cta-title">{{ $t('promo.cta_title') }}</h2>
-      <button class="promo-book-btn promo-book-btn-invert q-mt-md" @click="goBook">
-        {{ $t('promo.book_btn') }}
-      </button>
-    </div>
+    <!-- 在线预约区：点「Book now」不再跳转登录页，而是滚到这里就地完成预约（免登录浏览，下单时才验证身份） -->
+    <web-promo-booking ref="bookingRef"/>
 
     <!-- 页脚（参照官网：灰底、链接、门店信息；门店同样来自配置） -->
     <div class="promo-footer">
@@ -202,7 +199,6 @@
         </div>
         <div class="col-12 col-sm-6 col-md-2 q-pa-md">
           <div class="promo-footer-title">{{ $t('promo.footer.links') }}</div>
-          <div class="promo-footer-link q-mt-xs" @click="goBook">{{ $t('promo.book_btn') }}</div>
           <router-link :to="{name: 'policyTerms'}" class="promo-footer-link q-mt-xs">{{ $t('policy.terms') }}</router-link>
           <router-link :to="{name: 'policyPrivacy'}" class="promo-footer-link q-mt-xs">{{ $t('policy.privacy') }}</router-link>
         </div>
@@ -212,8 +208,9 @@
       </div>
     </div>
 
-    <!-- 常驻悬浮预约按钮：比官网的更醒目（更大 + 白描边 + 呼吸光晕） -->
-    <button class="promo-book-btn promo-book-float" @click="goBook">
+    <!-- 常驻悬浮预约按钮：比官网的更醒目（更大 + 白描边 + 呼吸光晕）。
+         预约区本身已在视口内时隐藏，免得压住区内的「下一步 / 立即预约」按钮 -->
+    <button v-show="!bookingInView" class="promo-book-btn promo-book-float" @click="goBook">
       <q-icon name="fa-regular fa-calendar-check" size="1.1rem" class="q-mr-sm"/>
       {{ $t('promo.book_btn') }}
     </button>
@@ -225,17 +222,38 @@
 
 <script setup>
 
-import {useRouter} from "vue-router";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import {switchLanguage} from "@/utils/global-tools.js";
 import {openLink} from "@/utils/base-tools.js";
-import {toSpecifyPage, toSpecifyPageWithQuery} from "@/router/index.js";
-import {currentLandingQuery} from "@/utils/landing-params.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
+import WebPromoBooking from "@/ui/views/booking/WebPromoBooking.vue";
 import {HOME_SERVICE_GROUPS, HOME_STORES, HOME_TESTIMONIALS} from "@/constants/home-content.js";
 
 const globalState = useGlobalStateStore()
-const thisRouter = useRouter()
+
+// 页内预约区（组件对外暴露 scrollToSelf）
+const bookingRef = ref(null)
+// 预约区是否在视口内（决定悬浮预约按钮的显隐）
+const bookingInView = ref(false)
+let bookingObserver = null
+
+onMounted(() => {
+  const el = document.getElementById('promo-book')
+  if (!el || !window.IntersectionObserver) {
+    return
+  }
+  bookingObserver = new IntersectionObserver(
+      entries => (bookingInView.value = entries.some(e => e.isIntersecting)))
+  bookingObserver.observe(el)
+})
+
+onBeforeUnmount(() => {
+  if (bookingObserver) {
+    bookingObserver.disconnect()
+    bookingObserver = null
+  }
+})
 
 const storeList = HOME_STORES
 const serviceGroups = HOME_SERVICE_GROUPS
@@ -248,13 +266,13 @@ function lv(field) {
   return field[i18n.global.locale.value === 'zh' ? 'zh' : 'en']
 }
 
+// 「Book now」（Hero / 门店卡片 / CTA 横幅 / 页脚 / 悬浮按钮共用）：
+// 不再跳转，直接滚到页内预约区（放得下就居中，放不下则贴顶）。浏览门店/项目/时间都无需登录，
+// 只有最后提交预约时才在该区域内验证邮箱+手机并自动登录
 function goBook() {
-  if (globalState.userData) {
-    toSpecifyPage(thisRouter, 'main')
-    return
+  if (bookingRef.value) {
+    bookingRef.value.scrollToSelf()
   }
-  // 未登录跳登录页：携带当前落地参数（/login 为接受页，刷新/分享该链接不丢归因）
-  toSpecifyPageWithQuery(thisRouter, 'login', currentLandingQuery())
 }
 
 

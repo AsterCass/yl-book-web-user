@@ -4,12 +4,10 @@ import {useGlobalStateStore} from "@/utils/global-state.js";
 import NoAuth from "@/ui/pages/NoAuth.vue";
 import NotFound from "@/ui/pages/NotFound.vue";
 import NoLogin from "@/ui/pages/NoLogin.vue";
-import ZyyMain from "../ui/pages/ZyyMain.vue";
-import ZyyLogin from "@/ui/pages/ZyyLogin.vue";
-import ZyyDashboard from "@/ui/views/ZyyDashboard.vue";
 import WebAuthLogin from "@/ui/pages/WebAuthLogin.vue";
 import WebPolicy from "@/ui/pages/WebPolicy.vue";
 import WebSurvey from "@/ui/pages/WebSurvey.vue";
+import WebBookingCancel from "@/ui/pages/WebBookingCancel.vue";
 import WebHome from "@/ui/pages/WebHome.vue";
 import WebPromo from "@/ui/pages/WebPromo.vue";
 import {trackPageView} from '@/utils/pixel'
@@ -39,36 +37,24 @@ const router = createRouter({
                 title: 'main_login_title'
             },
         },
-        // 预约应用壳：登录成功 / backToHome 仍指向 name "main"（重定向到仪表盘）
+        // 仪表盘（我的预约）与登录页已下线：客户不再需要「登录」这个概念——
+        // 预约在首页内嵌区完成，要取消则走预约成功邮件里的取消链接。
+        // 路由名 main / dashboard / login 保留并一律导航到首页，历史链接、书签与
+        // backToHome/backToLogin 等既有跳转都不会 404。
         {
             path: "/dashboard",
             name: "main",
-            component: ZyyMain,
-            redirect: {name: 'dashboard'},
-            children: [
-                {
-                    path: "",
-                    name: "dashboard",
-                    component: ZyyDashboard,
-                    meta: {
-                        title: 'yl_system_dashboard',
-                        header: "yl_system_dashboard",
-                    },
-                },
-            ]
+            redirect: {name: 'index'},
         },
-        // 短链入口：访问 /my 跳转到仪表盘
         {
             path: "/my",
-            redirect: {name: 'dashboard'},
+            name: "dashboard",
+            redirect: {name: 'index'},
         },
         {
             path: "/login",
             name: "login",
-            component: ZyyLogin,
-            meta: {
-                title: 'yl_system_login'
-            },
+            redirect: {name: 'index'},
         },
         // 独立政策页：公开可访问，供第三方品牌注册 / 应用审核直链
         {
@@ -88,6 +74,17 @@ const router = createRouter({
                 title: 'policy.privacy_title'
             },
             props: {docType: 'privacy'},
+        },
+        {
+            // 取消预约页：免登录，凭预约成功邮件里的取消链接 token 访问（15 天有效，取消后再点开显示「已取消」）。
+            // 客户端已无登录与「我的预约」页，这是客户自助取消的唯一入口
+            path: "/booking/cancel/:token",
+            name: "bookingCancel",
+            component: WebBookingCancel,
+            meta: {
+                title: 'cancelLink.title'
+            },
+            props: ($route) => ({token: $route.params.token}),
         },
         {
             // 服务评价页：免登录，凭邮件链接 token 访问（token 3 天有效、提交后失效）

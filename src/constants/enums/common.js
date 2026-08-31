@@ -36,7 +36,7 @@ export class Enum {
 
 // 门店时区映射：code 为后端 /portal/booking/stores 返回的 IANA 时区标识（与管理端建店时区枚举一致）。
 // 客户端需多语言，故 name 存 i18n key（用 t(name) 渲染）；
-// 展示时若遇到枚举外的 IANA id，调用方应回退展示原始 id（见 ZyyBookingCreateCard.storeTimezoneName）
+// 展示时若遇到枚举外的 IANA id，调用方应回退展示原始 id（见 WebPromoBooking.storeTimezoneName）
 export const TimezoneOptEnum = new Enum({
     SHANGHAI: {code: 'Asia/Shanghai', name: 'timezone.shanghai', desc: '中国标准时间 UTC+8', color: ''},
     NEW_YORK: {code: 'America/New_York', name: 'timezone.new_york', desc: '美东时间（含夏令时）', color: ''},

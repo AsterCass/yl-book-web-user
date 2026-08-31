@@ -1,7 +1,7 @@
 import {serviceShiro} from "@/utils/request.js";
 
 // 客户预约入口鉴权（面向 C 端客户，对应后端 /portal/auth）
-// sendCode/register/login/googleLogin 公开；me/logout 需登录
+// sendCode/register/login/bookingLogin/googleLogin/phone/sendCode 公开；me/logout/phone/verify 需登录
 
 export function portalSendCode(body) {
     return serviceShiro({
@@ -22,6 +22,18 @@ export function portalRegister(body) {
 export function portalLogin(body) {
     return serviceShiro({
         url: `/portal/auth/login`,
+        data: body,
+        method: 'post',
+    })
+}
+
+// 下单流程免密登录（公开）：body {email, code(邮箱验证码), phone: '1xxxxxxxxxx', phoneCode(短信验证码),
+// nickName?, sourceCode?, referralCode?}。两个验证码都通过即登录，邮箱没注册过则自动建账户；
+// 登录后该号码在 30 分钟内可直接下单（后端已写「已验证」标记），无需再调 phone/verify。
+// 与 login 一样：会话 token 在响应头 Yl-Token
+export function portalBookingLogin(body) {
+    return serviceShiro({
+        url: `/portal/auth/bookingLogin`,
         data: body,
         method: 'post',
     })
@@ -67,7 +79,7 @@ export function portalMe() {
     })
 }
 
-// body: {phone: '1xxxxxxxxxx'}（不带 + 的 11 位美加号码）；需登录，限流：同号码 5 次/时、同 IP 10 次/时
+// body: {phone: '1xxxxxxxxxx'}（不带 + 的 11 位美加号码）；免登录，限流：同号码 5 次/时、同 IP 10 次/时
 export function portalPhoneSendCode(body) {
     return serviceShiro({
         url: `/portal/auth/phone/sendCode`,
