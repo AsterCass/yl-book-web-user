@@ -3,7 +3,7 @@
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 
 **Effective Date:** July 21, 2026
-**Last Updated:** July 30, 2026
+**Last Updated:** September 1, 2026
 
 ---
 
@@ -15,7 +15,7 @@
 
 These Terms of Service (the "Terms") constitute a legally binding agreement between you and BOH TECHNOLOGY CONSULTING & TRADING INC, a corporation with a mailing address at 204 Hillturn Lane, Roslyn Heights, NY 11577 ("BOH," "we," "us," or "our"), governing your access to and use of the online booking website located at https://booking.zyyboh.com/ (the "Site").
 
-By creating an account, making a booking, or otherwise using the Site, you acknowledge that you have read, understood, and agree to be bound by these Terms and by our Privacy Policy, which is incorporated here by reference. If you do not agree, do not use the Site.
+By making a booking or otherwise using the Site, you acknowledge that you have read, understood, and agree to be bound by these Terms and by our Privacy Policy, which is incorporated here by reference. If you do not agree, do not use the Site.
 
 **The Site is a scheduling tool.** These Terms govern your use of the Site. Your receipt of services at our physical location is subject to the policies posted and provided at that location, which may include additional intake forms, consent forms, and health and safety requirements. In the event of a conflict between these Terms and any agreement you sign in person regarding the services themselves, the in-person agreement controls as to those services.
 
@@ -23,7 +23,7 @@ By creating an account, making a booking, or otherwise using the Site, you ackno
 
 ## 2. Eligibility
 
-You must be at least eighteen (18) years of age to create an account and make a booking. If you are between thirteen (13) and eighteen (18), you may use the Site only with the involvement and consent of a parent or legal guardian, who agrees to be bound by these Terms on your behalf. The Site is not available to anyone under thirteen (13).
+You must be at least eighteen (18) years of age to make a booking. If you are between thirteen (13) and eighteen (18), you may use the Site only with the involvement and consent of a parent or legal guardian, who agrees to be bound by these Terms on your behalf. The Site is not available to anyone under thirteen (13).
 
 You represent that you are not barred from receiving our services under the laws of the United States or the State of New York, and that any information you provide is accurate and complete.
 
@@ -33,17 +33,21 @@ Certain services may have additional eligibility requirements imposed by law, by
 
 ## 3. Accounts
 
-**Registration.** You must create an account to make a booking. You may register directly with an email address and password, or sign in using a supported third-party account such as Google. You agree to provide accurate information and to keep it current.
+**No registration, no password.** You can browse locations, services, staff, and available times without an account. At the final step of booking you enter your mobile telephone number and the one-time passcode we text to it; we then create an account for that number if one does not exist, or reuse the existing one. **Your telephone number is your account.** You agree to provide a number you control and to keep your details accurate.
 
-**Third-party sign-in.** If you sign in with a third-party account, you represent that you are authorized to use that account. Your use of the third-party service is governed by that provider's own terms, and we are not responsible for the availability, security, or practices of any third-party provider. If the provider suspends or terminates your account with them, or if you revoke our access, you may lose the ability to sign in to the Site; in that case, contact us and we will help you regain access to your bookings.
+**Email is optional.** If you provide an email address, we send your booking confirmation there, including a link to cancel that booking, and remember the address to pre-fill it next time. If you leave it blank, you will receive no email and must telephone the location to cancel. An email address may be associated with only one telephone number; if you enter an address already linked to a different number, we will ask you to use a different one.
 
-**Profile content.** You may set a display name and profile picture. You must not use a display name or picture that impersonates another person, infringes anyone's rights, contains offensive or obscene material, or misrepresents your affiliation with any person or organization. We may remove or reset any display name or picture that violates this requirement.
+**Third-party sign-in (legacy).** Sign-in with a third-party account such as Google is being retired and is not required to book. If you previously used it, you represent that you were authorized to use that account. Your use of the third-party service is governed by that provider's own terms, and we are not responsible for the availability, security, or practices of any third-party provider. If the provider suspends or terminates your account with them, or if you revoke our access, you may lose the ability to sign in to the Site; in that case, contact us and we will help you regain access to your bookings.
 
-**Account security.** You are responsible for maintaining the confidentiality of your password and for all activity that occurs under your account, whether or not authorized by you. Do not share your credentials with others. Notify us immediately at legal@zyyboh.com if you suspect unauthorized use of your account.
+**Profile content.** Where a display name or picture is held on your account, it must not impersonate another person, infringe anyone's rights, contain offensive or obscene material, or misrepresent your affiliation with any person or organization. We may remove or reset any display name or picture that violates this requirement.
 
-**One account per person.** You may maintain only one account. You may not create an account on behalf of another person without their authorization, nor create an account using a name or identity you are not entitled to use.
+**Account security.** After you verify your number, your device stays signed in for up to 180 days so that you do not have to repeat the verification. You are responsible for all activity that occurs under your account, whether or not authorized by you — including bookings made by anyone with access to your unlocked device, and cancellations made by anyone holding the cancellation link from your confirmation email. Notify us at legal@zyyboh.com if you suspect unauthorized use.
+
+**One account per telephone number.** Each verified telephone number corresponds to exactly one account. Entering a different number signs you in to that number’s account rather than changing the number on your existing one. You may not book using a telephone number you are not entitled to use, or on behalf of another person without their authorization.
 
 **Account termination by you.** You may close your account at any time by emailing legal@zyyboh.com. Closing your account does not cancel any pending appointment; you must cancel appointments separately in accordance with Section 6.
+
+**No booking history on the Site.** The Site does not provide a list of your past or upcoming appointments. Your confirmation email is your record of a booking. If you need details of an appointment, telephone the location or email us.
 
 ---
 
@@ -71,7 +75,7 @@ BOH offers wellness services at our physical location, which may include foot ba
 
 **Do not submit health information through the Site.** The booking process asks only for your account details and your choice of Service, date, and time. Please do not submit information about your health conditions, symptoms, injuries, medications, or medical history through the Site or by email. If you have a health condition, allergy, pregnancy, recent injury, or medication that may be relevant to your Service, raise it with your practitioner in person at the start of your session, or telephone us in advance.
 
-**Confirmation.** A booking is not final until we confirm it. We will send a confirmation through the Site and, where you have provided contact details, by text message or email. If you do not receive a confirmation, please assume your appointment is not secured and contact us.
+**Confirmation.** A booking is not final until we confirm it. The Site shows a confirmation screen immediately, and, if you provided an email address, we also email you a confirmation containing a link you can use to cancel. If you did not receive the on-screen confirmation, please assume your appointment is not secured and contact us.
 
 **Right to decline.** We reserve the right to decline or cancel any booking request, in our sole discretion, including where the requested time is no longer available, where a practitioner is unavailable, where we suspect fraudulent or abusive booking activity, or where we determine the Service is not appropriate for you. If we decline a booking, we will notify you promptly and, where possible, offer alternatives.
 
@@ -83,7 +87,7 @@ BOH offers wellness services at our physical location, which may include foot ba
 
 ## 6. Cancellations, Changes, and No-Shows
 
-**Cancellation and rescheduling.** You may cancel or reschedule an appointment through the Site or by contacting us. We ask that you provide at least **[24] hours'** notice so that we can offer the time to another client.
+**Cancellation and rescheduling.** If you provided an email address when booking, your confirmation email contains a cancellation link, valid until your appointment; opening it and confirming cancels the booking. Anyone with that link can cancel that booking, so treat it as you would any other private link. If you did not provide an email address, telephone the location to cancel. To reschedule, cancel and book again, or telephone us. We ask that you provide at least **[24] hours'** notice so that we can offer the time to another client.
 
 **No cancellation fee.** Because no payment is collected at the time of booking, we do not charge a cancellation fee. However, repeated late cancellations or no-shows may result in restrictions on your ability to book, as described below.
 
@@ -111,7 +115,7 @@ If we later integrate membership into the Site, we will update these Terms accor
 
 Message frequency varies based on your booking activity, typically one to four messages per appointment, plus occasional offers if you opted in to marketing. Message and data rates may apply. Reply **STOP** to opt out or **HELP** for help. Opting out of all text messages will prevent you from receiving verification codes and appointment reminders, and you may need to contact us by email or telephone to complete future bookings; your existing bookings remain valid.
 
-By providing an email address, you consent to receive transactional emails regarding your account and bookings, including verification codes. Marketing emails are sent only where you have opted in and always include an unsubscribe link. See our Privacy Policy for further detail.
+An email address is optional. If you provide one, you consent to receive transactional emails about that booking — confirmation, reminders, and notices of change or cancellation. Marketing emails are sent only where you have opted in and always include an unsubscribe link. See our Privacy Policy for further detail.
 
 ---
 
@@ -122,7 +126,7 @@ You agree not to:
 - Use the Site for any unlawful purpose or in violation of any applicable law or regulation
 - Make bookings you do not intend to keep, or make bookings in bulk, or reserve capacity for resale
 - Impersonate any person or entity, or misrepresent your affiliation with any person or entity
-- Create multiple accounts to circumvent booking limits or restrictions imposed on your account
+- Use additional telephone numbers to circumvent booking limits or restrictions imposed on your account
 - Access or attempt to access any account other than your own
 - Probe, scan, or test the vulnerability of the Site, or breach or circumvent any security or authentication measure
 - Use any robot, spider, scraper, or other automated means to access the Site, or to collect information from it, without our prior written permission
@@ -152,7 +156,7 @@ We grant you a limited, revocable, non-exclusive, non-transferable, non-sublicen
 
 "BOH" and any associated logos are trademarks or service marks of BOH TECHNOLOGY CONSULTING & TRADING INC. You may not use them without our prior written consent.
 
-**Your content.** You retain ownership of any profile picture or other content you upload. By uploading it, you grant us a limited, non-exclusive, royalty-free license to store, reproduce, and display that content solely for the purpose of operating the Site and displaying your profile to you and to our staff. This license ends when you delete the content or close your account. You represent that you own or have the necessary rights to the content you upload and that it does not infringe the rights of any third party.
+**Your content.** The Site does not currently accept uploads. You retain ownership of any content you previously uploaded, such as a profile picture, and of any note you add to a booking. By submitting it, you grant us a limited, non-exclusive, royalty-free license to store, reproduce, and display it solely for the purpose of operating the Site and delivering your appointment. This license ends when you delete the content or close your account.
 
 ---
 
@@ -216,7 +220,7 @@ The arbitration will be administered by the American Arbitration Association ("A
 
 **16.4 Exceptions.** Notwithstanding the above, either party may: (a) bring an individual claim in small claims court, provided the claim qualifies and remains in that court; and (b) seek injunctive or other equitable relief in a court of competent jurisdiction to prevent actual or threatened infringement or misappropriation of intellectual property rights.
 
-**16.5 Right to opt out.** **You may opt out of this arbitration agreement.** To do so, send written notice to legal@zyyboh.com with the subject line "Arbitration Opt-Out," including your name and the email address associated with your account, **within thirty (30) days of first accepting these Terms**. Opting out will not affect any other provision of these Terms and will not affect your ability to use the Site or receive Services. If you opt out, disputes will be resolved in court in accordance with Section 17.
+**16.5 Right to opt out.** **You may opt out of this arbitration agreement.** To do so, send written notice to legal@zyyboh.com with the subject line "Arbitration Opt-Out," including your name and the telephone number associated with your account, **within thirty (30) days of first accepting these Terms**. Opting out will not affect any other provision of these Terms and will not affect your ability to use the Site or receive Services. If you opt out, disputes will be resolved in court in accordance with Section 17.
 
 **16.6 Survival.** This Section 16 survives termination of your account and of these Terms.
 
@@ -274,6 +278,3 @@ Roslyn Heights, NY 11577
 Email: legal@zyyboh.com
 Website: https://booking.zyyboh.com/
 
----
-
-*These Terms of Service are provided as a general template and do not constitute legal advice. BOH TECHNOLOGY CONSULTING & TRADING INC should have this document reviewed by licensed counsel before publication, with particular attention to Sections 13, 14, and 16 and to the licensing requirements applicable to the Services offered.*

@@ -173,6 +173,10 @@
           <div class="promo-footer-title">{{ $t('promo.footer.links') }}</div>
           <router-link :to="{name: 'policyTerms'}" class="promo-footer-link q-mt-xs">{{ $t('policy.terms') }}</router-link>
           <router-link :to="{name: 'policyPrivacy'}" class="promo-footer-link q-mt-xs">{{ $t('policy.privacy') }}</router-link>
+          <!-- 广告衡量退出入口：州法要求「不出售/不分享」链接在首页可直达 -->
+          <router-link :to="{name: 'doNotSell'}" class="promo-footer-link q-mt-xs">{{
+              $t('doNotSell.link')
+            }}</router-link>
         </div>
       </div>
       <div class="text-center promo-footer-copy q-py-md">

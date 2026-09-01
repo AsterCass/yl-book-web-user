@@ -1,31 +1,9 @@
 import {serviceShiro} from "@/utils/request.js";
 
 // 客户预约入口鉴权（面向 C 端客户，对应后端 /portal/auth）
-// sendCode/register/login/bookingLogin/googleLogin/phone/sendCode 公开；me/logout/phone/verify 需登录
-
-export function portalSendCode(body) {
-    return serviceShiro({
-        url: `/portal/auth/sendCode`,
-        data: body,
-        method: 'post',
-    })
-}
-
-export function portalRegister(body) {
-    return serviceShiro({
-        url: `/portal/auth/register`,
-        data: body,
-        method: 'post',
-    })
-}
-
-export function portalLogin(body) {
-    return serviceShiro({
-        url: `/portal/auth/login`,
-        data: body,
-        method: 'post',
-    })
-}
+// bookingLogin/googleLogin/phone/sendCode 公开；me/logout 需登录。
+// ⚠️ 邮箱口令那一套（sendCode/register/login/resetPasswd*）与 phone/verify 后端已下线：
+//    客户身份是手机号、邮箱不验证；换号码 = 用新号码走一次 bookingLogin（会话切到该号码的账户）
 
 // 下单流程免密登录（公开）：body {phone: '1xxxxxxxxxx', phoneCode(短信验证码), email?(可空、不验证),
 // nickName?, sourceCode?, referralCode?}。客户身份以手机号为准（一号一账户），短信码通过即登录，
@@ -52,22 +30,6 @@ export function portalGoogleLogin(body) {
 export function portalGithubLogin(body) {
     return serviceShiro({
         url: `/portal/auth/githubLogin`,
-        data: body,
-        method: 'post',
-    })
-}
-
-export function portalResetPasswdSendCode(body) {
-    return serviceShiro({
-        url: `/portal/auth/resetPasswd/sendCode`,
-        data: body,
-        method: 'post',
-    })
-}
-
-export function portalResetPasswd(body) {
-    return serviceShiro({
-        url: `/portal/auth/resetPasswd`,
         data: body,
         method: 'post',
     })

@@ -181,6 +181,22 @@
       "confirm_btn": "Cancel this booking",
       "book_again": "Make a new booking"
   },
+  "doNotSell": {
+      "link": "Do Not Sell or Share My Personal Information",
+      "title": "Do Not Sell or Share My Personal Information",
+      "intro": "We do not sell your personal information, and we never send your name, phone number, or email address to any advertising company.",
+      "scope": "We do use the Meta Pixel to measure whether our ads lead to bookings. It reports page views and booking steps to Meta, together with your IP address and browser details. Some state privacy laws treat that as \"sharing\" for cross-context behavioral advertising, so you can turn it off here.",
+      "toggle_label": "Do not share my information for advertising measurement",
+      "state_in": "Currently on: advertising measurement is active on this device.",
+      "state_out": "Currently off: no advertising code runs on this device.",
+      "device_note": "This choice is saved in this browser on this device. If you use another browser or device, or clear your browsing data, please set it again there.",
+      "gpc_on": "Your browser is sending a Global Privacy Control (GPC) signal, so we have already opted you out on this device. No advertising code is running here, and there is nothing further for you to do.",
+      "email_note": "You may also email legal{'@'}zyyboh.com with the subject line \"Opt Out of Sharing.\" Opting out never affects your ability to book.",
+      "saved_out": "Saved — you are opted out on this device.",
+      "saved_in": "Saved — advertising measurement is on again.",
+      "save_failed": "Could not save your choice in this browser. Please allow site data, or email us instead.",
+      "back_home": "Back to home"
+  },
   "booking": {
     "create": "Create a new booking",
     "auto_store_hint": "Nearest to you: {name} ({distance}) — tap another store to change.",

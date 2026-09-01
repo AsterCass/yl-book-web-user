@@ -268,6 +268,7 @@
                            class="pbook-input col" :label="$t('booking.field.phone_code')"/>
                   <button class="pbook-code-btn q-ml-sm" :disabled="phoneCountdown > 0 || sendingPhoneCode"
                           @click="sendPhoneCode">
+                    <q-spinner v-if="sendingPhoneCode" size=".9rem" class="q-mr-xs"/>
                     {{ phoneCountdown > 0 ? $t('booking.phone_code_resend_in', {s: phoneCountdown})
                     : $t('booking.phone_code_send') }}
                   </button>
@@ -304,7 +305,8 @@
         <!-- 底部操作：大视图只有一个提交按钮；小视图为上一步/下一步/预约 -->
         <div ref="actionEl" class="row items-center q-mt-lg"
              :class="step === 1 ? 'justify-center' : 'justify-between'">
-          <button v-if="step > 1" class="promo-book-btn pbook-btn-sm pbook-btn-ghost" @click="step = 1">
+          <button v-if="step > 1" class="promo-book-btn pbook-btn-sm pbook-btn-ghost"
+                  :disabled="submitting" @click="step = 1">
             {{ $t('booking.prev') }}
           </button>
           <button v-if="step === 1" class="promo-book-btn pbook-btn-sm" @click="toConfirmStep">
@@ -596,10 +598,20 @@ function formatDistance(km) {
       : `${(km * 0.621371).toFixed(1)} mi`
 }
 
+// 列表请求序号：客户快速连点（换门店/改项目）会并发多个请求，回来的顺序不保证——
+// 只认最后一次发出的那个，丢弃过期响应，免得列表和当前选择对不上
+let skillReqSeq = 0
+let staffReqSeq = 0
+let slotReqSeq = 0
+
 function loadSkills() {
+  const seq = ++skillReqSeq
   loadingSkills.value = true
   skillList.value = []
   portalBookingSkills({storeId: selectedStoreId.value}).then(res => {
+    if (seq !== skillReqSeq) {
+      return
+    }
     loadingSkills.value = false
     if (!res || !res.data || !res.data.data) {
       return
@@ -609,9 +621,13 @@ function loadSkills() {
 }
 
 function loadStaffs() {
+  const seq = ++staffReqSeq
   loadingStaffs.value = true
   staffList.value = []
   portalBookingStaffs({storeId: selectedStoreId.value}).then(res => {
+    if (seq !== staffReqSeq) {
+      return
+    }
     loadingStaffs.value = false
     if (!res || !res.data || !res.data.data) {
       return
@@ -641,11 +657,15 @@ function scheduleSlotReload() {
 
 function loadSlotsBatch() {
   slotTimer = null
+  const seq = ++slotReqSeq
   loadingSlots.value = true
   portalBookingSlotsBatch({
     storeId: selectedStoreId.value,
     skillIdList: selectedSkillIds.value,
   }).then(res => {
+    if (seq !== slotReqSeq) {
+      return
+    }
     loadingSlots.value = false
     if (!res || !res.data || !res.data.data) {
       return

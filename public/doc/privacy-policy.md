@@ -3,7 +3,7 @@
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 
 **Effective Date:** July 21, 2026
-**Last Updated:** July 30, 2026
+**Last Updated:** September 1, 2026
 
 ---
 
@@ -11,7 +11,7 @@
 
 BOH TECHNOLOGY CONSULTING & TRADING INC ("BOH," "we," "us," or "our") operates the online booking website located at https://booking.zyyboh.com/ (the "Site"). This Privacy Policy explains what information we collect, how we use it, with whom we share it, and the choices available to you.
 
-By creating an account or making a booking on the Site, you agree to the practices described in this Privacy Policy. If you do not agree, please do not use the Site.
+By making a booking on the Site, you agree to the practices described in this Privacy Policy. If you do not agree, please do not use the Site.
 
 This Privacy Policy applies only to the Site. It does not apply to information collected in person at our physical location, except where expressly stated.
 
@@ -32,21 +32,21 @@ If you have questions, requests, or complaints regarding this Privacy Policy or 
 
 ### 3.1 Information You Provide Directly
 
-You must create an account to make a booking. You may do so either by registering directly with us, or by signing in with a third-party account such as Google.
+You can browse our locations, services, staff, and available times without providing any information at all. Information is collected only at the final step, when you submit a booking.
 
-**If you register directly with us, we collect:**
+**There is no registration form and no password.** Your account is your mobile telephone number. At the final step of booking we send a one-time passcode by text message to the number you enter; once you enter that code, we create an account for that number if one does not already exist, or reuse the existing one, and sign you in. We collect:
 
-- Your email address (required — used to identify your account and to send booking-related messages)
-- A display name or nickname of your choosing (required)
-- A password (required — stored only in salted, one-way hashed form; we never store your password in plain text and cannot recover it)
-- A profile picture, if you choose to upload one (optional)
-- Your mobile telephone number (not required to create an account, but **required to complete a booking** — used to verify your number by one-time passcode and to send booking-related text messages; see Section 5)
+- **Your mobile telephone number (required).** This is how we identify you, how we verify that you are the person booking, and how we contact you about your appointment. Because your number identifies your account, entering a different number signs you in to a different account.
+- **Your email address (optional).** You may leave it blank. If you provide it, we use it to email your booking confirmation, which contains a link you can use to cancel that booking, and we remember it so the field is pre-filled next time. If you do not provide an email address, you will not receive a confirmation email and will need to telephone the location to cancel.
+- **A display name.** If you do not provide one, we generate one from your email address or from the last four digits of your telephone number.
 
-**If you sign in with a third-party account,** the provider will send us a set of information about your account. Depending on the provider and on the permissions you grant, this may include a unique account identifier, your email address and whether the provider has verified it, your name as it appears on that account, and your profile picture. We store this information and use your provider-supplied name and picture to populate your profile. You may change your display name and picture at any time in your account settings; doing so affects only your BOH profile and does not change anything on your third-party account.
+We do not ask you to choose a password and we do not store one for you.
 
-We do not receive your password for your third-party account, and we cannot access any part of that account beyond the information described above. Your relationship with that provider is governed by the provider's own terms and privacy policy, not by this Policy. You may disconnect a third-party account at any time by contacting us, though if it is your only sign-in method you will need to set a password first.
+**If you previously signed in with a third-party account such as Google,** the provider sent us a set of information about your account. Depending on the provider and on the permissions you grant, this may include a unique account identifier, your email address and whether the provider has verified it, your name as it appears on that account, and your profile picture. We store this information and use your provider-supplied name and picture to populate your profile. These sign-in methods are being retired; bookings are now made with a verified telephone number as described above. Contact us if you need help with information held under an older account.
 
-**Booking information.** When you submit a booking request, we record the Service you selected, your requested date and time, the status of the booking, and any subsequent changes or cancellations. This is associated with your account. At the final step of booking you must provide a mobile telephone number, which we verify by sending a one-time passcode. We also record whether you checked the optional marketing opt-in checkbox, together with a timestamp and the exact consent wording displayed to you at that time (see Section 5).
+We do not receive your password for your third-party account, and we cannot access any part of that account beyond the information described above. Your relationship with that provider is governed by the provider's own terms and privacy policy, not by this Policy. You may ask us to disconnect a third-party account at any time by contacting us.
+
+**Booking information.** When you submit a booking request, we record the location and Service you selected, any staff preference you expressed, your requested date and time, the telephone number and (if given) email address you provided, any note you added, the status of the booking, and any subsequent changes or cancellations. We also record whether you checked the optional marketing opt-in checkbox, together with a timestamp and the exact consent wording displayed to you at that time (see Section 5).
 
 **Communications.** If you contact us by email or through the Site, we retain the contents of that correspondence and any information you choose to include in it.
 
@@ -74,12 +74,25 @@ We use storage technologies only for the following purposes:
 
 | Category | Purpose | Can you disable it? |
 |---|---|---|
-| **Strictly necessary** | Keeping you signed in between visits; maintaining your session; protecting against cross-site request forgery and other security threats; load balancing | No — the Site cannot function without these |
+| **Strictly necessary** | Keeping you signed in between visits (your session token is stored on your device and remains valid for up to 180 days); maintaining your session; protecting against cross-site request forgery and other security threats; load balancing | No — the Site cannot function without these |
 | **Functional / preference** | Remembering interface preferences such as your selected language; temporarily holding booking form data so it is not lost if you navigate away | Yes — the Site will still work, but preferences will reset each visit |
+| **Advertising measurement** | Cookies set by the Meta Pixel described above | Yes — via the "Do Not Sell or Share My Personal Information" link in our footer, a GPC signal, or your browser's tracking-protection settings |
+| **Privacy choice** | Remembering that you opted out of advertising measurement on this browser | No — it exists only to keep your opt-out in effect |
 
-**We do not use advertising, targeting, or cross-site tracking technologies.** We do not use Google Analytics, Meta Pixel, advertising cookies, third-party tracking pixels, or any similar technology that would allow a third party to build a profile of you or track you across other websites.
+**Advertising measurement (Meta Pixel).** The Site loads the Meta Pixel, a measurement tool provided by Meta Platforms, Inc. It records that a page was viewed and that certain steps were completed — selecting a location, selecting a service, and completing a booking — and reports those events to Meta together with technical data your browser sends automatically, such as your IP address, browser user agent, and the page address. Meta also sets its own cookies through this tool. We use it only to measure whether our advertising reaches people who go on to book.
 
-If we introduce analytics or any other non-essential category in the future, we will update this Policy and, where required by applicable law, obtain your consent before doing so.
+**We do not send your name, telephone number, or email address to Meta**, and we do not upload customer lists to Meta. We do not use Google Analytics or any other analytics provider. However, because a third party receives identifiers and event data through this tool, some U.S. state privacy laws treat this as "sharing" personal information for cross-context behavioral advertising, and Meta may use the data it receives under its own terms.
+
+**How to turn it off.** Two ways, both free and immediate:
+
+- **Global Privacy Control (GPC).** If your browser or extension sends a GPC signal, we treat it as an opt-out request and **do not load the pixel at all** on that browser. You do not need to do anything else, and we will tell you so on the opt-out page.
+- **The opt-out switch on our Site.** Use the **"Do Not Sell or Share My Personal Information"** link in the footer of our homepage, or go directly to https://booking.zyyboh.com/do-not-sell. Turning the switch on stops the pixel from loading on that browser from then on.
+
+Because the choice is stored in your browser, it applies to that browser on that device; set it again if you switch browsers, switch devices, or clear your browsing data. You may also block the pixel with your browser's tracking-protection settings or an ad blocker. The Site works normally either way, and opting out has no effect on your ability to book.
+
+**Location.** When you tap "Book now," the Site asks your browser for your approximate location so it can pre-select whichever of our locations is closest to you. Your browser will ask your permission first, and you can decline. **Your coordinates are used only in your browser, for that one comparison, and are never transmitted to us or to anyone else.** We do not store them, and declining has no effect other than leaving the location for you to choose yourself. You can change or revoke this permission at any time in your browser settings.
+
+If we introduce further analytics or any other non-essential category in the future, we will update this Policy and, where required by applicable law, obtain your consent before doing so.
 
 **Duration.** Strictly necessary session data persists until you sign out or your session expires. Preference data persists until you clear it. Any cookies we set will have durations appropriate to their purpose and will not exceed twelve (12) months.
 
@@ -104,18 +117,19 @@ We use the information we collect for the following purposes:
 
 | Purpose | Information Used |
 |---|---|
-| Creating, authenticating, and maintaining your account | Email address, password or third-party account identifier, display name, profile picture |
-| Displaying your profile to you within the Site | Display name, profile picture |
-| Scheduling, confirming, modifying, and canceling appointments | Display name, email, phone number, booking details |
+| Creating, authenticating, and maintaining your account | Telephone number (verified by one-time passcode), display name; for older accounts, email address or third-party account identifier |
+| Pre-filling the booking form on your next visit | Telephone number, email address where provided, display name |
+| Scheduling, confirming, modifying, and canceling appointments | Display name, phone number, email address where provided, booking details |
 | Verifying that you control the phone number you provide (one-time passcode) | Phone number |
 | Sending appointment confirmations, reminders, and change notifications | Email, phone number |
-| Sending account and security notices, such as password resets and verification codes | Email, phone number |
+| Sending verification passcodes and security notices | Phone number |
 | Sending promotional offers and coupons, **only where you have separately opted in** | Email, phone number, booking history |
 | Responding to your questions and support requests | Contact details, correspondence |
 | Preventing fraud, abuse, no-shows, and unauthorized access | All of the above, plus server logs |
 | Maintaining the security and proper functioning of the Site | Server logs |
 | Complying with legal obligations and enforcing our Terms of Service | As necessary |
 | Understanding aggregate demand and improving our scheduling | Aggregated, de-identified booking data |
+| Measuring whether our advertising leads to bookings | Page views and booking-step events, IP address and browser user agent (see Section 3.3) |
 
 We do **not** use your information to build advertising profiles, and we do not engage in automated decision-making that produces legal or similarly significant effects concerning you.
 
@@ -131,7 +145,7 @@ We do **not** use your information to build advertising profiles, and we do not 
 
 **Opting out.** You may opt out of text messages at any time by replying **STOP** to any message from us, or by emailing us at legal@zyyboh.com. After you opt out, we may send one final message confirming your opt-out. You may also withdraw marketing consent alone — by replying STOP to a promotional message or emailing us — without affecting booking-related messages, by telling us which you wish to stop. Please note that opting out of all text messages will prevent you from receiving verification codes and appointment reminders, which may require you to contact us by email or telephone to complete future bookings. Reply **HELP** for assistance.
 
-**Email.** Because an email address is required to hold an account, we will send you transactional emails relating to your account and your bookings — including verification codes, confirmations, reminders, password resets, and security notices. These are necessary to provide the service and cannot be unsubscribed from while your account remains open. Where you have opted in to marketing communications, we may also send occasional promotional offers and coupons by email. Marketing emails are separate from transactional emails: every marketing email will include an unsubscribe link, and unsubscribing from marketing will not affect transactional messages. Links in our emails will only ever point to our own website (booking.zyyboh.com).
+**Email.** An email address is optional. If you provide one when booking, we send you a confirmation email for that booking, which includes a link you can use to cancel it, and we may send you reminders and notices of changes to that booking. These are transactional messages necessary to provide the service you requested and cannot be unsubscribed from separately; if you would rather not receive them, leave the email field blank when booking. If you leave it blank, we send you no email at all, and you can cancel by telephoning the location instead. Where you have opted in to marketing communications, we may also send occasional promotional offers and coupons by email. Marketing emails are separate from transactional emails: every marketing email will include an unsubscribe link, and unsubscribing from marketing will not affect transactional messages. Links in our emails will only ever point to our own website (booking.zyyboh.com).
 
 ---
 
@@ -145,7 +159,9 @@ We disclose personal information only in the following limited circumstances:
 
 **Service providers.** We use a small number of vendors to operate the Site — for example, web hosting and infrastructure providers, and the telecommunications provider that delivers our text messages. These vendors process your information only on our instructions, only to the extent necessary to provide their service to us, and are contractually prohibited from using it for their own purposes.
 
-**Authentication providers.** If you sign in using a third-party account such as Google, that provider will necessarily learn that you have signed in to our Site, and will process your information under its own privacy policy. We do not send the provider any additional information about you, your bookings, or your activity on the Site beyond what is inherent in the sign-in process itself. If you prefer not to involve a third-party provider, you can register directly with an email address and password instead.
+**Authentication providers.** If you sign in using a third-party account such as Google, that provider will necessarily learn that you have signed in to our Site, and will process your information under its own privacy policy. We do not send the provider any additional information about you, your bookings, or your activity on the Site beyond what is inherent in the sign-in process itself. Bookings no longer require a third-party sign-in; a verified telephone number is sufficient.
+
+**Advertising measurement.** As described in Section 3.3, the Meta Pixel reports page views and booking-step events to Meta Platforms, Inc., together with the technical data your browser sends automatically. We do not send Meta your name, telephone number, or email address, and we do not upload customer lists. Some U.S. state privacy laws treat this as "sharing" for cross-context behavioral advertising; see Section 9.2.
 
 **Our own staff.** Employees and contractors at our physical location have access to booking information as necessary to prepare for and deliver your appointment.
 
@@ -161,11 +177,11 @@ We disclose personal information only in the following limited circumstances:
 
 ## 7. Data Security
 
-We maintain administrative, technical, and physical safeguards designed to protect your information against unauthorized access, disclosure, alteration, and destruction. These measures include encryption of data in transit using TLS, storage of passwords using industry-standard one-way hashing, access controls limiting staff access to what is necessary for their role, and periodic review of our security practices.
+We maintain administrative, technical, and physical safeguards designed to protect your information against unauthorized access, disclosure, alteration, and destruction. These measures include encryption of data in transit using TLS, verification of your telephone number by one-time passcode before any booking is made, access controls limiting staff access to what is necessary for their role, and periodic review of our security practices.
 
 Because we deliberately collect very little information through the Site — no payment data, no government identifiers, no health information — the potential impact of a security incident is correspondingly limited.
 
-No method of transmission over the Internet or method of electronic storage is completely secure, however, and we cannot guarantee absolute security. You are responsible for maintaining the confidentiality of your account password and for all activity that occurs under your account. Please notify us promptly at legal@zyyboh.com if you believe your account has been accessed without your authorization.
+No method of transmission over the Internet or method of electronic storage is completely secure, however, and we cannot guarantee absolute security. Because your session is kept on your device, anyone with access to your unlocked device may be able to book under your number; and anyone holding the cancellation link from your confirmation email can cancel that booking. Please keep your device and that email secure. Please notify us promptly at legal@zyyboh.com if you believe your account has been accessed without your authorization.
 
 ---
 
@@ -175,7 +191,10 @@ We retain your information for as long as your account remains active and for so
 
 | Category | Retention Period |
 |---|---|
-| Account information (email, display name, credentials or provider identifier) | Duration of the account, plus up to 12 months after account closure |
+| Account information (telephone number, display name, email address where provided) | Duration of the account, plus up to 12 months after account closure |
+| Session token on your device | Up to 180 days, or until you clear your browser data |
+| Cancellation link issued with a booking confirmation email | 15 days from the date of booking |
+| Approximate location used to pre-select a location | Not retained — used only in your browser, never transmitted to us |
 | Profile picture | Deleted promptly when you replace or remove it, or when you close your account |
 | Booking records | Up to 3 years from the appointment date, for business records and dispute resolution |
 | Email correspondence | Up to 3 years from the date of the communication |
@@ -192,13 +211,14 @@ We may retain information longer where required by law, or where necessary to re
 
 Regardless of where you live, you may:
 
-- **Access and update** your account information through your account settings at any time
-- **Correct** inaccurate information by editing your profile or emailing us
+- **Access** the information we hold about you by emailing us. The Site itself no longer has account or profile pages; your telephone number simply pre-fills the booking form
+- **Correct** inaccurate information by emailing us, or by entering the correct details the next time you book
 - **Delete your account** by emailing legal@zyyboh.com. We will delete your account and associated personal information within thirty (30) days, subject to any records we are required to retain by law or for legitimate business purposes such as resolving a pending dispute
+- **Opt out of advertising measurement** — see "How to turn it off" in Section 3.3; we honor GPC signals automatically
 - **Opt out of text messages** as described in Section 5
 - **Clear locally stored data** through your browser settings
 
-To exercise any of these rights, email us at **legal@zyyboh.com** with the subject line "Privacy Request." We may need to verify your identity before acting on a request — typically by confirming that you control the email address or phone number associated with the account.
+To exercise any of these rights, email us at **legal@zyyboh.com** with the subject line "Privacy Request." We may need to verify your identity before acting on a request — typically by confirming that you control the telephone number associated with the account.
 
 ### 9.2 Additional Rights for California Residents
 
@@ -207,17 +227,17 @@ If you are a California resident, the California Consumer Privacy Act, as amende
 - **Right to know.** You may request that we disclose the categories and specific pieces of personal information we have collected about you, the categories of sources, our business purpose for collecting it, and the categories of third parties to whom we disclose it.
 - **Right to delete.** You may request deletion of personal information we have collected from you, subject to statutory exceptions.
 - **Right to correct.** You may request correction of inaccurate personal information.
-- **Right to opt out of sale or sharing.** **We do not sell personal information and we do not share personal information for cross-context behavioral advertising**, so there is nothing to opt out of. We have not sold or shared personal information in the preceding twelve months.
-- **Right to limit use of sensitive personal information.** We do not collect sensitive personal information through the Site, as that term is defined under the CCPA. Health information collected at our physical location is governed by the separate notice described in Section 3.2 and is subject to the confidentiality protections of applicable federal and New York State law.
+- **Right to opt out of sale or sharing.** **We do not sell personal information.** We do, however, use the Meta Pixel described in Section 3.3, which some U.S. state privacy laws treat as "sharing" personal information for cross-context behavioral advertising. To opt out, use the **"Do Not Sell or Share My Personal Information"** link in our homepage footer (https://booking.zyyboh.com/do-not-sell). We also honor **Global Privacy Control (GPC)** signals automatically as a valid opt-out request, with no further action needed from you. You may alternatively email legal@zyyboh.com with the subject line "Opt Out of Sharing." Opting out has no effect on your ability to book.
+- **Right to limit use of sensitive personal information.** We do not collect precise geolocation or any other category of sensitive personal information through the Site — the approximate location used to pre-select a location is processed in your browser and never reaches us, as that term is defined under the CCPA. Health information collected at our physical location is governed by the separate notice described in Section 3.2 and is subject to the confidentiality protections of applicable federal and New York State law.
 - **Right to non-discrimination.** We will not deny you services, charge you a different price, or provide you a different level of service because you exercised any of these rights.
 
 **Categories of personal information collected in the preceding 12 months:**
 
-- **Identifiers** — email address, display name, account identifiers (including identifiers supplied by a third-party sign-in provider), telephone number where provided, IP address
+- **Identifiers** — telephone number, display name, email address where provided, account identifiers (including identifiers supplied by a third-party sign-in provider for older accounts), IP address
 - **Customer records information (Cal. Civ. Code § 1798.80)** — name and contact details associated with your account
 - **Commercial information** — records of Services booked, attended, and canceled
-- **Internet or network activity information** — server log data relating to your access of the Site
-- **Visual information** — a profile picture, where you upload one or where one is supplied by a third-party sign-in provider
+- **Internet or network activity information** — server log data relating to your access of the Site, and the page-view and booking-step events reported to Meta as described in Section 3.3
+- **Visual information** — a profile picture, only where one was previously uploaded or supplied by a third-party sign-in provider; the Site no longer accepts uploads
 
 We have not collected any other statutory category through the Site. Sources of this information are: you directly, your third-party sign-in provider if you use one, and automatic collection through your interaction with the Site. We disclose these categories only to the recipients described in Section 6, and only for the business purposes described in Section 4.
 
@@ -272,6 +292,3 @@ For any question, request, or complaint regarding this Privacy Policy:
 Roslyn Heights, NY 11577
 Email: legal@zyyboh.com
 
----
-
-*This Privacy Policy is provided as a general template and does not constitute legal advice. BOH TECHNOLOGY CONSULTING & TRADING INC should have this document reviewed by licensed counsel before publication.*

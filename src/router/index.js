@@ -8,6 +8,7 @@ import WebAuthLogin from "@/ui/pages/WebAuthLogin.vue";
 import WebPolicy from "@/ui/pages/WebPolicy.vue";
 import WebSurvey from "@/ui/pages/WebSurvey.vue";
 import WebBookingCancel from "@/ui/pages/WebBookingCancel.vue";
+import WebDoNotSell from "@/ui/pages/WebDoNotSell.vue";
 import WebHome from "@/ui/pages/WebHome.vue";
 import WebPromo from "@/ui/pages/WebPromo.vue";
 import {trackPageView} from '@/utils/pixel'
@@ -74,6 +75,16 @@ const router = createRouter({
                 title: 'policy.privacy_title'
             },
             props: {docType: 'privacy'},
+        },
+        {
+            // 「不出售/不分享我的个人信息」：广告衡量（Meta Pixel）的退出入口。
+            // 加州等州法要求该链接在首页显著位置可达——页脚已挂
+            path: "/do-not-sell",
+            name: "doNotSell",
+            component: WebDoNotSell,
+            meta: {
+                title: 'doNotSell.title'
+            },
         },
         {
             // 取消预约页：免登录，凭预约成功邮件里的取消链接 token 访问（15 天有效，取消后再点开显示「已取消」）。
