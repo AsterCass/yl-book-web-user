@@ -13,7 +13,10 @@
       <div v-if="created" class="pbook-card column items-center text-center q-pa-xl">
         <q-icon name="fa-regular fa-circle-check" size="3rem" class="promo-accent"/>
         <h3 class="pbook-success-title q-mt-md">{{ $t('booking.success_title') }}</h3>
-        <div class="promo-muted q-mt-sm">{{ $t('booking.success_hint') }}</div>
+        <!-- 没留邮箱就没有确认邮件、也没有取消链接：文案换成「致电门店取消」，别承诺发不出去的邮件 -->
+        <div class="promo-muted q-mt-sm">
+          {{ createdInfo.mail ? $t('booking.success_hint') : $t('booking.success_hint_no_email') }}
+        </div>
         <div class="pbook-summary q-mt-lg full-width">
           <div class="row justify-between q-my-xs">
             <div class="promo-muted">{{ $t('booking.field.store') }}</div>
@@ -244,26 +247,9 @@
                 <div>{{ $t('booking.contact_title') }}</div>
               </div>
 
-              <div v-if="isLoggedIn" class="pbook-option-sub q-mb-sm">
-                {{ $t('booking.logged_in_as', {mail: accountMail}) }}
-              </div>
-              <template v-else>
-                <div class="pbook-option-sub q-mb-sm">{{ $t('booking.contact_hint') }}</div>
-                <q-input v-model="inputEmail" dense outlined type="email" class="pbook-input"
-                         :label="$t('booking.email')"/>
-                <div class="row items-center no-wrap q-mt-sm">
-                  <q-input v-model="inputEmailCode" dense outlined inputmode="numeric" :maxlength="CODE_LEN"
-                           class="pbook-input col" :label="$t('booking.email_code')"/>
-                  <button class="pbook-code-btn q-ml-sm" :disabled="emailCountdown > 0 || sendingEmailCode"
-                          @click="sendEmailCode">
-                    {{ emailCountdown > 0 ? $t('booking.phone_code_resend_in', {s: emailCountdown})
-                    : $t('booking.email_code_send') }}
-                  </button>
-                </div>
-                <div class="pbook-option-sub q-mt-xs">{{ $t('booking.email_hint') }}</div>
-              </template>
+              <div class="pbook-option-sub q-mb-sm">{{ $t('booking.contact_hint') }}</div>
 
-              <!-- 手机号：界面固定 +1，只填 10 位本地号码 -->
+              <!-- 手机号：客户身份以它为准（一号一账户），必填 + 短信验证。界面固定 +1，只填 10 位本地号码 -->
               <q-input v-model="inputPhone" dense outlined inputmode="numeric" :maxlength="PHONE_LEN"
                        class="pbook-input q-mt-md" :label="$t('booking.field.phone')" prefix="+1"/>
               <div class="pbook-option-sub q-mt-xs">{{ $t('booking.phone_hint') }}</div>
@@ -281,6 +267,11 @@
                 </div>
                 <div class="pbook-option-sub q-mt-xs">{{ $t('booking.phone_verify_hint') }}</div>
               </template>
+
+              <!-- 邮箱：可空、不验证。留了就发确认邮件 + 取消链接，并记住供下次预填 -->
+              <q-input v-model="inputEmail" dense outlined type="email" class="pbook-input q-mt-md"
+                       :label="$t('booking.email_optional')"/>
+              <div class="pbook-option-sub q-mt-xs">{{ $t('booking.email_hint') }}</div>
 
               <!-- 短信合规披露（静态声明，非勾选项） -->
               <div class="pbook-disclosure q-mt-md">
@@ -343,7 +334,7 @@ import {
   portalBookingStaffs,
   portalBookingStores
 } from "@/api/portal-booking.js";
-import {portalBookingLogin, portalMe, portalPhoneSendCode, portalPhoneVerify, portalSendCode} from "@/api/portal-auth.js";
+import {portalBookingLogin, portalMe, portalPhoneSendCode, portalPhoneVerify} from "@/api/portal-auth.js";
 import {track, trackCustom} from "@/utils/pixel.js";
 
 const t = i18n.global.t
@@ -393,17 +384,13 @@ const selectedDate = ref("")
 const selectedSlot = ref("")
 
 const inputEmail = ref("")
-const inputEmailCode = ref("")
 const inputPhone = ref("")
 const inputPhoneCode = ref("")
 const inputRemark = ref("")
 const marketingConsent = ref(false)
 
-const sendingEmailCode = ref(false)
 const sendingPhoneCode = ref(false)
-const emailCountdown = ref(0)
 const phoneCountdown = ref(0)
-let emailTimer = null
 let phoneTimer = null
 let slotTimer = null
 // 本次流程已通过短信验证的号码（已登录改号场景）：Twilio 验证码一次性，避免重复校验
@@ -472,8 +459,8 @@ watch([selectedStoreId, selectedSkillIds, timeReady], scheduleSlotReload, {deep:
 
 onMounted(() => {
   loadStores()
-  // 有本地登录态就先按缓存预填手机号（与账号默认号一致即免短信验证），再跟服务端核一次
-  inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
+  // 有本地登录态就先按缓存预填手机号与邮箱（号码与账号默认一致即免短信验证），再跟服务端核一次
+  prefillFromAccount()
   syncAccount()
 })
 
@@ -491,12 +478,19 @@ function syncAccount() {
       return
     }
     globalState.updateUserData(res.data.data)
-    inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
+    prefillFromAccount()
   })
 }
 
+/**
+ * 从账户预填联系方式：手机号（与账号默认一致即免短信验证）+ 邮箱（上次留过就自动填上，可改可清空）。
+ */
+function prefillFromAccount() {
+  inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
+  inputEmail.value = accountMail.value || ""
+}
+
 onBeforeUnmount(() => {
-  clearTimer(emailTimer)
   clearTimer(phoneTimer)
   if (slotTimer) {
     clearTimeout(slotTimer)
@@ -674,21 +668,6 @@ function openPolicyTab(type) {
   window.open(target.href, '_blank')
 }
 
-function sendEmailCode() {
-  if (!checkIsMail(inputEmail.value)) {
-    notifyTopWarning(t('booking.email_invalid'))
-    return
-  }
-  sendingEmailCode.value = true
-  portalSendCode({email: inputEmail.value}).then(res => {
-    sendingEmailCode.value = false
-    if (!res) {
-      return
-    }
-    notifyTopPositive(t('booking.email_code_sent'))
-    emailTimer = startCountdown(emailCountdown, emailTimer)
-  })
-}
 
 function sendPhoneCode() {
   if (!checkIsPhone(inputPhone.value)) {
@@ -754,15 +733,10 @@ function checkSelections() {
 }
 
 function checkContact() {
-  if (!isLoggedIn.value) {
-    if (!checkIsMail(inputEmail.value)) {
-      notifyTopWarning(t('booking.email_invalid'))
-      return false
-    }
-    if (!inputEmailCode.value) {
-      notifyTopWarning(t('booking.email_code_required'))
-      return false
-    }
+  // 邮箱可空、不验证：填了才校验格式（客户身份以手机号为准）
+  if (inputEmail.value && !checkIsMail(inputEmail.value)) {
+    notifyTopWarning(t('booking.email_invalid'))
+    return false
   }
   if (!checkIsPhone(inputPhone.value)) {
     notifyTopWarning(t('booking.phone_invalid'))
@@ -780,8 +754,9 @@ function checkContact() {
 }
 
 /**
- * 立即预约：未登录客户先用「邮箱验证码 + 短信验证码」免密登录（邮箱没注册过则自动建号），
+ * 立即预约：未登录客户先用「手机号 + 短信验证码」免密登录（该号码没账户则自动建号，会话 180 天），
  * 登录后该号码 30 分钟内可直接下单；已登录客户改了号码则先走一次短信校验。
+ * 邮箱是可空的联系方式，随登录/下单一起上送，不做验证。
  */
 async function doBook() {
   if (submitting.value || !checkSelections() || !checkContact()) {
@@ -792,8 +767,8 @@ async function doBook() {
   try {
     if (!isLoggedIn.value) {
       const authRes = await portalBookingLogin({
-        email: inputEmail.value,
-        code: inputEmailCode.value,
+        // 邮箱可空、不验证：仅作联系方式与下次预填值
+        email: inputEmail.value || null,
         phone: '1' + inputPhone.value,
         phoneCode: inputPhoneCode.value,
         // 站外投放归因（与注册同结构）：仅首次建号时记录
@@ -825,6 +800,8 @@ async function doBook() {
       phone: '1' + inputPhone.value,
       // 号码在免密登录时已存为新账户默认；老账户不擅自改其默认号码
       saveAsDefaultPhone: false,
+      // 本次联系邮箱（可空）：决定要不要发确认邮件与取消链接，同时同步为账户默认邮箱
+      email: inputEmail.value || null,
       remark: inputRemark.value || null,
       ...buildAttributionParams(),
     })
@@ -836,6 +813,7 @@ async function doBook() {
       return
     }
     createdInfo.value = {
+      mail: inputEmail.value || '',
       storeName: selectedStoreName.value,
       skillNames: selectedSkillNames.value,
       slot: selectedSlot.value,
@@ -861,11 +839,10 @@ function resetAll() {
   skillList.value = []
   staffList.value = []
   slotsByDate.value = {}
-  inputEmailCode.value = ""
   inputPhoneCode.value = ""
   inputRemark.value = ""
-  // 已登录（含刚自动登录）客户预填账号默认手机号
-  inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
+  // 已登录（含刚自动登录）客户预填账号默认手机号与邮箱
+  prefillFromAccount()
   nextTick(scrollToSelf)
 }
 
