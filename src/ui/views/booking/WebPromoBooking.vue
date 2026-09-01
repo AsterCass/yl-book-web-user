@@ -276,9 +276,10 @@
                 <div class="pbook-option-sub q-mt-xs">{{ $t('booking.phone_verify_hint') }}</div>
               </template>
 
-              <!-- 邮箱：可空、不验证。留了就发确认邮件 + 取消链接，并记住供下次预填 -->
+              <!-- 邮箱：必填但<b>不验证</b>（不发邮箱验证码）——确认邮件与取消链接都靠它，
+                   没有邮箱客户就只能打电话取消。后端仍允许为空，这里是前端口径 -->
               <q-input v-model="inputEmail" dense outlined type="email" class="pbook-input q-mt-md"
-                       :label="$t('booking.email_optional')"/>
+                       :label="$t('booking.email')"/>
               <div class="pbook-option-sub q-mt-xs">{{ $t('booking.email_hint') }}</div>
 
               <!-- 短信合规披露（静态声明，非勾选项） -->
@@ -807,8 +808,12 @@ function checkSelections() {
 }
 
 function checkContact() {
-  // 邮箱可空、不验证：填了才校验格式（客户身份以手机号为准）
-  if (inputEmail.value && !checkIsMail(inputEmail.value)) {
+  // 邮箱必填、但不做验证码验证：确认邮件与取消链接都要用它
+  if (!inputEmail.value) {
+    notifyTopWarning(t('booking.email_required'))
+    return false
+  }
+  if (!checkIsMail(inputEmail.value)) {
     notifyTopWarning(t('booking.email_invalid'))
     return false
   }
@@ -843,8 +848,8 @@ async function doBook() {
     // needsPhoneCode = 未登录，或填的号码 ≠ 账户号码 —— 两种都要用这个号码重新登录（换号码=换账号）
     if (needsPhoneCode.value) {
       const authRes = await portalBookingLogin({
-        // 邮箱可空、不验证：仅作联系方式与下次预填值
-        email: inputEmail.value || null,
+        // 邮箱：前端必填、不验证，仅作联系方式与下次预填值
+        email: inputEmail.value,
         phone: '1' + inputPhone.value,
         phoneCode: inputPhoneCode.value,
         // 站外投放归因（与注册同结构）：仅首次建号时记录
@@ -868,8 +873,8 @@ async function doBook() {
       skillIdList: selectedSkillIds.value,
       preferredStaffId: selectedStaffId.value || null,
       phone: '1' + inputPhone.value,
-      // 本次联系邮箱（可空）：决定要不要发确认邮件与取消链接，同时同步为账户默认邮箱
-      email: inputEmail.value || null,
+      // 本次联系邮箱（前端必填）：确认邮件与取消链接都发它，同时同步为账户默认邮箱
+      email: inputEmail.value,
       remark: inputRemark.value || null,
       ...buildAttributionParams(),
     })
