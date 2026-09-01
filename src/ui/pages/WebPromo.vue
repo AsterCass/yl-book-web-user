@@ -173,6 +173,10 @@
           <div class="promo-footer-title">{{ $t('promo.footer.links') }}</div>
           <router-link :to="{name: 'policyTerms'}" class="promo-footer-link q-mt-xs">{{ $t('policy.terms') }}</router-link>
           <router-link :to="{name: 'policyPrivacy'}" class="promo-footer-link q-mt-xs">{{ $t('policy.privacy') }}</router-link>
+          <!-- 短信项目说明：A2P 审核要求 opt-in 方式可被独立核验 -->
+          <router-link :to="{name: 'smsProgram'}" class="promo-footer-link q-mt-xs">{{
+              $t('smsProgram.link')
+            }}</router-link>
           <!-- 广告衡量退出入口：州法要求「不出售/不分享」链接在首页可直达 -->
           <router-link :to="{name: 'doNotSell'}" class="promo-footer-link q-mt-xs">{{
               $t('doNotSell.link')

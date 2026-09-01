@@ -9,6 +9,7 @@ import WebPolicy from "@/ui/pages/WebPolicy.vue";
 import WebSurvey from "@/ui/pages/WebSurvey.vue";
 import WebBookingCancel from "@/ui/pages/WebBookingCancel.vue";
 import WebDoNotSell from "@/ui/pages/WebDoNotSell.vue";
+import WebSmsProgram from "@/ui/pages/WebSmsProgram.vue";
 import WebHome from "@/ui/pages/WebHome.vue";
 import WebPromo from "@/ui/pages/WebPromo.vue";
 import {trackPageView} from '@/utils/pixel'
@@ -77,6 +78,16 @@ const router = createRouter({
             props: {docType: 'privacy'},
         },
         {
+            // 短信项目说明页：A2P 10DLC 审核用的固定 URL（填进 Twilio Campaign 的 opt-in 描述），
+            // 把预约表单里那段 opt-in 文案摊开在一页上，免得审核员要走完五步才看得到
+            path: "/sms",
+            name: "smsProgram",
+            component: WebSmsProgram,
+            meta: {
+                title: 'smsProgram.title'
+            },
+        },
+        {
             // 「不出售/不分享我的个人信息」：广告衡量（Meta Pixel）的退出入口。
             // 加州等州法要求该链接在首页显著位置可达——页脚已挂
             path: "/do-not-sell",
@@ -89,7 +100,11 @@ const router = createRouter({
         {
             // 取消预约页：免登录，凭预约成功邮件里的取消链接 token 访问（15 天有效，取消后再点开显示「已取消」）。
             // 客户端已无登录与「我的预约」页，这是客户自助取消的唯一入口
-            path: "/booking/cancel/:token",
+            // 短路径：取消链接要发短信，GSM-7 一段才 160 字符，路径和 token 都得省着用
+            // （token 见后端 shortToken）。旧的 /booking/cancel/:token 作为别名保留，
+            // 已发出去的长链接不至于变 404
+            path: "/c/:token",
+            alias: ["/booking/cancel/:token"],
             name: "bookingCancel",
             component: WebBookingCancel,
             meta: {

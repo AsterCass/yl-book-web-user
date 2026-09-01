@@ -411,6 +411,8 @@ let slotTimer = null
 
 const isLoggedIn = computed(() => !!globalState.userData)
 const accountMail = computed(() => globalState.userData ? globalState.userData.mail : '')
+// 账户上的营销短信同意（后端 PortalUserDto.smsMarketingConsent，0/1）
+const accountSmsConsent = computed(() => !!(globalState.userData && globalState.userData.smsMarketingConsent === 1))
 
 // 账号默认手机号（10 位本地号码口径；历史数据可能带国家码 1）
 const accountPhoneNational = computed(() => normalizeNational(
@@ -502,6 +504,8 @@ function syncAccount() {
 function prefillFromAccount() {
   inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
   inputEmail.value = accountMail.value || ""
+  // 营销短信同意：回填账户上的现值，客户每次预约都能改（改了下单即生效）
+  marketingConsent.value = accountSmsConsent.value
 }
 
 onBeforeUnmount(() => {
@@ -875,6 +879,8 @@ async function doBook() {
       phone: '1' + inputPhone.value,
       // 本次联系邮箱（前端必填）：确认邮件与取消链接都发它，同时同步为账户默认邮箱
       email: inputEmail.value,
+      // 营销短信同意（可选项）：每次预约都上送本次表态，后端变了才写库并记时间/IP/文案版本
+      smsMarketingConsent: marketingConsent.value,
       remark: inputRemark.value || null,
       ...buildAttributionParams(),
     })
