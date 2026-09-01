@@ -220,7 +220,7 @@
     },
     "phone_hint": "Required. US/Canada mobile number only, so that we can quickly contact you in case of emergencies.",
     "phone_invalid": "Please enter a valid 10-digit US/Canada mobile number",
-    "phone_verify_hint": "Tap \"Send code\" and enter the SMS code to verify it.",
+    "phone_verify_hint": "Tap \"Send code\" and enter the SMS code. A different number signs you in to that number's bookings.",
     "phone_code_placeholder": "SMS code",
     "phone_code_send": "Send code",
     "phone_code_sent": "Verification code sent",

@@ -334,7 +334,7 @@ import {
   portalBookingStaffs,
   portalBookingStores
 } from "@/api/portal-booking.js";
-import {portalBookingLogin, portalMe, portalPhoneSendCode, portalPhoneVerify} from "@/api/portal-auth.js";
+import {portalBookingLogin, portalMe, portalPhoneSendCode} from "@/api/portal-auth.js";
 import {track, trackCustom} from "@/utils/pixel.js";
 
 const t = i18n.global.t
@@ -393,8 +393,6 @@ const sendingPhoneCode = ref(false)
 const phoneCountdown = ref(0)
 let phoneTimer = null
 let slotTimer = null
-// 本次流程已通过短信验证的号码（已登录改号场景）：Twilio 验证码一次性，避免重复校验
-const verifiedPhone = ref("")
 
 const isLoggedIn = computed(() => !!globalState.userData)
 const accountMail = computed(() => globalState.userData ? globalState.userData.mail : '')
@@ -403,7 +401,8 @@ const accountMail = computed(() => globalState.userData ? globalState.userData.m
 const accountPhoneNational = computed(() => normalizeNational(
     globalState.userData ? globalState.userData.phone : ''))
 
-// 未登录：手机号一定要验（验证通过才自动登录）；已登录：仅当与账号默认号码不一致时要验
+// 要不要短信验证：未登录，或填的号码 ≠ 当前会话账户的号码——两种都要验，
+// 因为手机号就是账号，换号码等于换一个账号登录（不是给当前账户改绑号码）
 const needsPhoneCode = computed(() =>
     !isLoggedIn.value || !accountPhoneNational.value || accountPhoneNational.value !== inputPhone.value)
 
@@ -742,7 +741,7 @@ function checkContact() {
     notifyTopWarning(t('booking.phone_invalid'))
     return false
   }
-  if (needsPhoneCode.value && verifiedPhone.value !== inputPhone.value && !inputPhoneCode.value) {
+  if (needsPhoneCode.value && !inputPhoneCode.value) {
     notifyTopWarning(t('booking.phone_code_required'))
     return false
   }
@@ -754,8 +753,9 @@ function checkContact() {
 }
 
 /**
- * 立即预约：未登录客户先用「手机号 + 短信验证码」免密登录（该号码没账户则自动建号，会话 180 天），
- * 登录后该号码 30 分钟内可直接下单；已登录客户改了号码则先走一次短信校验。
+ * 立即预约。<b>手机号就是账号</b>：只要填的号码与当前会话账户的号码不一致（含未登录），
+ * 就用「手机号 + 短信验证码」重新走一次免密登录 —— 会话切到该号码的账户（没有则自动建号，会话 180 天），
+ * <b>不是</b>给当前账户改绑号码（那会让单子算到别人号码头上）。号码一致则直接下单，无需任何验证。
  * 邮箱是可空的联系方式，随登录/下单一起上送，不做验证。
  */
 async function doBook() {
@@ -765,7 +765,8 @@ async function doBook() {
   submitting.value = true
   const wasLoggedIn = isLoggedIn.value
   try {
-    if (!isLoggedIn.value) {
+    // needsPhoneCode = 未登录，或填的号码 ≠ 账户号码 —— 两种都要用这个号码重新登录（换号码=换账号）
+    if (needsPhoneCode.value) {
       const authRes = await portalBookingLogin({
         // 邮箱可空、不验证：仅作联系方式与下次预填值
         email: inputEmail.value || null,
@@ -782,15 +783,9 @@ async function doBook() {
         notifyTopWarning(t('login.token_missing'))
         return
       }
+      // 会话切到该号码的账户（可能与之前不是同一个账户）
       globalState.updateLoginToken(token)
       globalState.updateUserData(authRes.data.data)
-      verifiedPhone.value = inputPhone.value
-    } else if (needsPhoneCode.value && verifiedPhone.value !== inputPhone.value) {
-      const verifyRes = await portalPhoneVerify({phone: '1' + inputPhone.value, code: inputPhoneCode.value})
-      if (!verifyRes) {
-        return
-      }
-      verifiedPhone.value = inputPhone.value
     }
     const createRes = await portalBookingCreate({
       storeId: selectedStoreId.value,
@@ -798,8 +793,6 @@ async function doBook() {
       skillIdList: selectedSkillIds.value,
       preferredStaffId: selectedStaffId.value || null,
       phone: '1' + inputPhone.value,
-      // 号码在免密登录时已存为新账户默认；老账户不擅自改其默认号码
-      saveAsDefaultPhone: false,
       // 本次联系邮箱（可空）：决定要不要发确认邮件与取消链接，同时同步为账户默认邮箱
       email: inputEmail.value || null,
       remark: inputRemark.value || null,

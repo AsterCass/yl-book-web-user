@@ -89,14 +89,6 @@ export function portalPhoneSendCode(body) {
     })
 }
 
-// body: {phone, code}；需登录，限流：同 IP 20 次/时。通过后 30 分钟内可用该号码下单
-export function portalPhoneVerify(body) {
-    return serviceShiro({
-        url: `/portal/auth/phone/verify`,
-        data: body,
-        method: 'post',
-    })
-}
 
 export function portalLogout() {
     return serviceShiro({

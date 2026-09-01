@@ -220,7 +220,7 @@
     },
     "phone_hint": "必填，仅支持美国/加拿大手机号，方便特殊情况可以快速联系到您。",
     "phone_invalid": "请输入有效的 10 位美国/加拿大手机号",
-    "phone_verify_hint": "请点击「发送验证码」并填入短信验证码以验证真实性。",
+    "phone_verify_hint": "点击「发送验证码」并填入短信验证码。更换号码即以该号码的身份预约。",
     "phone_code_placeholder": "短信验证码",
     "phone_code_send": "发送验证码",
     "phone_code_sent": "验证码已发送",
