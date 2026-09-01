@@ -183,6 +183,7 @@
   },
   "booking": {
     "create": "创建新预约",
+    "auto_store_hint": "已按您的位置选择离您最近的 {name}（约 {distance}），可点选其它门店更改。",
     "no_store": "暂无可预约门店",
     "no_project": "该门店暂无可预约项目",
     "no_slot": "当天已约满，请换一天试试",

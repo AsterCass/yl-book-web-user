@@ -183,6 +183,7 @@
   },
   "booking": {
     "create": "Create a new booking",
+    "auto_store_hint": "Nearest to you: {name} ({distance}) — tap another store to change.",
     "no_store": "No bookable store available",
     "no_project": "No service available for this store",
     "no_slot": "Fully booked on this date. Please try another day.",

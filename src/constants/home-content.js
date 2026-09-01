@@ -2,6 +2,9 @@
 // 门店与服务均为静态展示文案（实际可约项目/价格以门店与预约流程为准）。
 // 新增门店：在 HOME_STORES 追加一个条目即可；可本地化字段统一用 {zh, en} 结构，
 // 由页面按当前语言取值（见 WebHome.vue 的 lv()）。
+//
+// ⚠️ 新增门店记得补 lat/lng：预约区「点 Book now 时按定位自动选最近门店」靠它算距离
+// （见 utils/store-geo.js）。不填 = 该店不参与自动选择，其余功能不受影响。
 
 // 对外品牌名（须与 Google OAuth 同意屏幕配置的应用名称完全一致，勿加后缀；
 // 各语言页面均原样展示该拉丁名，品牌审核按此核对）
@@ -12,6 +15,9 @@ export const HOME_STORES = [
         id: 'manhattan',
         name: {zh: '曼哈顿店（唐人街）', en: 'Manhattan · Chinatown'},
         address: '196 Hester St., New York, NY 10013',
+        // 就近推荐用坐标（按地址粗填，精度到街区即可——两店相距约 4 km，不影响判断；请核对后修正）
+        lat: 40.7176,
+        lng: -73.9967,
         // 谷歌商家分享链接（可空）：配置后门店地址可点击、新标签页打开；未配置则地址为纯文本、无点击交互
         mapUrl: 'https://share.google/gNwyFF37aPQR2Wpka',
         phone: '(631) 894-9981',
@@ -23,6 +29,9 @@ export const HOME_STORES = [
         id: 'brooklyn',
         name: {zh: '布鲁克林店', en: 'Brooklyn'},
         address: '189 Court St., Brooklyn, NY 11201',
+        // 同上，按地址粗填待核对
+        lat: 40.6861,
+        lng: -73.9943,
         mapUrl: 'https://g.co/kgs/UbrEGJD',
         phone: '(631) 652-9981',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 am – 10:00 pm'},

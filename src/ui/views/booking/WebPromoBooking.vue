@@ -73,19 +73,26 @@
                 <q-spinner-pie size="34px"/>
               </div>
               <div v-else-if="!storeList.length" class="pbook-placeholder">{{ $t('booking.no_store') }}</div>
-              <div v-else class="column">
-                <div v-for="s in storeList" :key="s.id" class="pbook-option column q-my-xs"
-                     :class="{'pbook-option-active': selectedStoreId === s.id}" @click="selectStore(s)">
-                  <div class="row items-center no-wrap">
-                    <q-icon name="fa-solid fa-store" size=".95rem" class="q-mr-sm promo-accent"/>
-                    <div class="col pbook-option-name">{{ s.name }}</div>
-                    <q-icon v-if="selectedStoreId === s.id" name="fa-solid fa-circle-check"
-                            size="1rem" class="promo-accent q-ml-sm"/>
-                  </div>
-                  <div v-if="s.address" class="pbook-option-sub">{{ s.address }}</div>
-                  <div v-if="s.phone" class="pbook-option-sub">{{ s.phone }}</div>
+              <template v-else>
+                <!-- 定位自动选中的提示：让客户知道这不是他选的，且门店列表照常可点、随时能改 -->
+                <div v-if="autoStoreHint" class="pbook-option-sub q-mb-xs row items-center no-wrap">
+                  <q-icon name="fa-solid fa-location-crosshairs" size=".85rem" class="q-mr-xs promo-accent"/>
+                  <div>{{ autoStoreHint }}</div>
                 </div>
-              </div>
+                <div class="column">
+                  <div v-for="s in storeList" :key="s.id" class="pbook-option column q-my-xs"
+                       :class="{'pbook-option-active': selectedStoreId === s.id}" @click="selectStore(s)">
+                    <div class="row items-center no-wrap">
+                      <q-icon name="fa-solid fa-store" size=".95rem" class="q-mr-sm promo-accent"/>
+                      <div class="col pbook-option-name">{{ s.name }}</div>
+                      <q-icon v-if="selectedStoreId === s.id" name="fa-solid fa-circle-check"
+                              size="1rem" class="promo-accent q-ml-sm"/>
+                    </div>
+                    <div v-if="s.address" class="pbook-option-sub">{{ s.address }}</div>
+                    <div v-if="s.phone" class="pbook-option-sub">{{ s.phone }}</div>
+                  </div>
+                </div>
+              </template>
             </div>
 
             <!-- 项目（可多选；依赖门店：未选门店只给标题） -->
@@ -326,6 +333,7 @@ import {useGlobalStateStore} from "@/utils/global-state.js";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
 import {checkIsMail, checkIsPhone} from "@/utils/format-check.js";
 import {buildAttributionParams} from "@/utils/landing-params.js";
+import {currentPosition, nearestStore} from "@/utils/store-geo.js";
 import {TimezoneOptEnum} from "@/constants/enums/common.js";
 import {
   portalBookingCreate,
@@ -376,6 +384,10 @@ const loadingStaffs = ref(false)
 const loadingSlots = ref(false)
 
 const selectedStoreId = ref("")
+// 按定位自动选中的门店提示（"已按您的位置选择 XX（约 X km）"）；客户改选其它门店即消失
+const autoStoreHint = ref("")
+// 定位只在首次点 Book now 时尝试一次：失败/拒绝不重试，免得反复打扰
+let autoPickTried = false
 const selectedSkillIds = ref([])
 const selectedStaffId = ref("")
 // 偏好员工「已做出选择」（含选了「不指定」）：凭它决定是否展开选时间
@@ -536,6 +548,54 @@ function loadStores() {
   })
 }
 
+/**
+ * 选中门店并重置下游选择（项目/员工/时间）。<b>不滚动</b>——自动选门店时不能把正在看首页的客户拽走。
+ */
+function applyStore(s) {
+  selectedStoreId.value = s.id
+  selectedSkillIds.value = []
+  selectedStaffId.value = ""
+  staffChosen.value = false
+  selectedDate.value = ""
+  skillList.value = []
+  staffList.value = []
+  loadSkills()
+}
+
+/**
+ * 点「Book now」时尝试按定位自动选最近门店（纯前端：坐标来自 home-content.js，见 utils/store-geo.js）。
+ * <p>
+ * 只在「客户还没手动选过门店」且「本次会话没试过」时执行；不支持定位 / 用户拒绝 / 超时 /
+ * 门店匹配不到坐标 / 最近的也在 50km 外——<b>任何一种情况都静默放弃</b>，回到客户自己选门店的原有流程。
+ * 定位结果只在内存里用一次：不写 localStorage、不上送后端。
+ */
+async function tryAutoPickStore() {
+  if (autoPickTried || selectedStoreId.value) {
+    return
+  }
+  autoPickTried = true
+  const pos = await currentPosition()
+  // 定位要 1~3 秒：期间客户可能已经自己选了门店，那就以他的选择为准
+  if (!pos || selectedStoreId.value || !storeList.value.length) {
+    return
+  }
+  const best = nearestStore(storeList.value, pos)
+  if (!best) {
+    return
+  }
+  applyStore(best.store)
+  autoStoreHint.value = t('booking.auto_store_hint', {name: best.store.name, distance: formatDistance(best.km)})
+}
+
+/**
+ * 距离展示：中文用公里，英文用英里（面向美国客户）。
+ */
+function formatDistance(km) {
+  return i18n.global.locale.value === 'zh'
+      ? `${km.toFixed(1)} 公里`
+      : `${(km * 0.621371).toFixed(1)} mi`
+}
+
 function loadSkills() {
   loadingSkills.value = true
   skillList.value = []
@@ -617,14 +677,9 @@ function scrollTo(el) {
 
 function selectStore(s) {
   if (selectedStoreId.value !== s.id) {
-    selectedStoreId.value = s.id
-    selectedSkillIds.value = []
-    selectedStaffId.value = ""
-    staffChosen.value = false
-    selectedDate.value = ""
-    skillList.value = []
-    staffList.value = []
-    loadSkills()
+    applyStore(s)
+    // 手动选门店 = 客户自己的决定，清掉自动选择的提示
+    autoStoreHint.value = ""
     trackCustom('StoreSelected')
   }
   scrollTo(skillSecEl.value)
@@ -843,6 +898,8 @@ function resetAll() {
  * 把预约区滚到视口中心（放不下则贴顶）。首页的「Book now」按钮也调用它，故对外暴露。
  */
 function scrollToSelf() {
+  // 「Book now」既是滚动入口，也是定位授权的触发点（用户手势内发起，不在页面加载时弹权限框）
+  tryAutoPickStore()
   const el = rootEl.value
   if (!el) {
     return
