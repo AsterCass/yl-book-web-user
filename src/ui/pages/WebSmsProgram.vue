@@ -37,13 +37,23 @@
       <div class="sms-muted">{{ $t('smsProgram.optin_steps') }}</div>
 
       <div class="sms-quote q-px-md q-py-sm q-mt-sm">
+        <div class="sms-quote-label">{{ $t('smsProgram.quote_intro') }}</div>
+        <div>{{ $t('booking.sms_consent_intro') }}</div>
+      </div>
+
+      <div class="sms-quote q-px-md q-py-sm q-mt-sm">
         <div class="sms-quote-label">{{ $t('smsProgram.quote_transactional') }}</div>
-        <div>{{ $t('booking.sms_disclosure') }}{{ $t('policy.privacy') }}{{ $t('policy.and') }}{{ $t('policy.terms') }}{{ $t('booking.sms_disclosure_suffix') }}</div>
+        <div>{{ $t('booking.sms_notify_consent') }}</div>
       </div>
 
       <div class="sms-quote q-px-md q-py-sm q-mt-sm">
         <div class="sms-quote-label">{{ $t('smsProgram.quote_marketing') }}</div>
         <div>{{ $t('booking.marketing_consent') }}</div>
+      </div>
+
+      <div class="sms-quote q-px-md q-py-sm q-mt-sm">
+        <div class="sms-quote-label">{{ $t('smsProgram.quote_terms') }}</div>
+        <div>{{ $t('booking.sms_consent_terms') }}{{ $t('policy.privacy') }}{{ $t('policy.and') }}{{ $t('policy.terms') }}{{ $t('booking.sms_disclosure_suffix') }}</div>
       </div>
 
       <div class="sms-muted q-mt-sm">{{ $t('smsProgram.optin_note') }}</div>

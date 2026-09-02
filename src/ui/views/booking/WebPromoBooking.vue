@@ -260,6 +260,8 @@
               <q-input v-model="inputPhone" dense outlined inputmode="numeric" :maxlength="PHONE_LEN"
                        class="pbook-input q-mt-md" :label="$t('booking.field.phone')" prefix="+1"/>
               <div class="pbook-option-sub q-mt-xs">{{ $t('booking.phone_hint') }}</div>
+              <!-- 验证码是客户主动点按钮触发的一次性短信，不需要事先勾选同意；这里如实说明 -->
+              <div class="pbook-option-sub q-mt-xs">{{ $t('booking.phone_otp_note') }}</div>
 
               <!-- 需要短信验证：未登录一律要验；已登录仅在号码与账户默认不一致时要验 -->
               <template v-if="needsPhoneCode">
@@ -282,19 +284,37 @@
                        :label="$t('booking.email')"/>
               <div class="pbook-option-sub q-mt-xs">{{ $t('booking.email_hint') }}</div>
 
-              <!-- 短信合规披露（静态声明，非勾选项） -->
-              <div class="pbook-disclosure q-mt-md">
-                {{ $t('booking.sms_disclosure') }}<span class="pbook-link"
-                                                       @click="openPolicyTab('privacy')">{{ $t('policy.privacy') }}</span>{{ $t('policy.and') }}<span
-                  class="pbook-link" @click="openPolicyTab('terms')">{{ $t('policy.terms') }}</span>{{ $t('booking.sms_disclosure_suffix') }}
-              </div>
-              <!-- 营销短信同意：可选、默认不勾选，仅界面收集（不上送后端） -->
-              <div class="row items-start no-wrap q-mt-sm">
-                <q-checkbox v-model="marketingConsent" dense size="xs" class="q-mr-sm"
-                            checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
-                <div class="col pbook-disclosure" style="cursor: pointer"
-                     @click="marketingConsent = !marketingConsent">
-                  {{ $t('booking.marketing_consent') }}
+              <!-- 短信同意：两个<b>相互独立、默认不勾</b>的复选框（A2P 10DLC 30923 Forced Consent 的整改）。
+                   ⚠️ 两个都不勾也必须能正常下单——只要「不同意就不能用服务」，就还是 forced consent。
+                   验证码不在这里收同意：它由客户自己点「发送验证码」触发，那一下就是同意本身。 -->
+              <div class="pbook-consent q-mt-md q-px-md q-py-sm">
+                <div class="pbook-disclosure">{{ $t('booking.sms_consent_intro') }}</div>
+
+                <!-- ① 预约通知类短信（非营销） -->
+                <div class="row items-start no-wrap q-mt-sm">
+                  <q-checkbox v-model="smsNotifyConsent" dense size="xs" class="q-mr-sm"
+                              checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
+                  <div class="col pbook-disclosure" style="cursor: pointer"
+                       @click="smsNotifyConsent = !smsNotifyConsent">
+                    {{ $t('booking.sms_notify_consent') }}
+                  </div>
+                </div>
+
+                <!-- ② 营销类短信，与①完全独立 -->
+                <div class="row items-start no-wrap q-mt-sm">
+                  <q-checkbox v-model="marketingConsent" dense size="xs" class="q-mr-sm"
+                              checked-icon="task_alt" unchecked-icon="panorama_fish_eye"/>
+                  <div class="col pbook-disclosure" style="cursor: pointer"
+                       @click="marketingConsent = !marketingConsent">
+                    {{ $t('booking.marketing_consent') }}
+                  </div>
+                </div>
+
+                <!-- 资费/退订/政策链接：两个勾选框共用的说明 -->
+                <div class="pbook-disclosure q-mt-sm">
+                  {{ $t('booking.sms_consent_terms') }}<span class="pbook-link"
+                                                             @click="openPolicyTab('privacy')">{{ $t('policy.privacy') }}</span>{{ $t('policy.and') }}<span
+                    class="pbook-link" @click="openPolicyTab('terms')">{{ $t('policy.terms') }}</span>{{ $t('booking.sms_disclosure_suffix') }}
                 </div>
               </div>
             </div>
@@ -403,6 +423,8 @@ const inputPhone = ref("")
 const inputPhoneCode = ref("")
 const inputRemark = ref("")
 const marketingConsent = ref(false)
+// 预约通知类短信同意（非营销）：默认不勾，不勾也能下单——只是收不到短信通知
+const smsNotifyConsent = ref(false)
 
 const sendingPhoneCode = ref(false)
 const phoneCountdown = ref(0)
@@ -413,6 +435,8 @@ const isLoggedIn = computed(() => !!globalState.userData)
 const accountMail = computed(() => globalState.userData ? globalState.userData.mail : '')
 // 账户上的营销短信同意（后端 PortalUserDto.smsMarketingConsent，0/1）
 const accountSmsConsent = computed(() => !!(globalState.userData && globalState.userData.smsMarketingConsent === 1))
+// 账户上的「预约通知短信」同意（PortalUserDto.smsNotifyConsent，0/1）
+const accountSmsNotifyConsent = computed(() => !!(globalState.userData && globalState.userData.smsNotifyConsent === 1))
 
 // 账号默认手机号（10 位本地号码口径；历史数据可能带国家码 1）
 const accountPhoneNational = computed(() => normalizeNational(
@@ -506,6 +530,7 @@ function prefillFromAccount() {
   inputEmail.value = accountMail.value || ""
   // 营销短信同意：回填账户上的现值，客户每次预约都能改（改了下单即生效）
   marketingConsent.value = accountSmsConsent.value
+  smsNotifyConsent.value = accountSmsNotifyConsent.value
 }
 
 onBeforeUnmount(() => {
@@ -880,6 +905,8 @@ async function doBook() {
       // 本次联系邮箱（前端必填）：确认邮件与取消链接都发它，同时同步为账户默认邮箱
       email: inputEmail.value,
       // 营销短信同意（可选项）：每次预约都上送本次表态，后端变了才写库并记时间/IP/文案版本
+      // 两类短信同意各自独立上送；后端变了才写库并记时间/IP/文案版本
+      smsNotifyConsent: smsNotifyConsent.value,
       smsMarketingConsent: marketingConsent.value,
       remark: inputRemark.value || null,
       ...buildAttributionParams(),
