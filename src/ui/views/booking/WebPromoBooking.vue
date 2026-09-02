@@ -905,9 +905,12 @@ async function doBook() {
       // 本次联系邮箱（前端必填）：确认邮件与取消链接都发它，同时同步为账户默认邮箱
       email: inputEmail.value,
       // 营销短信同意（可选项）：每次预约都上送本次表态，后端变了才写库并记时间/IP/文案版本
-      // 两类短信同意各自独立上送；后端变了才写库并记时间/IP/文案版本
-      smsNotifyConsent: smsNotifyConsent.value,
-      smsMarketingConsent: marketingConsent.value,
+      // 两类短信同意各自独立上送；后端变了才写库并记时间/IP/文案版本。
+      // ⚠️ 未登录时勾选框是空的、客户看不到自己既有的选择，此时「没勾」只能理解为
+      //    「本次未表态」(null)，绝不能当成撤回——否则老客户换台设备下单就会把之前的同意悄悄抹掉。
+      //    勾了永远是明确同意；只有在能看见既有状态（已登录）时，没勾才算撤回。
+      smsNotifyConsent: smsNotifyConsent.value ? true : (wasLoggedIn ? false : null),
+      smsMarketingConsent: marketingConsent.value ? true : (wasLoggedIn ? false : null),
       remark: inputRemark.value || null,
       ...buildAttributionParams(),
     })
