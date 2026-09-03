@@ -206,7 +206,8 @@
       "type_booking": "Appointment messages — confirmations, reminders, reschedule and cancellation notices — only to customers who checked the appointment-texts box.",
       "type_marketing": "Occasional promotional offers and coupons — only to customers who separately opted in.",
       "optin_title": "How customers opt in",
-      "optin_steps": "No account, password or login is required at any point. Anyone can open our homepage, choose a store, service, preferred staff and time, and reach the final step where the mobile number is entered. Consent to receive text messages is given through two separate checkboxes, both unchecked by default and both entirely optional — a customer can complete a booking without checking either one. The exact wording shown on the form is reproduced below:",
+      "reviewer_note": "The opt-in form is on this page, below: enter a phone number and you will see the two text-message consent checkboxes, both unchecked by default. No account or login is needed.",
+    "optin_steps": "No account, password or login is required at any point. The opt-in form is published on this page (below) and is also part of the booking flow on our homepage. Consent to receive text messages is given through two separate checkboxes, both unchecked by default and both entirely optional — a customer can complete a booking without checking either one. The exact wording is reproduced below:",
       "quote_intro": "Shown above the checkboxes:",
     "quote_terms": "Shown below the checkboxes:",
     "quote_transactional": "Checkbox 1 — appointment texts, unchecked by default:",
@@ -225,7 +226,7 @@
       "carrier": "Carriers are not liable for delayed or undelivered messages.",
       "more_title": "Related policies",
       "contact": "Questions about this program: legal{'@'}zyyboh.com.",
-      "see_form": "See the booking form"
+      "see_form": "Go to the opt-in form"
   },
   "booking": {
     "create": "Create a new booking",

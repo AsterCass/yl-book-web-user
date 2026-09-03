@@ -1,11 +1,11 @@
 <template>
 
-  <!-- 短信项目说明页（/sms）：A2P 10DLC / CTIA 要求「同意方式可被独立核验」，
-       但预约表单里的 opt-in 文案要点五步才看得到，审核员多半走不完。这页把同一段文案摊开在一个
-       固定 URL 上，填进 Twilio Campaign 的 opt-in 描述里，审核员一点即达。
-       ⚠️ 页面上的 opt-in 原文<b>直接取自表单用的同一批 i18n key</b>（booking.sms_disclosure /
-       booking.marketing_consent），不另抄一份——抄一份迟早会和表单说成两套，那正是审核最忌讳的。
-       受众是审核员而非客户，因此只在页脚留链接，不进主导航。 -->
+  <!-- 短信项目说明 + opt-in 表单（/sms）：这是填进 Twilio Campaign 的「用户在哪订阅」URL。
+       A2P 审核连拒两次的症结都是「打开链接看不到勾选框」（30909：no opt-in is being collected
+       on link given in the campaign）——首页的预约表单是两步的，同意区在第 2 步、要点五次才出现。
+       所以这页把<b>同一个预约组件</b>以 single-step 模式整页铺开：打开即可看到手机号输入框和
+       两个默认不勾的短信同意复选框，无需登录、无需点击。
+       ⚠️ 用的是同一个组件、同一批 i18n key，不是复制件——复制迟早和首页说成两套，那正是审核最忌讳的。 -->
   <div class="sms-page column items-center">
 
     <div class="sms-topbar full-width row items-center q-px-md">
@@ -23,6 +23,10 @@
     <div class="sms-card column q-my-lg">
 
       <div class="sms-muted">{{ $t('smsProgram.intro') }}</div>
+      <!-- 指路：审核员进来第一眼就知道勾选框在哪 -->
+      <div class="sms-notes q-px-md q-py-sm q-mt-md">
+        <b>{{ $t('smsProgram.reviewer_note') }}</b>
+      </div>
 
       <!-- 1. 发什么 -->
       <h6 class="sms-h6">{{ $t('smsProgram.types_title') }}</h6>
@@ -80,6 +84,11 @@
 
     </div>
 
+    <!-- 真实的 opt-in 表单：与首页同一个组件，只是铺成一页，同意复选框直接可见 -->
+    <div id="sms-opt-in" class="full-width">
+      <web-promo-booking single-step/>
+    </div>
+
     <q-space/>
 
     <div class="sms-copy full-width q-py-md text-center">
@@ -95,17 +104,20 @@
 
 import {useRouter} from "vue-router";
 import {switchLanguage} from "@/utils/global-tools.js";
+import WebPromoBooking from "@/ui/views/booking/WebPromoBooking.vue";
 
 const thisRouter = useRouter()
 
 const curYear = new Date().getFullYear()
 
 /**
- * 「去看真实表单」：回首页并滚到预约区。审核员据此可在<b>不登录、不注册</b>的前提下
- * 一路走到手机号输入框，亲眼看到上面引用的那段 opt-in 文案。
+ * 滚到本页下方的真实表单（同意复选框就在里面）。不跳首页——审核员要的就是「这个 URL 上能看到 opt-in」。
  */
 function goBook() {
-  thisRouter.push({name: 'index'})
+  const el = document.getElementById('sms-opt-in')
+  if (el) {
+    el.scrollIntoView({behavior: 'smooth', block: 'start'})
+  }
 }
 
 </script>

@@ -41,8 +41,8 @@
       <!-- ===== 预约表单：两步卡片（选内容 → 确认信息 + 联系方式） ===== -->
       <div v-else class="pbook-card q-pa-lg">
 
-        <!-- 步骤指示（大小视图同一套两步流程） -->
-        <div class="column items-center q-mb-md">
+        <!-- 步骤指示（两步模式才有；单步模式下没有「步」可言） -->
+        <div v-if="!singleStep" class="column items-center q-mb-md">
           <div class="row items-center justify-center">
             <template v-for="s in TOTAL_STEP" :key="s">
               <div class="pbook-step-dot row items-center justify-center"
@@ -323,14 +323,14 @@
 
         </div>
 
-        <!-- 底部操作：大视图只有一个提交按钮；小视图为上一步/下一步/预约 -->
+        <!-- 底部操作：两步模式为上一步/下一步/预约；单步模式只留一个提交按钮 -->
         <div ref="actionEl" class="row items-center q-mt-lg"
-             :class="step === 1 ? 'justify-center' : 'justify-between'">
-          <button v-if="step > 1" class="promo-book-btn pbook-btn-sm pbook-btn-ghost"
+             :class="singleStep || step === 1 ? 'justify-center' : 'justify-between'">
+          <button v-if="!singleStep && step > 1" class="promo-book-btn pbook-btn-sm pbook-btn-ghost"
                   :disabled="submitting" @click="step = 1">
             {{ $t('booking.prev') }}
           </button>
-          <button v-if="step === 1" class="promo-book-btn pbook-btn-sm" @click="toConfirmStep">
+          <button v-if="!singleStep && step === 1" class="promo-book-btn pbook-btn-sm" @click="toConfirmStep">
             {{ $t('booking.next') }}
           </button>
           <button v-else class="promo-book-btn pbook-btn-sm" :disabled="submitting" @click="doBook">
@@ -390,6 +390,20 @@ const staffSecEl = ref(null)
 const timeSecEl = ref(null)
 const actionEl = ref(null)
 
+/**
+ * 单步模式：把两步（选内容 → 确认 + 联系方式）铺成一页。
+ * <p>
+ * 给 /sms 页用——A2P 审核员打开链接就得看见短信同意的复选框；两步流程里它在第 2 步、
+ * 要点五次才出现，审核员不会走完（这正是 30909「no opt-in is being collected on link」的由来）。
+ * 首页仍用两步：分步对客户更友好，单步只是为了让同意区在同一页内直接可见。
+ */
+const props = defineProps({
+  singleStep: {
+    type: Boolean,
+    default: false,
+  },
+})
+
 const step = ref(1)
 const submitting = ref(false)
 const created = ref(false)
@@ -447,8 +461,8 @@ const accountPhoneNational = computed(() => normalizeNational(
 const needsPhoneCode = computed(() =>
     !isLoggedIn.value || !accountPhoneNational.value || accountPhoneNational.value !== inputPhone.value)
 
-const showSelect = computed(() => step.value === 1)
-const showConfirm = computed(() => step.value === 2)
+const showSelect = computed(() => props.singleStep || step.value === 1)
+const showConfirm = computed(() => props.singleStep || step.value === 2)
 // 选时间的前置条件：门店 + 项目 + 已就偏好员工做出选择
 const timeReady = computed(() => !!selectedStoreId.value && selectedSkillIds.value.length > 0 && staffChosen.value)
 
@@ -717,9 +731,9 @@ function scrollBehavior() {
   return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
 }
 
-// 选完一项自动滚到下一项
+// 选完一项自动滚到下一项。单步模式不滚：内容本就在一页里，再滚只会把人晃来晃去
 function scrollTo(el) {
-  if (!el) {
+  if (!el || props.singleStep) {
     return
   }
   nextTick(() => el.scrollIntoView({behavior: scrollBehavior(), block: 'center'}))
@@ -929,7 +943,9 @@ async function doBook() {
     }
     created.value = true
     notifyTopPositive(t('booking.create_success'))
-    track('Schedule')
+    // Meta 把 Schedule 当转化事件看：不带 value/currency 就没法算广告 ROI，
+    // 事件管理工具会一直报「缺少货币字段」。金额取本次所选项目合计（门户可选项目均已保证配价>0）
+    track('Schedule', {value: Number(totalAmount.value) || 0, currency: 'USD'})
     nextTick(scrollToSelf)
   } finally {
     submitting.value = false
