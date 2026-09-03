@@ -3,7 +3,7 @@
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 
 **Effective Date:** July 21, 2026
-**Last Updated:** September 1, 2026
+**Last Updated:** September 3, 2026
 
 ---
 
@@ -76,17 +76,19 @@ We use storage technologies only for the following purposes:
 |---|---|---|
 | **Strictly necessary** | Keeping you signed in between visits (your session token is stored on your device and remains valid for up to 180 days); maintaining your session; protecting against cross-site request forgery and other security threats; load balancing | No — the Site cannot function without these |
 | **Functional / preference** | Remembering interface preferences such as your selected language; temporarily holding booking form data so it is not lost if you navigate away | Yes — the Site will still work, but preferences will reset each visit |
-| **Advertising measurement** | Cookies set by the Meta Pixel described above | Yes — via the "Do Not Sell or Share My Personal Information" link in our footer, a GPC signal, or your browser's tracking-protection settings |
+| **Advertising measurement** | Cookies set by the Meta Pixel described above, and the hashed contact details it transmits | Yes — via the "Do Not Sell or Share My Personal Information" link in our footer, a GPC signal, or your browser's tracking-protection settings |
 | **Privacy choice** | Remembering that you opted out of advertising measurement on this browser | No — it exists only to keep your opt-out in effect |
 
 **Advertising measurement (Meta Pixel).** The Site loads the Meta Pixel, a measurement tool provided by Meta Platforms, Inc. It records that a page was viewed and that certain steps were completed — selecting a location, selecting a service, and completing a booking — and reports those events to Meta together with technical data your browser sends automatically, such as your IP address, browser user agent, and the page address. Meta also sets its own cookies through this tool. We use it only to measure whether our advertising reaches people who go on to book.
 
-**We do not send your name, telephone number, or email address to Meta**, and we do not upload customer lists to Meta. We do not use Google Analytics or any other analytics provider. However, because a third party receives identifiers and event data through this tool, some U.S. state privacy laws treat this as "sharing" personal information for cross-context behavioral advertising, and Meta may use the data it receives under its own terms.
+**Hashed contact details (Meta "automatic advanced matching").** The Meta Pixel includes a feature that reads the contact details you type into a form on the Site — your telephone number and email address — converts each one into an irreversible cryptographic hash (SHA-256) in your browser, and sends only that hash to Meta. Meta compares the hash against its own records to work out whether the person who booked had seen one of our ads. **We never send your name, and we never send your telephone number or email address in readable form; only the hash leaves your browser, and we do not upload customer lists to Meta.** A hash cannot be turned back into your number or address, but it is still a stable identifier for you, so we treat it as personal information and describe it here rather than leaving it unsaid.
+
+We do not use Google Analytics or any other analytics provider. Because a third party receives identifiers and event data through this tool, some U.S. state privacy laws treat this as "sharing" personal information for cross-context behavioral advertising, and Meta may use the data it receives under its own terms. Section 6 explains how this differs from selling your information, which we do not do.
 
 **How to turn it off.** Two ways, both free and immediate:
 
-- **Global Privacy Control (GPC).** If your browser or extension sends a GPC signal, we treat it as an opt-out request and **do not load the pixel at all** on that browser. You do not need to do anything else, and we will tell you so on the opt-out page.
-- **The opt-out switch on our Site.** Use the **"Do Not Sell or Share My Personal Information"** link in the footer of our homepage, or go directly to https://booking.zyyboh.com/do-not-sell. Turning the switch on stops the pixel from loading on that browser from then on.
+- **Global Privacy Control (GPC).** If your browser or extension sends a GPC signal, we treat it as an opt-out request and **do not load the pixel at all** on that browser — which also means no hashed contact details are ever generated or sent. You do not need to do anything else, and we will tell you so on the opt-out page.
+- **The opt-out switch on our Site.** Use the **"Do Not Sell or Share My Personal Information"** link in the footer of our homepage, or go directly to https://booking.zyyboh.com/do-not-sell. Turning the switch on stops the pixel from loading on that browser from then on, including the hashed matching described above.
 
 Because the choice is stored in your browser, it applies to that browser on that device; set it again if you switch browsers, switch devices, or clear your browsing data. You may also block the pixel with your browser's tracking-protection settings or an ad blocker. The Site works normally either way, and opting out has no effect on your ability to book.
 
@@ -153,9 +155,13 @@ We do **not** use your information to build advertising profiles, and we do not 
 
 ## 6. How We Share Your Information
 
-**We do not sell your personal information. We do not share your personal information with advertisers, data brokers, or any third party for cross-context behavioral advertising.**
+**We do not sell your personal information.** We have never received money or anything of value in exchange for your information, and we never will.
+
+**We do share a limited amount of information with one advertising platform.** As described in Section 3.3, the Meta Pixel on our website reports page views and booking steps to Meta, together with technical data and — where you have typed them into a form — an irreversible hash of your telephone number and email address. This is used only to measure whether our own advertising leads to bookings. Several U.S. state privacy laws classify this as "sharing" personal information for cross-context behavioral advertising, so we say so plainly rather than hiding behind the word "sell." **You can stop it at any time, for free, in one click** — see "How to turn it off" in Section 3.3, or Section 9.2. We do not share your information with data brokers, and we do not let any third party use it to advertise their own products to you.
 
 **No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.** Text messaging originator opt-in data and consent will not be shared with any third parties, excluding vendors and service providers acting on our behalf solely to deliver messages (such as our text messaging delivery provider).
+
+To be precise about how that fits with Section 3.3: your telephone number as such, your text-message consent status, your opt-in and opt-out history, and your message content are never disclosed to any advertising platform, and no third party can use them to send you messages. What the Meta Pixel transmits is a one-way hash of the number you typed on our website, used solely to match a booking to one of our own ads. If you would rather that did not happen either, the opt-out in Section 3.3 stops it entirely.
 
 We disclose personal information only in the following limited circumstances:
 
@@ -242,6 +248,8 @@ If you are a California resident, the California Consumer Privacy Act, as amende
 - **Visual information** — a profile picture, only where one was previously uploaded or supplied by a third-party sign-in provider; the Site no longer accepts uploads
 
 We have not collected any other statutory category through the Site. Sources of this information are: you directly, your third-party sign-in provider if you use one, and automatic collection through your interaction with the Site. We disclose these categories only to the recipients described in Section 6, and only for the business purposes described in Section 4.
+
+**Categories shared for cross-context behavioral advertising in the preceding 12 months:** identifiers (a hash of your telephone number and, where provided, your email address; your IP address; Meta's own cookie identifiers) and internet or network activity information (page views and booking-step events), disclosed to Meta Platforms, Inc. for measurement of our own advertising. We share no other category for this purpose, and we sell no category at all. See Sections 3.3 and 6, and the opt-out above.
 
 **Authorized agents.** You may designate an authorized agent to submit a request on your behalf. We will require written proof of the agent's authorization and may require you to verify your own identity directly with us.
 
