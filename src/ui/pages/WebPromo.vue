@@ -17,7 +17,9 @@
     <div class="promo-hero column items-center justify-center text-center q-px-md">
       <div class="row items-center justify-center no-wrap">
         <img src="/favicon.svg" alt="" class="promo-hero-icon q-mr-md"/>
-        <h1 class="promo-hero-title">{{ $t('main_login_title') }}</h1>
+        <!-- 首页大标题单独用一个键：main_login_title 还挂在页签标题、取消预约页、
+             不出售页与页脚上，那些地方仍用全称，这里只改 Hero 这一处的文案 -->
+        <h1 class="promo-hero-title">{{ $t('promo.hero_title') }}</h1>
       </div>
       <div class="promo-hero-tagline q-mt-sm">{{ $t('promo.tagline') }}</div>
       <!-- VIP 专属优惠横幅（红 + 金，白底保证压图可读） -->
@@ -25,6 +27,9 @@
         <span class="promo-vip-pre">{{ $t('promo.vip_offer_pre') }}</span>
         <span class="promo-vip-off">&nbsp;{{ $t('promo.vip_offer_off') }}</span>
       </div>
+      <!-- 半价的适用条件：只认首次通过网站的预约，且一单只折一个项目——
+           写在横幅正下方，免得客户按「全单半价」的预期下单，到店才发现对不上 -->
+      <div class="promo-vip-note q-mt-sm">{{ $t('promo.vip_offer_note') }}</div>
       <button class="promo-book-btn promo-book-btn-hero q-mt-lg" @click="goBook">
         {{ $t('promo.book_btn') }}
       </button>
@@ -361,6 +366,15 @@ $promo-red: #cc2e2d;
 
 .promo-vip-off {
   color: #c9971e;
+}
+
+// 横幅下的小字条件说明：压在实景图上，沿用 tagline 的白字 + 投影口径保证可读
+.promo-vip-note {
+  max-width: 36rem;
+  font-size: clamp(.72rem, 1.9vw, .88rem);
+  line-height: 1.5;
+  opacity: .95;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, .6);
 }
 
 // ===== 预约按钮：官网同款（红底白字白描边），但更大、更醒目 =====

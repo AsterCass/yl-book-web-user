@@ -204,8 +204,13 @@
                   <q-spinner-pie size="34px"/>
                 </div>
                 <template v-else>
-                  <div v-if="noSlotInWindow" class="pbook-placeholder">
+                  <!-- 整个 14 天窗口都排不下：这不是普通说明而是走不下去的死路（多半是项目选多了、
+                       所需时长凑不出空档），用红字提示并给一个直接跳回项目分区的入口 -->
+                  <div v-if="noSlotInWindow" class="pbook-placeholder pbook-warn">
                     {{ $t('booking.no_slot_range', {days: MAX_ADVANCE_DAYS}) }}
+                    <span class="pbook-warn-link" @click="goEditSkills">
+                      {{ $t('booking.change_service') }}
+                    </span>
                   </div>
                   <template v-else>
                     <div class="row justify-center">
@@ -1089,6 +1094,19 @@ $promo-red: #cc2e2d;
   padding: 1.1rem .2rem;
   color: #6f788b;
   font-size: .9rem;
+}
+
+// 走不下去的提示（如 14 天内都约不上）：主色红字 + 一个下划线入口跳回项目分区
+.pbook-warn {
+  color: $promo-red;
+}
+
+.pbook-warn-link {
+  color: $promo-red;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 // ===== 选项（门店/项目/员工） =====

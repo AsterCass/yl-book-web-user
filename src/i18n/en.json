@@ -113,6 +113,7 @@
   },
 
   "promo": {
+    "hero_title": "ZYY Foot Spa",
     "tagline": "Traditional Chinese Massage · Acupuncture · Foot Care",
     "about_title": "About Us",
     "about": {
@@ -134,6 +135,7 @@
     "book_btn": "Book Appointment",
     "vip_offer_pre": "Book Now & Save",
     "vip_offer_off": "50% !",
+    "vip_offer_note": "Half price applies to your first online booking only, and to one service — if you book several, just one of them is discounted.",
     "testimonials_title": "Testimonials",
     "testimonials_sub": "What our customers say about us:",
     "footer": {
@@ -235,6 +237,7 @@
     "no_project": "No service available for this store",
     "no_slot": "Fully booked on this date. Please try another day.",
     "no_slot_range": "No available times in the next {days} days. Please check back later, or try a different service.",
+    "change_service": "Change services",
     "no_data": "No bookings yet",
     "pick_date_first": "Please pick a date first",
     "minutes": "min",
