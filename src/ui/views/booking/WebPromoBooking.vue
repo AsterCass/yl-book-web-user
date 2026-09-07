@@ -171,6 +171,31 @@
               </div>
               <div v-if="!timeReady" class="pbook-placeholder">{{ $t('booking.need_staff_first') }}</div>
               <template v-else>
+                <!-- 挑时间之前先把已选项目摊开重述一遍：项目是多选，客户容易顺手点多了却没察觉，
+                     而时长直接决定这一单占多长的时段、金额也跟着涨。明细 + 总时长 + 预估总价摆在这里，
+                     多选了当场就能发现，点「修改」直接回项目分区调整 -->
+                <div class="pbook-recap q-mb-md">
+                  <div class="row items-center no-wrap">
+                    <q-icon name="fa-solid fa-circle-info" size=".95rem" class="q-mr-sm pbook-recap-icon"/>
+                    <div class="col pbook-recap-title">
+                      {{ $t('booking.recap_title', {count: chosenSkills.length}) }}
+                    </div>
+                    <div class="pbook-recap-edit q-ml-sm" @click="goEditSkills">{{ $t('booking.recap_edit') }}</div>
+                  </div>
+                  <div v-for="sk in chosenSkills" :key="sk.id" class="row items-center no-wrap pbook-recap-item">
+                    <div class="col pbook-recap-name">{{ sk.name }}</div>
+                    <div v-if="sk.serviceAmount != null" class="pbook-price q-ml-md">${{ sk.serviceAmount }}</div>
+                    <div class="pbook-option-sub q-ml-md">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
+                  </div>
+                  <div class="row items-center justify-between pbook-recap-total">
+                    <div>{{ $t('booking.total_minutes', {minutes: totalMinutes}) }}</div>
+                    <div v-if="totalAmount != null">{{ $t('booking.total_amount', {amount: '$' + totalAmount}) }}</div>
+                  </div>
+                  <div class="pbook-option-sub q-mt-xs">
+                    <div>{{ chosenSkills.length > 1 ? $t('booking.recap_hint_multi') : $t('booking.recap_hint') }}</div>
+                    <div v-if="totalAmount != null">{{ $t('booking.price_note') }}</div>
+                  </div>
+                </div>
                 <div class="pbook-option-sub q-mb-sm">
                   <div>{{ $t('booking.time_note', {days: MAX_ADVANCE_DAYS}) }}</div>
                   <div v-if="storeTimezoneName">{{ $t('booking.timezone_note', {zone: storeTimezoneName}) }}</div>
@@ -781,6 +806,17 @@ function selectSlot(slot) {
   scrollTo(actionEl.value)
 }
 
+/**
+ * 选时间处的「修改」：跳回项目分区改选。客户主动点的，<b>单步模式下也滚</b>——
+ * 与 scrollTo（选完自动滚，单步模式里只会把人晃来晃去，故直接跳过）不是一回事。
+ */
+function goEditSkills() {
+  const el = skillSecEl.value
+  if (el) {
+    el.scrollIntoView({behavior: scrollBehavior(), block: 'center'})
+  }
+}
+
 function openPolicyTab(type) {
   const target = thisRouter.resolve({name: type === 'terms' ? 'policyTerms' : 'policyPrivacy'})
   window.open(target.href, '_blank')
@@ -1121,6 +1157,59 @@ $promo-red: #cc2e2d;
 }
 
 // ===== 可约时间 =====
+
+// 挑时间前的「已选项目」重述卡：主色描边 + 浅红底，比灰色汇总框更抓眼睛——
+// 它的活儿就是让人在选时间前<b>看见</b>自己选了几项
+.pbook-recap {
+  border: 1px solid rgba(204, 46, 45, .35);
+  border-radius: .8rem;
+  background-color: #fdf3f3;
+  padding: .75rem .9rem;
+}
+
+.pbook-recap-icon {
+  color: $promo-red;
+}
+
+.pbook-recap-title {
+  font-weight: 700;
+  font-size: .92rem;
+}
+
+.pbook-recap-edit {
+  color: $promo-red;
+  font-size: .82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.pbook-recap-item {
+  margin-top: .35rem;
+  font-size: .85rem;
+}
+
+.pbook-recap-name {
+  // 项目名可能很长：单行截断，别把右侧的金额/时长挤出卡片
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pbook-recap-total {
+  // 不加 no-wrap：窄屏下两段文字并排会各自折成两行，不如整段换行来得清楚
+  column-gap: 1rem;
+  margin-top: .5rem;
+  padding-top: .5rem;
+  border-top: 1px dashed rgba(204, 46, 45, .3);
+  font-weight: 700;
+  font-size: .88rem;
+}
+
 .pbook-slot {
   padding: .35rem .75rem;
   border: 1px solid #e6e8ec;
