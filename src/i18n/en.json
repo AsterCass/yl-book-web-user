@@ -135,7 +135,7 @@
     "book_btn": "Book Appointment",
     "vip_offer_pre": "Book Now & Save",
     "vip_offer_off": "50% !",
-    "vip_offer_note": "Half price applies to your first online booking only, and to one service — if you book several, just one of them is discounted.",
+    "vip_offer_note": "Half price is valid Monday to Thursday only. It applies to your first online booking only, and to one service — if you book several, just one of them is discounted.",
     "testimonials_title": "Testimonials",
     "testimonials_sub": "What our customers say about us:",
     "footer": {
@@ -311,6 +311,13 @@
     "contact_hint": "We only verify your phone number by SMS — no password, no sign-up.",
     "logged_in_as": "Signed in as {mail}",
     "summary_title": "Booking summary",
+    "offer": {
+      "title": "Half-price offer terms",
+      "days": "Valid Monday to Thursday only. Friday, Saturday and Sunday bookings are charged at the regular price.",
+      "first": "Applies to your first online booking only.",
+      "single": "One service per booking is discounted — if you book several, just one of them is half price.",
+      "amount": "The estimated total below is the regular price and does not include this discount."
+    },
     "pick_staff": "Please choose a staff preference",
     "need_store_first": "Select a store first",
     "need_project_first": "Select at least one service first",

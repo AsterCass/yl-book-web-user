@@ -240,6 +240,20 @@
 
             <!-- 预约信息汇总 -->
             <div class="pbook-sec">
+              <!-- 半价优惠须知：放确认步骤最顶上，红框整块提示。系统不参与折扣计算（预计金额是原价），
+                   条件只能靠这里说清楚，免得客户按「全单半价、任意一天」的预期下单、到店才发现对不上。
+                   放在本 section 内部而不是它前面：.pbook-sec + .pbook-sec 的间距选择器靠相邻关系，
+                   插成兄弟节点会把汇总区的上间距吃掉（单页模式下尤其明显） -->
+              <div class="pbook-offer">
+                <div class="pbook-offer-title">{{ $t('booking.offer.title') }}</div>
+                <ul class="pbook-offer-list">
+                  <li>{{ $t('booking.offer.days') }}</li>
+                  <li>{{ $t('booking.offer.first') }}</li>
+                  <li>{{ $t('booking.offer.single') }}</li>
+                  <li>{{ $t('booking.offer.amount') }}</li>
+                </ul>
+              </div>
+
               <div class="pbook-block-title row items-center">
                 <div class="pbook-num">5</div>
                 <div>{{ $t('booking.summary_title') }}</div>
@@ -1094,6 +1108,33 @@ $promo-red: #cc2e2d;
   padding: 1.1rem .2rem;
   color: #6f788b;
   font-size: .9rem;
+}
+
+// 半价优惠须知：确认步骤顶部的整块提示。浅红底 + 红框，和页面里其它灰色小字说明拉开层级，
+// 客户点「Book now」之前一定会扫到
+.pbook-offer {
+  margin-bottom: 1.1rem;
+  padding: .7rem .85rem;
+  border: 1px solid rgba($promo-red, .4);
+  border-radius: .5rem;
+  background: rgba($promo-red, .06);
+}
+
+.pbook-offer-title {
+  color: $promo-red;
+  font-weight: 800;
+  font-size: .9rem;
+}
+
+.pbook-offer-list {
+  margin: .35rem 0 0;
+  padding-left: 1.1rem;
+  font-size: .8rem;
+  line-height: 1.55;
+
+  li + li {
+    margin-top: .2rem;
+  }
 }
 
 // 走不下去的提示（如 14 天内都约不上）：主色红字 + 一个下划线入口跳回项目分区

@@ -135,7 +135,7 @@
     "book_btn": "立即预约",
     "vip_offer_pre": "现在预约，享",
     "vip_offer_off": "5 折！",
-    "vip_offer_note": "半价仅限首次通过本网站预约，且只有一个项目享受折扣——首次预约多个项目时，也只有其中一个打折。",
+    "vip_offer_note": "半价仅限周一至周四使用，且仅限首次通过本网站预约，只有一个项目享受折扣——首次预约多个项目时，也只有其中一个打折。",
     "testimonials_title": "顾客评价",
     "testimonials_sub": "听听顾客怎么说：",
     "footer": {
@@ -311,6 +311,13 @@
     "contact_hint": "只需验证手机号（短信验证码），无需密码、无需注册。",
     "logged_in_as": "已登录：{mail}",
     "summary_title": "预约信息",
+    "offer": {
+      "title": "半价优惠须知",
+      "days": "仅限周一至周四使用，周五、周六、周日按原价计算。",
+      "first": "仅限首次通过本网站预约。",
+      "single": "一次预约只有一个项目享受折扣——预约多个项目时，也只有其中一个是半价。",
+      "amount": "下方的预计金额为原价，未计入此折扣。"
+    },
     "pick_staff": "请选择偏好员工",
     "need_store_first": "请先选择门店",
     "need_project_first": "请先选择预约项目",

@@ -27,8 +27,8 @@
         <span class="promo-vip-pre">{{ $t('promo.vip_offer_pre') }}</span>
         <span class="promo-vip-off">&nbsp;{{ $t('promo.vip_offer_off') }}</span>
       </div>
-      <!-- 半价的适用条件：只认首次通过网站的预约，且一单只折一个项目——
-           写在横幅正下方，免得客户按「全单半价」的预期下单，到店才发现对不上 -->
+      <!-- 半价的适用条件（限周一至周四 / 限首单 / 一单只折一个项目）合成一段写在横幅正下方，
+           免得客户按「全单半价、任意一天」的预期下单，到店才发现对不上 -->
       <div class="promo-vip-note q-mt-sm">{{ $t('promo.vip_offer_note') }}</div>
       <button class="promo-book-btn promo-book-btn-hero q-mt-lg" @click="goBook">
         {{ $t('promo.book_btn') }}
