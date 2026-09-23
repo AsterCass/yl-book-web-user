@@ -469,6 +469,8 @@ const selectedStoreId = ref("")
 const autoStoreHint = ref("")
 // 定位只在首次点 Book now 时尝试一次：失败/拒绝不重试，免得反复打扰
 let autoPickTried = false
+// 首页门店卡片点「预约」时带来的电话：门店列表还没回来就先记下，列表到达后补选（见 pickStoreByPhone）
+let pendingStorePhone = ""
 const selectedSkillIds = ref([])
 const selectedStaffId = ref("")
 // 偏好员工「已做出选择」（含选了「不指定」）：凭它决定是否展开选时间
@@ -635,7 +637,43 @@ function loadStores() {
       return
     }
     storeList.value = res.data.data
+    // 门店列表回来之前客户就点了首页门店卡片：这里把那次选择补上
+    if (pendingStorePhone) {
+      pickStoreByPhone(pendingStorePhone)
+    }
   })
+}
+
+/**
+ * 按电话号码选中门店（首页「Our Locations」点某家店时调用）。
+ * <p>
+ * 用电话而不是名称/地址匹配：各店对外名称可能完全相同（现网两家店都叫同一个名字），
+ * 地址写法两边也有差异；电话归一化（去非数字、去美加国码）后是唯一可靠的键。
+ * 门店列表接口对客返回的电话优先是 AI 电话，与首页配置里公布的号码是同一个。
+ * <p>
+ * 列表还没加载完就先记下号码、等 {@link loadStores} 回来再选；匹配不到就什么都不做，
+ * 客户照常自己选门店。
+ */
+function pickStoreByPhone(phone) {
+  const key = normalizeNational(phone)
+  // 必须是完整的 10 位号码：库里存在 "123" 这种测试数据，位数不足时比对容易误命中
+  if (key.length !== 10) {
+    return
+  }
+  if (!storeList.value.length) {
+    pendingStorePhone = phone
+    return
+  }
+  pendingStorePhone = ""
+  const matched = storeList.value.find(s => normalizeNational(s.phone) === key)
+  // 点的就是当前已选门店：什么都不做——applyStore 会重置项目/员工/时间，不该因为再点一次就清空
+  if (!matched || selectedStoreId.value === matched.id) {
+    return
+  }
+  applyStore(matched)
+  // 客户明确点了某家店：清掉按定位自动选择的提示，也不必再去问定位权限
+  autoStoreHint.value = ""
+  autoPickTried = true
 }
 
 /**
@@ -1042,7 +1080,17 @@ function scrollToSelf() {
   window.scrollTo({top: Math.max(top - offset, 0), behavior: scrollBehavior()})
 }
 
-defineExpose({scrollToSelf})
+/**
+ * 首页门店卡片的「预约」：先按电话选中该门店，再滚到预约区。
+ * 顺序不能反——scrollToSelf 里的「按定位自动选最近门店」在已选门店时直接跳过，
+ * 先选好就不会再弹定位权限框，也不会用最近门店盖掉客户点的这家。
+ */
+function scrollToStore(phone) {
+  pickStoreByPhone(phone)
+  scrollToSelf()
+}
+
+defineExpose({scrollToSelf, scrollToStore})
 
 </script>
 

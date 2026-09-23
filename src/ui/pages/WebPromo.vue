@@ -83,7 +83,8 @@
                   <div class="col">{{ lv(store.notes) }}</div>
                 </div>
                 <q-space/>
-                <button class="promo-book-btn promo-book-btn-block q-mt-md" @click="goBook">
+                <!-- 门店卡片的预约按钮：除滚动外，还会按该店电话自动选中预约区里的同一家店 -->
+                <button class="promo-book-btn promo-book-btn-block q-mt-md" @click="goBookStore(store)">
                   {{ $t('promo.book_btn') }}
                 </button>
               </div>
@@ -257,6 +258,14 @@ function lv(field) {
 function goBook() {
   if (bookingRef.value) {
     bookingRef.value.scrollToSelf()
+  }
+}
+
+// 门店卡片的「Book now」：滚到预约区之外，再按该店电话自动选中预约区里的同一家门店。
+// 传电话而不是名称/地址：各店对外名称可能相同、地址写法两边有差异，电话归一化后才是唯一可靠的键
+function goBookStore(store) {
+  if (bookingRef.value) {
+    bookingRef.value.scrollToStore(store.phone)
   }
 }
 
