@@ -132,44 +132,16 @@
               </div>
             </div>
 
-            <!-- 偏好员工（依赖项目） -->
-            <div ref="staffSecEl" class="pbook-sec">
-              <div class="pbook-block-title row items-center">
-                <div class="pbook-num">3</div>
-                <div>{{ $t('booking.step.staff') }}</div>
-              </div>
-              <div v-if="!selectedSkillIds.length" class="pbook-placeholder">
-                {{ $t('booking.need_project_first') }}
-              </div>
-              <div v-else-if="loadingStaffs" class="row justify-center q-py-lg">
-                <q-spinner-pie size="34px"/>
-              </div>
-              <div v-else class="column">
-                <div class="pbook-option row items-center q-my-xs"
-                     :class="{'pbook-option-active': staffChosen && !selectedStaffId}" @click="selectStaff('')">
-                  <q-icon name="fa-solid fa-shuffle" size=".95rem" class="q-mr-sm promo-accent"/>
-                  <div class="col pbook-option-name">{{ $t('booking.staff_any') }}</div>
-                  <q-icon v-if="staffChosen && !selectedStaffId" name="fa-solid fa-circle-check"
-                          size="1rem" class="promo-accent"/>
-                </div>
-                <div v-for="st in staffList" :key="st.id" class="pbook-option row items-center q-my-xs"
-                     :class="{'pbook-option-active': selectedStaffId === st.id}" @click="selectStaff(st.id)">
-                  <q-icon name="fa-regular fa-user" size=".95rem" class="q-mr-sm promo-accent"/>
-                  <div class="col pbook-option-name">{{ st.name }}</div>
-                  <q-icon v-if="selectedStaffId === st.id" name="fa-solid fa-circle-check"
-                          size="1rem" class="promo-accent"/>
-                </div>
-                <div class="pbook-option-sub q-mt-sm">{{ $t('booking.staff_note') }}</div>
-              </div>
-            </div>
+            <!-- 偏好员工一步已下线：客户端不再让顾客指定员工，下单不带 preferredStaffId（等同「不指定」）。
+                 后端的 /portal/booking/staffs 与下单入参 preferredStaffId 均保留，要恢复只需把这一步加回来 -->
 
-            <!-- 可约时间（依赖偏好员工的选择动作） -->
+            <!-- 可约时间（依赖门店与项目） -->
             <div ref="timeSecEl" class="pbook-sec">
               <div class="pbook-block-title row items-center">
-                <div class="pbook-num">4</div>
+                <div class="pbook-num">3</div>
                 <div>{{ $t('booking.step.time') }}</div>
               </div>
-              <div v-if="!timeReady" class="pbook-placeholder">{{ $t('booking.need_staff_first') }}</div>
+              <div v-if="!timeReady" class="pbook-placeholder">{{ $t('booking.need_project_first') }}</div>
               <template v-else>
                 <!-- 挑时间之前先把已选项目摊开重述一遍：项目是多选，客户容易顺手点多了却没察觉，
                      而时长直接决定这一单占多长的时段、金额也跟着涨。明细 + 总时长 + 预估总价摆在这里，
@@ -255,7 +227,7 @@
               </div>
 
               <div class="pbook-block-title row items-center">
-                <div class="pbook-num">5</div>
+                <div class="pbook-num">4</div>
                 <div>{{ $t('booking.summary_title') }}</div>
               </div>
               <div class="pbook-summary">
@@ -276,10 +248,6 @@
                   <div class="text-right">${{ totalAmount }}</div>
                 </div>
                 <div class="row justify-between items-start q-my-xs">
-                  <div class="promo-muted">{{ $t('booking.field.staff') }}</div>
-                  <div class="text-right">{{ selectedStaffName || $t('booking.staff_any') }}</div>
-                </div>
-                <div class="row justify-between items-start q-my-xs">
                   <div class="promo-muted">{{ $t('booking.field.time') }}</div>
                   <div class="text-right">{{ selectedSlot || '-' }}</div>
                 </div>
@@ -294,7 +262,7 @@
             <!-- 联系方式（已登录客户只需确认手机号） -->
             <div class="pbook-sec">
               <div class="pbook-block-title row items-center">
-                <div class="pbook-num">6</div>
+                <div class="pbook-num">5</div>
                 <div>{{ $t('booking.contact_title') }}</div>
               </div>
 
@@ -406,7 +374,6 @@ import {
   portalBookingCreate,
   portalBookingSkills,
   portalBookingSlotsBatch,
-  portalBookingStaffs,
   portalBookingStores
 } from "@/api/portal-booking.js";
 import {portalBookingLogin, portalMe, portalPhoneSendCode} from "@/api/portal-auth.js";
@@ -430,7 +397,6 @@ const SLOT_RELOAD_DELAY = 600
 const rootEl = ref(null)
 // 只给「选完上一项要自动滚过去」的分区留 ref
 const skillSecEl = ref(null)
-const staffSecEl = ref(null)
 const timeSecEl = ref(null)
 const actionEl = ref(null)
 
@@ -455,13 +421,11 @@ const createdInfo = ref({storeName: '', skillNames: '', slot: ''})
 
 const storeList = ref([])
 const skillList = ref([])
-const staffList = ref([])
 // 未来 14 天可约时间：dateStr -> ['yyyy-MM-dd HH:mm']，一次拉整窗，无时间的日期在日历上置灰
 const slotsByDate = ref({})
 
 const loadingStores = ref(false)
 const loadingSkills = ref(false)
-const loadingStaffs = ref(false)
 const loadingSlots = ref(false)
 
 const selectedStoreId = ref("")
@@ -472,9 +436,9 @@ let autoPickTried = false
 // 首页门店卡片点「预约」时带来的电话：门店列表还没回来就先记下，列表到达后补选（见 pickStoreByPhone）
 let pendingStorePhone = ""
 const selectedSkillIds = ref([])
-const selectedStaffId = ref("")
-// 偏好员工「已做出选择」（含选了「不指定」）：凭它决定是否展开选时间
-const staffChosen = ref(false)
+// 本门店是否已上报过「首次选中项目」埋点（ServiceSelected）：每家门店只报一次，换门店 / 重新预约时重置。
+// 原先它挂在「首次加载员工列表」的条件里顺带触发，偏好员工一步下线后单独用这个标记保持同样的口径
+let serviceSelectedTracked = false
 const selectedDate = ref("")
 const selectedSlot = ref("")
 
@@ -509,8 +473,8 @@ const needsPhoneCode = computed(() =>
 
 const showSelect = computed(() => props.singleStep || step.value === 1)
 const showConfirm = computed(() => props.singleStep || step.value === 2)
-// 选时间的前置条件：门店 + 项目 + 已就偏好员工做出选择
-const timeReady = computed(() => !!selectedStoreId.value && selectedSkillIds.value.length > 0 && staffChosen.value)
+// 选时间的前置条件：门店 + 至少一个项目（偏好员工一步已下线）
+const timeReady = computed(() => !!selectedStoreId.value && selectedSkillIds.value.length > 0)
 
 const slotList = computed(() => selectedDate.value ? (slotsByDate.value[selectedDate.value] || []) : [])
 const noSlotInWindow = computed(() => {
@@ -520,10 +484,6 @@ const noSlotInWindow = computed(() => {
 
 const selectedStore = computed(() => storeList.value.find(s => s.id === selectedStoreId.value))
 const selectedStoreName = computed(() => selectedStore.value ? selectedStore.value.name : '')
-const selectedStaffName = computed(() => {
-  const st = staffList.value.find(s => s.id === selectedStaffId.value)
-  return st ? st.name : ''
-})
 const chosenSkills = computed(() => skillList.value.filter(sk => selectedSkillIds.value.includes(sk.id)))
 const totalMinutes = computed(() => chosenSkills.value.reduce((sum, sk) => sum + (sk.consumeMinutes || 0), 0))
 const selectedSkillNames = computed(() => chosenSkills.value.map(sk => sk.name).join(', '))
@@ -677,16 +637,14 @@ function pickStoreByPhone(phone) {
 }
 
 /**
- * 选中门店并重置下游选择（项目/员工/时间）。<b>不滚动</b>——自动选门店时不能把正在看首页的客户拽走。
+ * 选中门店并重置下游选择（项目/时间）。<b>不滚动</b>——自动选门店时不能把正在看首页的客户拽走。
  */
 function applyStore(s) {
   selectedStoreId.value = s.id
   selectedSkillIds.value = []
-  selectedStaffId.value = ""
-  staffChosen.value = false
   selectedDate.value = ""
   skillList.value = []
-  staffList.value = []
+  serviceSelectedTracked = false
   loadSkills()
 }
 
@@ -727,7 +685,6 @@ function formatDistance(km) {
 // 列表请求序号：客户快速连点（换门店/改项目）会并发多个请求，回来的顺序不保证——
 // 只认最后一次发出的那个，丢弃过期响应，免得列表和当前选择对不上
 let skillReqSeq = 0
-let staffReqSeq = 0
 let slotReqSeq = 0
 
 function loadSkills() {
@@ -743,22 +700,6 @@ function loadSkills() {
       return
     }
     skillList.value = res.data.data
-  })
-}
-
-function loadStaffs() {
-  const seq = ++staffReqSeq
-  loadingStaffs.value = true
-  staffList.value = []
-  portalBookingStaffs({storeId: selectedStoreId.value}).then(res => {
-    if (seq !== staffReqSeq) {
-      return
-    }
-    loadingStaffs.value = false
-    if (!res || !res.data || !res.data.data) {
-      return
-    }
-    staffList.value = res.data.data
   })
 }
 
@@ -839,22 +780,15 @@ function toggleSkill(id) {
   } else {
     selectedSkillIds.value.push(id)
   }
-  // 首次选中项目即把员工列表准备好
-  if (selectedSkillIds.value.length && !staffList.value.length && !loadingStaffs.value) {
-    loadStaffs()
+  // 每家门店首次选中项目时上报一次（口径同偏好员工一步下线前）
+  if (selectedSkillIds.value.length && !serviceSelectedTracked) {
+    serviceSelectedTracked = true
     trackCustom('ServiceSelected')
   }
-  // 绝大多数客户只约一个项目：首次选中就滚到下一步；之后再加选/取消不打断（项目仍可多选）
+  // 绝大多数客户只约一个项目：首次选中就滚到下一步（选时间）；之后再加选/取消不打断（项目仍可多选）
   if (wasEmpty && selectedSkillIds.value.length) {
-    scrollTo(staffSecEl.value)
+    scrollTo(timeSecEl.value)
   }
-}
-
-function selectStaff(id) {
-  selectedStaffId.value = id
-  staffChosen.value = true
-  trackCustom('StaffSelected')
-  scrollTo(timeSecEl.value)
 }
 
 function selectSlot(slot) {
@@ -932,10 +866,6 @@ function checkSelections() {
     notifyTopWarning(t('booking.pick_project'))
     return false
   }
-  if (!staffChosen.value) {
-    notifyTopWarning(t('booking.pick_staff'))
-    return false
-  }
   if (!selectedSlot.value) {
     notifyTopWarning(t('booking.pick_time'))
     return false
@@ -1007,7 +937,7 @@ async function doBook() {
       storeId: selectedStoreId.value,
       bookTimeStr: selectedSlot.value,
       skillIdList: selectedSkillIds.value,
-      preferredStaffId: selectedStaffId.value || null,
+      // 不再上送 preferredStaffId：客户端已不让顾客指定员工，等同「不指定」，由系统自动分配（后端入参保留）
       phone: '1' + inputPhone.value,
       // 本次联系邮箱（前端必填）：确认邮件与取消链接都发它，同时同步为账户默认邮箱
       email: inputEmail.value,
@@ -1050,12 +980,10 @@ function resetAll() {
   step.value = 1
   selectedStoreId.value = ""
   selectedSkillIds.value = []
-  selectedStaffId.value = ""
-  staffChosen.value = false
   selectedDate.value = ""
   selectedSlot.value = ""
   skillList.value = []
-  staffList.value = []
+  serviceSelectedTracked = false
   slotsByDate.value = {}
   inputPhoneCode.value = ""
   inputRemark.value = ""
