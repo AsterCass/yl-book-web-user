@@ -20,7 +20,7 @@ export const HOME_STORES = [
         lng: -73.9967,
         // 谷歌商家分享链接（可空）：配置后门店地址可点击、新标签页打开；未配置则地址为纯文本、无点击交互
         mapUrl: 'https://share.google/gNwyFF37aPQR2Wpka',
-        phone: '(631) 894-9981',
+        phone: '(646) 371-9686',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 am – 10:00 pm'},
         insurance: 'Aetna, United Healthcare, BlueCross BlueShield',
         notes: {zh: '每周三会员日：修脚类服务立减 32%', en: 'Member Day every Wednesday: 32% off foot care services'},
