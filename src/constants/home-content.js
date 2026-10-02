@@ -33,7 +33,7 @@ export const HOME_STORES = [
         lat: 40.6861,
         lng: -73.9943,
         mapUrl: 'https://g.co/kgs/UbrEGJD',
-        phone: '(631) 652-9981',
+        phone: '(718) 790-2445',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 am – 10:00 pm'},
         insurance: 'Aetna, United Healthcare, BlueCross BlueShield',
         notes: {zh: '每周三会员日：修脚类服务立减 32%', en: 'Member Day every Wednesday: 32% off foot care services'},
