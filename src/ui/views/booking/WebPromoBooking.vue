@@ -107,9 +107,10 @@
               </div>
               <div v-else-if="!skillList.length" class="pbook-placeholder">{{ $t('booking.no_project') }}</div>
               <div v-else>
-                <!-- 项目通常十几二十个：弹性换行排布，一行塞不下自动换行，不再一个一行 -->
+                <!-- 项目通常十几二十个：弹性换行排布，一行塞不下自动换行，不再一个一行。
+                     主服务在前；附加项目（后端 addonOnly，不能单独预约）另起一小段放在后面 -->
                 <div class="pbook-skill-list">
-                  <div v-for="sk in skillList" :key="sk.id" class="pbook-option pbook-skill"
+                  <div v-for="sk in mainSkillList" :key="sk.id" class="pbook-option pbook-skill"
                        :class="{'pbook-option-active': selectedSkillIds.includes(sk.id)}" @click="toggleSkill(sk.id)">
                     <div class="row items-center no-wrap">
                       <q-icon :name="selectedSkillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
@@ -124,6 +125,28 @@
                     </div>
                   </div>
                 </div>
+                <!-- 附加项目：只列「已选主服务能搭配」的那些，一个都没有时整段不出现——客户不用知道附加项目的搭配规则，
+                     选了主服务，能加的就在这里。取消主服务时靠它才能选的附加项目会一起移除（见 toggleSkill）。
+                     后端下单也校验这条规则 -->
+                <template v-if="availableAddonSkillList.length">
+                  <div class="pbook-addon-title q-mt-md">{{ $t('booking.addon_title') }}</div>
+                  <div class="pbook-option-sub q-mb-xs">{{ $t('booking.addon_note') }}</div>
+                  <div class="pbook-skill-list">
+                    <div v-for="sk in availableAddonSkillList" :key="sk.id" class="pbook-option pbook-skill"
+                         :class="{'pbook-option-active': selectedSkillIds.includes(sk.id)}" @click="toggleSkill(sk.id)">
+                      <div class="row items-center no-wrap">
+                        <q-icon :name="selectedSkillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
+                                size="1rem" class="q-mr-sm"
+                                :class="selectedSkillIds.includes(sk.id) ? 'promo-accent' : ''"/>
+                        <div class="pbook-option-name pbook-skill-name">{{ sk.name }}</div>
+                      </div>
+                      <div class="row items-center no-wrap pbook-skill-meta">
+                        <div v-if="sk.serviceAmount != null" class="pbook-price q-mr-md">${{ sk.serviceAmount }}</div>
+                        <div class="pbook-option-sub">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
                 <div class="column items-end q-mt-sm pbook-option-sub">
                   <div>{{ $t('booking.total_minutes', {minutes: totalMinutes}) }}</div>
                   <div v-if="totalAmount != null">{{ $t('booking.total_amount', {amount: '$' + totalAmount}) }}</div>
@@ -155,7 +178,10 @@
                     <div class="pbook-recap-edit q-ml-sm" @click="goEditSkills">{{ $t('booking.recap_edit') }}</div>
                   </div>
                   <div v-for="sk in chosenSkills" :key="sk.id" class="row items-center no-wrap pbook-recap-item">
-                    <div class="col pbook-recap-name">{{ sk.name }}</div>
+                    <div class="col pbook-recap-name">
+                      {{ sk.name }}
+                      <span v-if="sk.addonOnly" class="pbook-addon-tag q-ml-xs">{{ $t('booking.addon_tag') }}</span>
+                    </div>
                     <div v-if="sk.serviceAmount != null" class="pbook-price q-ml-md">${{ sk.serviceAmount }}</div>
                     <div class="pbook-option-sub q-ml-md">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
                   </div>
@@ -484,7 +510,14 @@ const noSlotInWindow = computed(() => {
 
 const selectedStore = computed(() => storeList.value.find(s => s.id === selectedStoreId.value))
 const selectedStoreName = computed(() => selectedStore.value ? selectedStore.value.name : '')
-const chosenSkills = computed(() => skillList.value.filter(sk => selectedSkillIds.value.includes(sk.id)))
+// 主服务 / 附加项目分组（后端 PortalSkillDto.addonOnly；老后端没有这个字段时全部按主服务处理）
+const mainSkillList = computed(() => skillList.value.filter(sk => !sk.addonOnly))
+const addonSkillList = computed(() => skillList.value.filter(sk => !!sk.addonOnly))
+// 当前可选的附加项目：已选主服务能搭配的那些；页面只展示这些，一个都没有时附加项目整段不出现
+const availableAddonSkillList = computed(() => addonSkillList.value.filter(sk => addonEnabled(sk)))
+// 已选项目按「主服务在前、附加在后」排：重述卡与汇总里附加项目紧跟在它搭配的主服务后面
+const chosenSkills = computed(() => [...mainSkillList.value, ...addonSkillList.value]
+    .filter(sk => selectedSkillIds.value.includes(sk.id)))
 const totalMinutes = computed(() => chosenSkills.value.reduce((sum, sk) => sum + (sk.consumeMinutes || 0), 0))
 const selectedSkillNames = computed(() => chosenSkills.value.map(sk => sk.name).join(', '))
 
@@ -772,12 +805,46 @@ function selectStore(s) {
   scrollTo(skillSecEl.value)
 }
 
+/**
+ * 附加项目现在能不能选：它可搭配的主服务里至少有一个已选中。后端的 addonMainSkillIds 已裁剪到本目录可见的项目，
+ * 这里只看已选集合即可。
+ */
+function addonEnabled(sk) {
+  return (sk.addonMainSkillIds || []).some(id => selectedSkillIds.value.includes(id))
+}
+
+// 附加项目可搭配的主服务名，用 / 连接（提示文案用）
+function addonMainNames(sk) {
+  return (sk.addonMainSkillIds || [])
+      .map(id => skillList.value.find(x => x.id === id))
+      .filter(Boolean)
+      .map(x => x.name)
+      .join(' / ')
+}
+
+// 已选的附加项目里，搭配的主服务已经不在已选集合里的那些
+function orphanAddons() {
+  return addonSkillList.value.filter(sk => selectedSkillIds.value.includes(sk.id) && !addonEnabled(sk))
+}
+
 function toggleSkill(id) {
   const wasEmpty = !selectedSkillIds.value.length
   const idx = selectedSkillIds.value.indexOf(id)
+  const skill = skillList.value.find(sk => sk.id === id)
   if (idx >= 0) {
     selectedSkillIds.value.splice(idx, 1)
+    // 取消的是主服务：靠它才能选的附加项目一起移除，并告诉客户移掉了什么（只剩附加项目的单后端会拒绝）
+    const orphans = orphanAddons()
+    if (orphans.length) {
+      orphans.forEach(sk => selectedSkillIds.value.splice(selectedSkillIds.value.indexOf(sk.id), 1))
+      notifyTopWarning(t('booking.addon_removed', {names: orphans.map(sk => sk.name).join(', ')}))
+    }
   } else {
+    // 附加项目要先选它可搭配的主服务：页面只列能选的，这里是兜底，顺便说清先选哪个
+    if (skill && skill.addonOnly && !addonEnabled(skill)) {
+      notifyTopWarning(t('booking.addon_need_main', {name: skill.name, main: addonMainNames(skill)}))
+      return
+    }
     selectedSkillIds.value.push(id)
   }
   // 每家门店首次选中项目时上报一次（口径同偏好员工一步下线前）
@@ -864,6 +931,12 @@ function checkSelections() {
   }
   if (!selectedSkillIds.value.length) {
     notifyTopWarning(t('booking.pick_project'))
+    return false
+  }
+  // 兜底：已选的附加项目都得有搭配的主服务在（正常交互下 toggleSkill 已保证，后端也会拒绝）
+  const orphan = orphanAddons()[0]
+  if (orphan) {
+    notifyTopWarning(t('booking.addon_need_main', {name: orphan.name, main: addonMainNames(orphan)}))
     return false
   }
   if (!selectedSlot.value) {
@@ -1147,6 +1220,24 @@ $promo-red: #cc2e2d;
 
 .pbook-option-name {
   font-weight: 600;
+}
+
+// ===== 附加项目 =====
+.pbook-addon-title {
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+// 重述卡 / 汇总里附加项目名后的小标签
+.pbook-addon-tag {
+  display: inline-block;
+  padding: 0 .35rem;
+  border: 1px solid rgba(204, 46, 45, .45);
+  border-radius: 999px;
+  color: $promo-red;
+  font-size: .7rem;
+  line-height: 1.3;
+  vertical-align: middle;
 }
 
 // ===== 项目：弹性换行（可选项多，一行能塞几个塞几个） =====
