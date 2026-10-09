@@ -53,7 +53,7 @@
             </div>
             <div v-if="info.bookingTime" class="row items-start q-my-xs">
               <q-icon name="fa-regular fa-clock" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
-              <div class="col">{{ info.bookingTime }}</div>
+              <div class="col">{{ formatDateTime(info.bookingTime) }}</div>
             </div>
             <div v-if="info.skillNames && info.skillNames.length" class="row items-start q-my-xs">
               <q-icon name="fa-solid fa-spa" size=".9rem" class="q-mr-sm q-mt-xs survey-accent"/>
@@ -111,6 +111,7 @@ import {switchLanguage} from "@/utils/global-tools.js";
 import {notifyTopWarning} from "@/utils/notification-tools.js";
 import {i18n} from "@/i18n/index.js";
 import {portalSurveyInfo, portalSurveySubmit} from "@/api/portal-survey.js";
+import {formatDateTime} from "@/utils/time-format.js";
 
 const props = defineProps({
   // 评价链接 token（路由参数注入）

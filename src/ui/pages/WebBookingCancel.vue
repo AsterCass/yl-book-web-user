@@ -65,7 +65,7 @@
           </div>
           <div v-if="info.bookTimeStr" class="row justify-between q-my-xs">
             <div class="cancel-muted">{{ $t('booking.field.time') }}</div>
-            <div class="text-right">{{ info.bookTimeStr }}</div>
+            <div class="text-right">{{ formatDateTime(info.bookTimeStr) }}</div>
           </div>
           <div v-if="info.amount != null" class="row justify-between q-my-xs">
             <div class="cancel-muted">{{ $t('booking.field.amount') }}</div>
@@ -101,6 +101,7 @@ import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 import {switchLanguage} from "@/utils/global-tools.js";
 import {portalBookingCancelByLink, portalBookingCancelLinkInfo} from "@/api/portal-booking.js";
+import {formatDateTime} from "@/utils/time-format.js";
 
 const props = defineProps({
   // 取消链接 token（路由参数注入）

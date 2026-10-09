@@ -28,7 +28,7 @@
           </div>
           <div class="row justify-between q-my-xs">
             <div class="promo-muted">{{ $t('booking.field.time') }}</div>
-            <div class="text-right">{{ createdInfo.slot }}</div>
+            <div class="text-right">{{ formatDateTime(createdInfo.slot) }}</div>
           </div>
         </div>
         <div class="row justify-center q-gutter-md q-mt-lg">
@@ -223,7 +223,8 @@
                     <div v-else class="row justify-center q-mt-sm">
                       <div v-for="slot in slotList" :key="slot" class="pbook-slot q-ma-xs"
                            :class="{'pbook-slot-active': selectedSlot === slot}" @click="selectSlot(slot)">
-                        {{ slot.slice(11) }}
+                        <!-- 只格式化显示：slot 本身仍是 'yyyy-MM-dd HH:mm'，下单原样提交 -->
+                        {{ formatClock(slot.slice(11)) }}
                       </div>
                     </div>
                   </template>
@@ -275,7 +276,7 @@
                 </div>
                 <div class="row justify-between items-start q-my-xs">
                   <div class="promo-muted">{{ $t('booking.field.time') }}</div>
-                  <div class="text-right">{{ selectedSlot || '-' }}</div>
+                  <div class="text-right">{{ selectedSlot ? formatDateTime(selectedSlot) : '-' }}</div>
                 </div>
               </div>
 
@@ -395,6 +396,7 @@ import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js
 import {checkIsMail, checkIsPhone} from "@/utils/format-check.js";
 import {buildAttributionParams} from "@/utils/landing-params.js";
 import {currentPosition, nearestStore} from "@/utils/store-geo.js";
+import {formatClock, formatDateTime} from "@/utils/time-format.js";
 import {TimezoneOptEnum} from "@/constants/enums/common.js";
 import {
   portalBookingCreate,
