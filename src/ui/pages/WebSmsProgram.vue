@@ -39,6 +39,8 @@
       <!-- 2. 怎么订阅：逐字给出表单上的两段文案 -->
       <h6 class="sms-h6">{{ $t('smsProgram.optin_title') }}</h6>
       <div class="sms-muted">{{ $t('smsProgram.optin_steps') }}</div>
+      <!-- 电话预约：通话里由 AI 告知会发预约短信，口头同意，没有勾选框 -->
+      <div class="sms-muted q-mt-sm">{{ $t('smsProgram.optin_phone') }}</div>
 
       <div class="sms-quote q-px-md q-py-sm q-mt-sm">
         <div class="sms-quote-label">{{ $t('smsProgram.quote_intro') }}</div>
