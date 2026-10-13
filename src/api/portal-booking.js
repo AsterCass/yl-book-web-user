@@ -51,8 +51,11 @@ export function portalBookingCreate(body) {
     })
 }
 
-// 取消链接（免登录，token 来自预约成功邮件，15 天有效；info/cancel 共用单 IP 15 次/时限流）：
-// info 返回 {storeName, storeAddress, storePhone, bookTimeStr, projects, amount, canceled}
+// 预约详情链接（原取消链接；免登录，token 来自预约邮件 / 预约变动短信，15 天有效）。
+// 限流：无效 token 单 IP 30 次/时；有效 token 每条链接 60 次/时（查看与取消合计）。
+// info 返回 {storeName, storeAddress, storePhone, phoneTail, cutoffMinutes,
+//   bookingList: [{bookingId, bookTimeStr, projects, amount, staffName, remark, canceled, thirdParty, cancellable}]}
+// ——该号码在这家门店还没开始的预约；第三方平台的单只有时间与项目，备注只有顾客自己下的单才有
 export function portalBookingCancelLinkInfo(token) {
     return serviceShiro({
         url: `/portal/booking/cancel/link/${token}`,
@@ -60,9 +63,12 @@ export function portalBookingCancelLinkInfo(token) {
     })
 }
 
-export function portalBookingCancelByLink(token) {
+// 取消列表里的某一张：bookingId 不传 = 取消链接签发时对应的那张单。
+// 距开始不足 cutoffMinutes、或第三方平台的单会被后端拒绝
+export function portalBookingCancelByLink(token, bookingId) {
     return serviceShiro({
         url: `/portal/booking/cancel/link/${token}`,
         method: 'post',
+        data: {bookingId},
     })
 }
