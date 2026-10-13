@@ -64,7 +64,8 @@
           <div class="cancel-muted q-mt-md text-center">{{ $t('cancelLink.empty') }}</div>
         </div>
 
-        <!-- 每张预约一张卡片；已取消的置灰。不同门店的单混排（按时间），所以门店信息写在每张卡片里 -->
+        <!-- 每张预约一张卡片：有效的在前、已取消的（置灰）在后，两组各自按时间。
+             不同门店的单混排，所以门店信息写在每张卡片里 -->
         <div v-for="item in bookingList" :key="item.bookingId" class="cancel-item q-mb-md"
              :class="{'cancel-item--off': item.canceled}">
           <div class="row items-start justify-between no-wrap">
@@ -177,7 +178,12 @@ const curYear = new Date().getFullYear()
 // loading -> ready / invalid
 const pageState = ref('loading')
 const info = ref({})
-const bookingList = computed(() => info.value.bookingList || [])
+// 后端按时间正序给整份列表；这里把已取消的挪到后面，两组内部各自保持时间顺序——
+// 顾客第一眼看到的是最近一张还有效的预约，而不是排在它前面的已取消单
+const bookingList = computed(() => {
+  const list = info.value.bookingList || []
+  return [...list.filter(item => !item.canceled), ...list.filter(item => item.canceled)]
+})
 const cutoffMinutes = computed(() => info.value.cutoffMinutes ?? 15)
 const hasAmount = computed(() => bookingList.value.some(item => item.amount != null))
 
