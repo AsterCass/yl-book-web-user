@@ -1,6 +1,7 @@
 <template>
   <!-- 预约详情页（/c/:token，别名 /booking/cancel/:token）：免登录，凭邮件 / 短信里的链接 token 访问。
-       原来是「取消预约」单张确认页，现在是该号码在这家门店的预约列表：门店信息 + 每张预约一张卡片，实时查看、可在此取消。
+       原来是「取消预约」单张确认页，现在是该号码在所有对客门店的预约列表：每张预约一张卡片（自带所属门店的名称 / 地址 / 电话），
+       不按门店分组，实时查看、可在此取消（含别的门店的单）。
        客户端没有登录与「我的预约」页，查看 / 取消只有这一条路径；token 15 天有效，同一个号码点哪条链接看到的都一样。
        样式跟随首页推广风格（WebPromo）：固定亮色、#cc2e2d 主色、白底卡片，不随站内主题切换 -->
   <div class="cancel-page column items-center">
@@ -33,17 +34,13 @@
         <q-icon name="fa-regular fa-circle-xmark" size="3rem" class="cancel-muted"/>
         <div class="cancel-h5 q-mt-md text-center">{{ $t('cancelLink.invalid') }}</div>
         <div class="cancel-muted q-mt-sm text-center">{{ $t('cancelLink.invalid_desc') }}</div>
-        <button class="cancel-ghost-btn q-mt-lg" @click="goHome">{{ $t('cancelLink.book_again') }}</button>
       </div>
 
       <div v-else class="column">
-        <!-- 门店信息：页面顶部给一次（只用对外名称，未设置的整行隐藏） -->
-        <div class="cancel-notes q-px-md q-py-sm">
-          <div v-if="info.storeName" class="cancel-store-name">{{ info.storeName }}</div>
-          <div v-if="info.storeAddress" class="q-mt-xs">{{ info.storeAddress }}</div>
-          <div v-if="info.storePhone" class="q-mt-xs">
-            <a class="cancel-link" :href="'tel:' + info.storePhone">{{ info.storePhone }}</a>
-          </div>
+        <!-- 链接即凭证：请勿转发的提示放在最上面、用警示色（原来是页脚的一行小字） -->
+        <div class="cancel-private row items-start no-wrap">
+          <q-icon name="fa-solid fa-triangle-exclamation" size="1.15rem" class="cancel-private-icon"/>
+          <div>{{ $t('cancelLink.private_hint') }}</div>
         </div>
 
         <!-- 列表抬头：手动刷新 + 上次更新时间 -->
@@ -67,13 +64,21 @@
           <div class="cancel-muted q-mt-md text-center">{{ $t('cancelLink.empty') }}</div>
         </div>
 
-        <!-- 每张预约一张卡片；已取消的置灰 -->
+        <!-- 每张预约一张卡片；已取消的置灰。不同门店的单混排（按时间），所以门店信息写在每张卡片里 -->
         <div v-for="item in bookingList" :key="item.bookingId" class="cancel-item q-mb-md"
              :class="{'cancel-item--off': item.canceled}">
           <div class="row items-start justify-between no-wrap">
             <div class="cancel-item-time">{{ formatDateTime(item.bookTimeStr) }}</div>
             <div class="cancel-chip" :class="item.canceled ? 'cancel-chip--off' : 'cancel-chip--on'">
               {{ item.canceled ? $t('cancelLink.status_cancelled') : $t('cancelLink.status_confirmed') }}
+            </div>
+          </div>
+          <!-- 这张单所属的门店（只用对外名称；没填的行隐藏） -->
+          <div class="cancel-item-store q-mt-sm">
+            <div v-if="item.storeName" class="cancel-store-name">{{ item.storeName }}</div>
+            <div v-if="item.storeAddress">{{ item.storeAddress }}</div>
+            <div v-if="item.storePhone">
+              <a class="cancel-link" :href="'tel:' + item.storePhone">{{ item.storePhone }}</a>
             </div>
           </div>
           <div v-if="item.projects" class="cancel-item-row q-mt-sm">
@@ -88,10 +93,6 @@
             <div class="cancel-muted">{{ $t('booking.field.amount') }}</div>
             <div class="cancel-item-value">${{ item.amount }}</div>
           </div>
-          <div v-if="item.remark" class="cancel-item-row">
-            <div class="cancel-muted">{{ $t('booking.field.remark') }}</div>
-            <div class="cancel-item-value cancel-remark">{{ item.remark }}</div>
-          </div>
 
           <!-- 第三方平台的单：只给时间与项目，并提示回平台取消 -->
           <div v-if="item.thirdParty && !item.canceled" class="cancel-item-hint q-mt-sm">
@@ -102,32 +103,31 @@
                   @click="askCancel(item)">
             {{ $t('cancelLink.cancel_btn') }}
           </button>
-          <!-- 有效但已进入截止时间：请顾客打电话 -->
+          <!-- 有效但已进入截止时间：请顾客打这张单所属门店的电话 -->
           <div v-else-if="!item.canceled" class="cancel-item-hint q-mt-sm">
             {{ $t('cancelLink.cutoff_hint', {minutes: cutoffMinutes}) }}
-            <a v-if="info.storePhone" class="cancel-link" :href="'tel:' + info.storePhone">{{ info.storePhone }}</a>
+            <a v-if="item.storePhone" class="cancel-link" :href="'tel:' + item.storePhone">{{ item.storePhone }}</a>
           </div>
         </div>
 
-        <!-- 说明：金额口径、取消规则、链接保密 -->
+        <!-- 说明：金额口径、取消规则、实时情况 -->
         <div class="cancel-foot">
           <div v-if="hasAmount">{{ $t('cancelLink.amount_note') }}</div>
           <div>{{ $t('cancelLink.cancel_rule', {minutes: cutoffMinutes}) }}</div>
           <div>{{ $t('cancelLink.live_note') }}</div>
-          <div>{{ $t('cancelLink.private_hint') }}</div>
         </div>
-
-        <button class="cancel-submit-btn q-mt-lg" @click="goHome">{{ $t('cancelLink.book_again') }}</button>
       </div>
     </div>
 
-    <!-- 取消确认框 -->
+    <!-- 取消确认框：带上门店名与地址——列表里可能有不止一家门店的单，而几家门店的对外名称可以相同，靠地址区分 -->
     <q-dialog v-model="confirmVisible" :persistent="submitting">
       <div class="cancel-dialog column">
         <div class="cancel-h5">{{ $t('cancelLink.confirm_title') }}</div>
         <div v-if="pending" class="cancel-notes q-px-md q-py-sm q-mt-md">
           <div class="cancel-item-time">{{ formatDateTime(pending.bookTimeStr) }}</div>
           <div v-if="pending.projects" class="q-mt-xs">{{ pending.projects }}</div>
+          <div v-if="pending.storeName" class="cancel-store-name q-mt-xs">{{ pending.storeName }}</div>
+          <div v-if="pending.storeAddress">{{ pending.storeAddress }}</div>
         </div>
         <div class="cancel-muted q-mt-md">{{ $t('cancelLink.confirm_desc') }}</div>
         <button class="cancel-submit-btn q-mt-lg" :disabled="submitting" @click="doCancel">
@@ -150,7 +150,6 @@
 
 <script setup>
 import {computed, onBeforeUnmount, onMounted, ref} from "vue";
-import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {switchLanguage} from "@/utils/global-tools.js";
 import {portalBookingCancelByLink, portalBookingCancelLinkInfo} from "@/api/portal-booking.js";
@@ -173,7 +172,6 @@ const FOCUS_REFRESH_MIN_GAP_MS = 60 * 1000
 const MANUAL_REFRESH_COOLDOWN_MS = 15 * 1000
 
 const {t} = useI18n()
-const thisRouter = useRouter()
 const curYear = new Date().getFullYear()
 
 // loading -> ready / invalid
@@ -290,11 +288,6 @@ function doCancel() {
   })
 }
 
-// 回首页（首页即预约入口）
-function goHome() {
-  thisRouter.push({name: 'index'})
-}
-
 </script>
 
 
@@ -356,7 +349,7 @@ $cancel-red: #cc2e2d;
   padding: 1.5rem;
 }
 
-// 门店信息 / 确认框里的预约摘要：首页 notes 卡片同款浅红底
+// 确认框里的预约摘要：首页 notes 卡片同款浅红底
 .cancel-notes {
   background: #fdf3f3;
   border: 1px solid rgba(204, 46, 45, .25);
@@ -365,8 +358,29 @@ $cancel-red: #cc2e2d;
   font-size: .95rem;
 }
 
+// 「请勿转发此链接」：页面最上面的警示条，主色描边 + 加粗，比其它说明都醒目
+.cancel-private {
+  background: #fdecea;
+  border: 2px solid $cancel-red;
+  border-radius: .8rem;
+  color: #a31f1e;
+  font-size: .95rem;
+  font-weight: 700;
+  line-height: 1.45;
+  padding: .7rem .9rem;
+}
+
+.cancel-private-icon {
+  flex-shrink: 0;
+  margin: .1rem .6rem 0 0;
+}
+
+// 卡片里的门店信息：名称加粗，地址 / 电话各一行
+.cancel-item-store {
+  line-height: 1.5;
+}
+
 .cancel-store-name {
-  font-size: 1.05rem;
   font-weight: 700;
   color: #333;
 }
@@ -408,7 +422,7 @@ $cancel-red: #cc2e2d;
 }
 
 // 一行「标签 + 值」：标签不换行不收缩，值靠右、放不下就在自己那一侧换行
-// （不用 Quasar 的 col-8：它带 flex: 0 0 auto，长备注不会收缩换行，会把整行撑出卡片）
+// （不用 Quasar 的 col-8：它带 flex: 0 0 auto，长内容（如一串项目名）不会收缩换行，会把整行撑出卡片）
 .cancel-item-row {
   display: flex;
   justify-content: space-between;
@@ -424,11 +438,6 @@ $cancel-red: #cc2e2d;
   min-width: 0;
   text-align: right;
   overflow-wrap: anywhere;
-}
-
-.cancel-remark {
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 
 .cancel-item-hint {

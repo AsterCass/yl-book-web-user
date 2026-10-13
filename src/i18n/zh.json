@@ -177,7 +177,7 @@
     "refresh": "刷新",
     "updated_at": "更新于 {time}",
     "refresh_failed": "暂时无法刷新，当前显示的是上一次的结果。",
-    "empty": "您在这家门店暂时没有即将到来的预约。",
+    "empty": "您暂时没有即将到来的预约。",
     "status_confirmed": "已确认",
     "status_cancelled": "已取消",
     "technician": "服务技师",
@@ -187,15 +187,14 @@
     "cancel_btn": "取消该预约",
     "cancel_rule": "预约开始前 {minutes} 分钟以外可在此取消；如需更改或临近开始时取消，请拨打门店电话。",
     "live_note": "门店可能会微调时间或技师，本页始终显示最新情况。",
-    "private_hint": "请勿转发此链接：持有链接的人可以查看并取消这些预约。",
+    "private_hint": "请勿转发或分享此链接：任何拿到链接的人都可以查看并取消您的预约。",
     "confirm_title": "确定取消该预约吗？",
     "confirm_desc": "取消后无法恢复，您随时可以重新预约。",
     "confirm_btn": "确定取消",
     "keep_btn": "保留该预约",
     "cancel_done": "预约已取消。",
     "invalid": "无法打开此链接",
-    "invalid_desc": "链接可能已过期，或短时间内打开次数过多。请稍后再试，或直接联系门店。",
-    "book_again": "重新预约"
+    "invalid_desc": "链接可能已过期，或短时间内打开次数过多。请稍后再试，或直接联系门店。"
   },
   "doNotSell": {
       "link": "不出售 / 不分享我的个人信息",

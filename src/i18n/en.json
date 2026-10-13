@@ -177,7 +177,7 @@
     "refresh": "Refresh",
     "updated_at": "Updated {time}",
     "refresh_failed": "Couldn't refresh just now. Showing the last result.",
-    "empty": "You have no upcoming appointments at this store.",
+    "empty": "You have no upcoming appointments.",
     "status_confirmed": "Confirmed",
     "status_cancelled": "Cancelled",
     "technician": "Technician",
@@ -187,15 +187,14 @@
     "cancel_btn": "Cancel this appointment",
     "cancel_rule": "You can cancel online up to {minutes} minutes before the start time. For changes or later cancellations, please call the store.",
     "live_note": "The store may adjust the time or technician slightly; this page always shows the latest details.",
-    "private_hint": "Keep this link private: anyone who has it can view and cancel these appointments.",
+    "private_hint": "Do not forward or share this link. Anyone who has it can view and cancel your appointments.",
     "confirm_title": "Cancel this appointment?",
     "confirm_desc": "This can't be undone. You are welcome to book again any time.",
     "confirm_btn": "Yes, cancel it",
     "keep_btn": "Keep my appointment",
     "cancel_done": "Your appointment has been cancelled.",
     "invalid": "We couldn't open this link",
-    "invalid_desc": "It may have expired, or it has been opened too many times in a short while. Please try again later or contact the store.",
-    "book_again": "Make a new booking"
+    "invalid_desc": "It may have expired, or it has been opened too many times in a short while. Please try again later or contact the store."
   },
   "doNotSell": {
       "link": "Do Not Sell or Share My Personal Information",
