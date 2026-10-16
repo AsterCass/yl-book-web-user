@@ -3,7 +3,7 @@
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 
 **Effective Date:** July 21, 2026
-**Last Updated:** September 1, 2026
+**Last Updated:** October 16, 2026
 
 ---
 
@@ -111,13 +111,13 @@ If we later integrate membership into the Site, we will update these Terms accor
 
 **Verification code.** A mobile telephone number is required to complete a booking so that the store can reach you about your appointment. To confirm the number is yours, the form provides a "Send code" button; only when you tap it do we send a single one-time passcode to that number. That message is triggered by your own action and is not a subscription.
 
-**Appointment messages — optional.** Text messages about your bookings (confirmations, reminders, and notices of change or cancellation) are sent **only if you check the dedicated box** on the booking form, which is unchecked by default. **You can book without checking it**; if you do not, we send those notices by email instead. These messages may be sent using an automatic telephone dialing system.
+**Appointment messages — optional.** Text messages about your bookings (confirmations, reminders, notices of change or cancellation, and one request for feedback after each visit, which may link to our review page on Google) are sent **only if you check the dedicated box** on the booking form, which is unchecked by default. **You can book without checking it**; if you do not, we send those notices by email instead. These messages may be sent using an automatic telephone dialing system.
 
 **Marketing messages.** Separately, and only if you check a **second, independent** opt-in checkbox on the booking form, we may send you occasional promotional offers and coupons by text message. That checkbox is unchecked by default and entirely optional, and is never bundled with the appointment-texts box. **Consent to receive marketing messages is optional and is not a condition of booking or receiving any Service.** You may withdraw marketing consent at any time without affecting your bookings or booking-related messages.
 
 Message frequency varies based on your booking activity, typically one to four messages per appointment, plus occasional offers if you opted in to marketing. Message and data rates may apply. Reply **STOP** to opt out or **HELP** for help. Opting out of all text messages will prevent you from receiving verification codes, which may require you to contact us by email or telephone to complete future bookings; your existing bookings remain valid, and we will continue to send booking confirmations and changes by email.
 
-An email address is optional. If you provide one, you consent to receive transactional emails about that booking — confirmation, reminders, and notices of change or cancellation. Marketing emails are sent only where you have opted in and always include an unsubscribe link. See our Privacy Policy for further detail.
+An email address is optional. If you provide one, you consent to receive transactional emails about that booking — confirmation, reminders, notices of change or cancellation, and a request for feedback after your visit. Marketing emails are sent only where you have opted in and always include an unsubscribe link. See our Privacy Policy for further detail.
 
 ---
 

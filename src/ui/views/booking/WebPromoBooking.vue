@@ -381,6 +381,29 @@
       </div>
 
     </div>
+
+    <!-- 预约通知短信没勾时，点「立即预约」先问一次：同意并预约 / 不接受短信通知并预约。两个按钮都会下单——
+         不勾也必须能预约（A2P 10DLC 30923 forced consent），这里只是把不勾的后果说清楚。
+         「同意」= 把上面的勾选框勾上再提交，与手动勾选完全等价（记的文案版本一样），
+         所以框里原样展示勾选框的文案与资费 / 退订说明，顾客是对着同一段话点的同意。点框外或按 Esc = 不预约 -->
+    <q-dialog v-model="smsPromptVisible">
+      <div class="pbook-dialog column">
+        <div class="pbook-dialog-title">{{ $t('booking.sms_prompt.title') }}</div>
+        <div class="q-mt-sm">{{ $t('booking.sms_prompt.content') }}</div>
+        <div class="pbook-dialog-quote q-mt-md q-px-md q-py-sm">{{ $t('booking.sms_notify_consent') }}</div>
+        <div class="pbook-disclosure q-mt-sm">
+          {{ $t('booking.sms_consent_terms') }}<span class="pbook-link"
+                                                     @click="openPolicyTab('privacy')">{{ $t('policy.privacy') }}</span>{{ $t('policy.and') }}<span
+            class="pbook-link" @click="openPolicyTab('terms')">{{ $t('policy.terms') }}</span>{{ $t('booking.sms_disclosure_suffix') }}
+        </div>
+        <button class="pbook-dialog-btn q-mt-lg" @click="answerSmsPrompt(true)">
+          {{ $t('booking.sms_prompt.agree_and_book') }}
+        </button>
+        <button class="pbook-dialog-btn pbook-dialog-btn-ghost q-mt-sm" @click="answerSmsPrompt(false)">
+          {{ $t('booking.sms_prompt.book_without') }}
+        </button>
+      </div>
+    </q-dialog>
   </div>
 
 </template>
@@ -492,6 +515,8 @@ const inputRemark = ref("")
 const marketingConsent = ref(false)
 // 预约通知类短信同意（非营销）：默认不勾，不勾也能下单——只是收不到短信通知
 const smsNotifyConsent = ref(false)
+// 预约通知短信没勾时点「立即预约」弹出的确认框
+const smsPromptVisible = ref(false)
 
 const sendingPhoneCode = ref(false)
 const phoneCountdown = ref(0)
@@ -569,8 +594,9 @@ watch([selectedStoreId, selectedSkillIds, timeReady], scheduleSlotReload, {deep:
 
 onMounted(() => {
   loadStores()
-  // 有本地登录态就先按缓存预填手机号与邮箱（号码与账号默认一致即免短信验证），再跟服务端核一次
-  prefillFromAccount()
+  // 有本地登录态就先按缓存预填手机号与邮箱（号码与账号默认一致即免短信验证），再跟服务端核一次；
+  // 两个短信勾选框只按服务端返回的回填（见 prefillFromAccount）
+  prefillFromAccount(false)
   syncAccount()
 })
 
@@ -594,13 +620,19 @@ function syncAccount() {
 
 /**
  * 从账户预填联系方式：手机号（与账号默认一致即免短信验证）+ 邮箱（上次留过就自动填上，可改可清空）。
+ *
+ * @param withConsent 是否连两个短信勾选框一起回填。只在拿到服务端刚返回的账户信息时传 true：
+ *                    后端只有「同意的是当前版本文案」才给 1，浏览器缓存的账户信息可能是文案升级前存的（那时算同意），
+ *                    按缓存把框预先勾上再提交，就成了对新文案的默认勾选
  */
-function prefillFromAccount() {
+function prefillFromAccount(withConsent = true) {
   inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
   inputEmail.value = accountMail.value || ""
-  // 营销短信同意：回填账户上的现值，客户每次预约都能改（改了下单即生效）
-  marketingConsent.value = accountSmsConsent.value
-  smsNotifyConsent.value = accountSmsNotifyConsent.value
+  if (withConsent) {
+    // 两类短信同意：回填账户上的现值，客户每次预约都能改（改了下单即生效）
+    marketingConsent.value = accountSmsConsent.value
+    smsNotifyConsent.value = accountSmsNotifyConsent.value
+  }
 }
 
 onBeforeUnmount(() => {
@@ -989,13 +1021,39 @@ function checkContact() {
 }
 
 /**
- * 立即预约。<b>手机号就是账号</b>：只要填的号码与当前会话账户的号码不一致（含未登录），
+ * 点「立即预约」：校验通过后，预约通知短信没勾就先弹确认框（选完在 {@link answerSmsPrompt} 里下单），勾了直接下单。
+ */
+function doBook() {
+  if (submitting.value || !checkSelections() || !checkContact()) {
+    return
+  }
+  if (!smsNotifyConsent.value) {
+    smsPromptVisible.value = true
+    return
+  }
+  submitBooking()
+}
+
+/**
+ * 确认框里的选择：同意 = 把勾选框勾上再下单（与手动勾选等价）；不接受 = 保持不勾直接下单
+ * （不勾怎么上送见 submitBooking：已登录 = 不同意，未登录 = 本次不表态）。
+ */
+function answerSmsPrompt(agree) {
+  smsPromptVisible.value = false
+  if (agree) {
+    smsNotifyConsent.value = true
+  }
+  submitBooking()
+}
+
+/**
+ * 下单。<b>手机号就是账号</b>：只要填的号码与当前会话账户的号码不一致（含未登录），
  * 就用「手机号 + 短信验证码」重新走一次免密登录 —— 会话切到该号码的账户（没有则自动建号，会话 180 天），
  * <b>不是</b>给当前账户改绑号码（那会让单子算到别人号码头上）。号码一致则直接下单，无需任何验证。
  * 邮箱是可空的联系方式，随登录/下单一起上送，不做验证。
  */
-async function doBook() {
-  if (submitting.value || !checkSelections() || !checkContact()) {
+async function submitBooking() {
+  if (submitting.value) {
     return
   }
   submitting.value = true
@@ -1078,8 +1136,10 @@ function resetAll() {
   slotsByDate.value = {}
   inputPhoneCode.value = ""
   inputRemark.value = ""
-  // 已登录（含刚自动登录）客户预填账号默认手机号与邮箱
-  prefillFromAccount()
+  // 已登录（含刚自动登录）客户预填账号默认手机号与邮箱；短信勾选框等服务端返回最新状态再回填
+  // （刚下的这单可能改了同意状态，本地的账户信息还是下单前的）
+  prefillFromAccount(false)
+  syncAccount()
   nextTick(scrollToSelf)
 }
 
@@ -1496,6 +1556,59 @@ $promo-red: #cc2e2d;
   background: #fff;
   color: $promo-red;
   border-color: $promo-red;
+
+  &:hover {
+    background-color: #fdf3f3;
+  }
+}
+
+// ===== 预约通知短信确认框（样式同预约详情页的取消确认框） =====
+.pbook-dialog {
+  width: min(92vw, 26rem);
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: #555;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.pbook-dialog-title {
+  color: #232323;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+// 勾选框原文：加引号框，表明点「同意」就是同意这段话
+.pbook-dialog-quote {
+  background: #f7f7f8;
+  border-left: 3px solid $promo-red;
+  border-radius: .4rem;
+  font-size: .9rem;
+}
+
+// 两个按钮同宽、上下排列：「不接受」不做成小字链接，两个选择一样好点
+.pbook-dialog-btn {
+  width: 100%;
+  background-color: $promo-red;
+  color: #fff;
+  border: 2px solid $promo-red;
+  border-radius: .6rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: .65rem 1.5rem;
+  cursor: pointer;
+  transition: background-color .25s ease;
+
+  &:hover {
+    background-color: #b52827;
+  }
+}
+
+.pbook-dialog-btn-ghost {
+  background: #fff;
+  color: $promo-red;
 
   &:hover {
     background-color: #fdf3f3;
