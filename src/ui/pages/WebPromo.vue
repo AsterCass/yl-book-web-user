@@ -22,14 +22,16 @@
         <h1 class="promo-hero-title">{{ $t('promo.hero_title') }}</h1>
       </div>
       <div class="promo-hero-tagline q-mt-sm">{{ $t('promo.tagline') }}</div>
-      <!-- VIP 专属优惠横幅（红 + 金，白底保证压图可读） -->
-      <div class="promo-vip-banner q-mt-md">
-        <span class="promo-vip-pre">{{ $t('promo.vip_offer_pre') }}</span>
-        <span class="promo-vip-off">&nbsp;{{ $t('promo.vip_offer_off') }}</span>
-      </div>
-      <!-- 半价的适用条件（限周一至周四 / 限首单 / 一单只折一个项目）合成一段写在横幅正下方，
-           免得客户按「全单半价、任意一天」的预期下单，到店才发现对不上 -->
-      <div class="promo-vip-note q-mt-sm">{{ $t('promo.vip_offer_note') }}</div>
+      <!-- VIP 专属优惠横幅（红 + 金，白底保证压图可读）。Google 落地页不参与本站活动，横幅与说明都不展示 -->
+      <template v-if="showOffer">
+        <div class="promo-vip-banner q-mt-md">
+          <span class="promo-vip-pre">{{ $t('promo.vip_offer_pre') }}</span>
+          <span class="promo-vip-off">&nbsp;{{ $t('promo.vip_offer_off') }}</span>
+        </div>
+        <!-- 半价的适用条件（限周一至周四 / 限首单 / 一单只折一个项目）合成一段写在横幅正下方，
+             免得客户按「全单半价、任意一天」的预期下单，到店才发现对不上 -->
+        <div class="promo-vip-note q-mt-sm">{{ $t('promo.vip_offer_note') }}</div>
+      </template>
       <button class="promo-book-btn promo-book-btn-hero q-mt-lg" @click="goBook">
         {{ $t('promo.book_btn') }}
       </button>
@@ -153,7 +155,7 @@
     </div>
 
     <!-- 在线预约区：点「Book now」不再跳转登录页，而是滚到这里就地完成预约（免登录浏览，下单时才验证身份） -->
-    <web-promo-booking ref="bookingRef"/>
+    <web-promo-booking ref="bookingRef" :channel="variant" :show-offer="showOffer"/>
 
     <!-- 页脚（参照官网：灰底、链接、门店信息；门店同样来自配置） -->
     <div class="promo-footer">
@@ -208,13 +210,27 @@
 
 <script setup>
 
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import {switchLanguage} from "@/utils/global-tools.js";
 import {openLink} from "@/utils/base-tools.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
 import WebPromoBooking from "@/ui/views/booking/WebPromoBooking.vue";
 import {HOME_SERVICE_GROUPS, HOME_STORES, HOME_TESTIMONIALS} from "@/constants/home-content.js";
+
+const props = defineProps({
+  /**
+   * 页面版本：空 = 首页（/）；'google' = Google 落地页（/google）。内容与首页相同，但不展示本站活动（半价横幅、
+   * 确认步骤的半价须知），下单固定记「Google预约」来源、不带推荐码——Google 是独立渠道，不参与本站活动
+   */
+  variant: {
+    type: String,
+    default: '',
+  },
+})
+
+// 是否展示本站活动（半价）：Google 落地页不展示
+const showOffer = computed(() => props.variant !== 'google')
 
 const globalState = useGlobalStateStore()
 

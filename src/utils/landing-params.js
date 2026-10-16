@@ -3,7 +3,7 @@ import {useGlobalStateStore} from "@/utils/global-state.js";
 // 站外投放落地参数：?platform=xx&ref=xx
 // platform -> 注册来源 sourceCode，ref -> 推荐码 referralCode，注册/下单时上报。
 //
-// 仅「首页（/ 及别名 /index、/promo）与 /login」接受该参数：
+// 仅「首页（/ 及别名 /index、/promo）与 /login」接受该参数（Google 落地页 /google 不接受，来源由页面固定，见 bookingAttributionParams）：
 //   - 在这两类页面整页加载时，以当前 URL 为准覆盖（未携带即置空，不保留旧值）；
 //   - 其他页面（如 /dashboard、/auth/*/callback、/terms 等）不接受该参数，
 //     也不会因 URL 未携带而重置 localStorage 中已存的值——
@@ -20,6 +20,11 @@ const PLATFORM_SOURCE_CODE = {
     yt: 3,
     fb: 4,
 }
+
+// Google 落地页（/google）的来源 code：UserSourceEnum.GOOGLE(5)，后端映射为独立的预约来源「Google预约」。
+// 有意不放进 PLATFORM_SOURCE_CODE：?platform=google 会让「页面上有半价活动、单子却记成 Google」，
+// Google 来源只能由 /google 页面本身决定（见 bookingAttributionParams）
+export const GOOGLE_SOURCE_CODE = 5
 
 export function platformToSourceCode(platform) {
     if (!platform) {
@@ -83,4 +88,16 @@ export function buildAttributionParams() {
         params.referralCode = globalState.referralCode
     }
     return params
+}
+
+/**
+ * 预约组件（下单 / 下单时建号）上报的归因参数，<b>按下单所在的页面</b>决定：
+ *   - Google 落地页（channel = 'google'）：固定 Google 来源，<b>不带推荐码</b>——URL 上的 ?ref= 不接收，
+ *     之前在首页存下的推荐码也不带，Google 渠道保持干净；已存的落地参数原样保留，不清空
+ *     （顾客回到首页下单，照旧按首页的落地参数归因）。
+ *   - 其余页面：按 ?platform= / ?ref= 落地参数（buildAttributionParams）。
+ * 这样顾客看到的优惠与单上记的来源一致：/google 页不展示半价活动，单就是 Google；回首页看到活动，单就是本站。
+ */
+export function bookingAttributionParams(channel) {
+    return channel === 'google' ? {sourceCode: GOOGLE_SOURCE_CODE} : buildAttributionParams()
 }

@@ -242,8 +242,9 @@
               <!-- 半价优惠须知：放确认步骤最顶上，红框整块提示。系统不参与折扣计算（预计金额是原价），
                    条件只能靠这里说清楚，免得客户按「全单半价、任意一天」的预期下单、到店才发现对不上。
                    放在本 section 内部而不是它前面：.pbook-sec + .pbook-sec 的间距选择器靠相邻关系，
-                   插成兄弟节点会把汇总区的上间距吃掉（单页模式下尤其明显） -->
-              <div class="pbook-offer">
+                   插成兄弟节点会把汇总区的上间距吃掉（单页模式下尤其明显）。
+                   Google 落地页不参与本站活动，不展示（showOffer = false） -->
+              <div v-if="showOffer" class="pbook-offer">
                 <div class="pbook-offer-title">{{ $t('booking.offer.title') }}</div>
                 <ul class="pbook-offer-list">
                   <li>{{ $t('booking.offer.days') }}</li>
@@ -394,7 +395,7 @@ import {i18n} from "@/i18n/index.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
 import {checkIsMail, checkIsPhone} from "@/utils/format-check.js";
-import {buildAttributionParams} from "@/utils/landing-params.js";
+import {bookingAttributionParams} from "@/utils/landing-params.js";
 import {currentPosition, nearestStore} from "@/utils/store-geo.js";
 import {formatClock, formatDateTime} from "@/utils/time-format.js";
 import {TimezoneOptEnum} from "@/constants/enums/common.js";
@@ -439,6 +440,21 @@ const props = defineProps({
   singleStep: {
     type: Boolean,
     default: false,
+  },
+  /**
+   * 下单所在的页面渠道：'google' = Google 落地页（/google），下单固定记 Google 来源、不带推荐码；
+   * 空 = 首页等，按 ?platform= / ?ref= 落地参数归因（见 landing-params.js 的 bookingAttributionParams）
+   */
+  channel: {
+    type: String,
+    default: '',
+  },
+  /**
+   * 是否展示本站活动（确认步骤顶上的「半价优惠须知」）。Google 落地页不参与本站活动，传 false
+   */
+  showOffer: {
+    type: Boolean,
+    default: true,
   },
 })
 
@@ -993,8 +1009,8 @@ async function doBook() {
         email: inputEmail.value,
         phone: '1' + inputPhone.value,
         phoneCode: inputPhoneCode.value,
-        // 站外投放归因（与注册同结构）：仅首次建号时记录
-        ...buildAttributionParams(),
+        // 站外投放归因（与注册同结构）：仅首次建号时记录；Google 落地页固定为 Google 来源
+        ...bookingAttributionParams(props.channel),
       })
       if (!authRes) {
         return
@@ -1024,7 +1040,8 @@ async function doBook() {
       smsNotifyConsent: smsNotifyConsent.value ? true : (wasLoggedIn ? false : null),
       smsMarketingConsent: marketingConsent.value ? true : (wasLoggedIn ? false : null),
       remark: inputRemark.value || null,
-      ...buildAttributionParams(),
+      // 来源 / 推荐码按下单所在的页面：Google 落地页记 Google、不带推荐码，其余按落地参数
+      ...bookingAttributionParams(props.channel),
     })
     if (!createRes) {
       // 会话在提交途中失效（拦截器已清掉登录态，表单会自动露出邮箱/验证码）：给一句人话，别让客户对着静默失败发呆

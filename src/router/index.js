@@ -30,6 +30,17 @@ const router = createRouter({
                 title: 'main_login_title'
             },
         },
+        // Google 落地页（投放用）：内容与首页相同，但不展示本站半价活动，下单记「Google预约」来源（独立渠道，
+        // 不属于本站预约）、不带推荐码。不接收 ?platform= / ?ref= 落地参数（不在 landing-params 的接受页里）
+        {
+            path: "/google",
+            name: "google",
+            component: WebPromo,
+            meta: {
+                title: 'main_login_title'
+            },
+            props: {variant: 'google'},
+        },
         // 旧版首页存档（仅留档不入导航）。注：/doc/*.md 为 public 静态文件、优先于该路由，互不冲突
         {
             path: "/doc",
