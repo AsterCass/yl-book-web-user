@@ -296,6 +296,12 @@
 
               <div class="pbook-option-sub q-mb-sm">{{ $t('booking.contact_hint') }}</div>
 
+              <!-- 姓名：必填，下单即本单客户名并同步为账户昵称（后端可空只为兼容老页面——空则沿用账户昵称）。
+                   老客户预填账户昵称，但建号时系统兜底生成的那种（邮箱前缀 / 手机号后 4 位）不预填，见 accountName -->
+              <q-input v-model="inputName" dense outlined autocomplete="name" :maxlength="NAME_MAX"
+                       class="pbook-input q-mt-md" :label="$t('booking.field.name')"/>
+              <div class="pbook-option-sub q-mt-xs">{{ $t('booking.name_hint') }}</div>
+
               <!-- 手机号：客户身份以它为准（一号一账户），必填 + 短信验证。界面固定 +1，只填 10 位本地号码 -->
               <q-input v-model="inputPhone" dense outlined inputmode="numeric" :maxlength="PHONE_LEN"
                        class="pbook-input q-mt-md" :label="$t('booking.field.phone')" prefix="+1"/>
@@ -438,6 +444,8 @@ const thisRouter = useRouter()
 const MAX_ADVANCE_DAYS = 14
 const PHONE_LEN = 10
 const CODE_LEN = 6
+// 与后端 PortalCreateBookingParam.nickName 的 @Size(max = 50) 对齐
+const NAME_MAX = 50
 const REMARK_MAX = 200
 // 验证码重发冷却（秒）；后端另有限流（邮箱 10 次/天，短信同号码 5 次/时）
 const RESEND_COOLDOWN = 60
@@ -508,6 +516,7 @@ let serviceSelectedTracked = false
 const selectedDate = ref("")
 const selectedSlot = ref("")
 
+const inputName = ref("")
 const inputEmail = ref("")
 const inputPhone = ref("")
 const inputPhoneCode = ref("")
@@ -525,6 +534,20 @@ let slotTimer = null
 
 const isLoggedIn = computed(() => !!globalState.userData)
 const accountMail = computed(() => globalState.userData ? globalState.userData.mail : '')
+// 账户昵称，用于预填姓名。建号时没填姓名的账户，昵称是系统兜底生成的（邮箱前缀，无邮箱取手机号后 4 位，
+// 同后端 PortalAuthServiceImpl.defaultNickName）——那不是名字，不预填，留空让客户自己填（下单即同步为账户昵称）
+const accountName = computed(() => {
+  const user = globalState.userData
+  const name = user && user.nickName ? user.nickName.trim() : ''
+  if (!name) {
+    return ''
+  }
+  const mail = user.mail || ''
+  const at = mail.indexOf('@')
+  const phone = normalizeNational(user.phone)
+  const generated = (at > 0 && name === mail.slice(0, at)) || (phone.length > 4 && name === phone.slice(-4))
+  return generated ? '' : name
+})
 // 账户上的营销短信同意（后端 PortalUserDto.smsMarketingConsent，0/1）
 const accountSmsConsent = computed(() => !!(globalState.userData && globalState.userData.smsMarketingConsent === 1))
 // 账户上的「预约通知短信」同意（PortalUserDto.smsNotifyConsent，0/1）
@@ -619,13 +642,15 @@ function syncAccount() {
 }
 
 /**
- * 从账户预填联系方式：手机号（与账号默认一致即免短信验证）+ 邮箱（上次留过就自动填上，可改可清空）。
+ * 从账户预填联系方式：姓名（系统兜底生成的昵称除外）+ 手机号（与账号默认一致即免短信验证）
+ * + 邮箱（上次留过就自动填上，可改可清空）。
  *
  * @param withConsent 是否连两个短信勾选框一起回填。只在拿到服务端刚返回的账户信息时传 true：
  *                    后端只有「同意的是当前版本文案」才给 1，浏览器缓存的账户信息可能是文案升级前存的（那时算同意），
  *                    按缓存把框预先勾上再提交，就成了对新文案的默认勾选
  */
 function prefillFromAccount(withConsent = true) {
+  inputName.value = accountName.value
   inputPhone.value = accountPhoneNational.value.slice(0, PHONE_LEN)
   inputEmail.value = accountMail.value || ""
   if (withConsent) {
@@ -996,6 +1021,17 @@ function checkSelections() {
 }
 
 function checkContact() {
+  // 姓名必填，只要求非空白、不限字符：真实姓名里有空格、连字符、撇号，checkName / checkNickName 那套会误拦
+  const name = inputName.value.trim()
+  if (!name) {
+    notifyTopWarning(t('booking.name_required'))
+    return false
+  }
+  // maxlength 只拦键入，挡不住预填（账户昵称最长 100）
+  if (name.length > NAME_MAX) {
+    notifyTopWarning(t('booking.name_too_long', {max: NAME_MAX}))
+    return false
+  }
   // 邮箱必填、但不做验证码验证：确认邮件与取消链接都要用它
   if (!inputEmail.value) {
     notifyTopWarning(t('booking.email_required'))
@@ -1058,6 +1094,7 @@ async function submitBooking() {
   }
   submitting.value = true
   const wasLoggedIn = isLoggedIn.value
+  const bookingName = inputName.value.trim()
   try {
     // needsPhoneCode = 未登录，或填的号码 ≠ 账户号码 —— 两种都要用这个号码重新登录（换号码=换账号）
     if (needsPhoneCode.value) {
@@ -1066,6 +1103,8 @@ async function submitBooking() {
         email: inputEmail.value,
         phone: '1' + inputPhone.value,
         phoneCode: inputPhoneCode.value,
+        // 姓名：后端只在新建账户时用作昵称；老账户的昵称由下面的下单接口同步
+        nickName: bookingName,
         // 站外投放归因（与注册同结构）：仅首次建号时记录；Google 落地页固定为 Google 来源
         ...bookingAttributionParams(props.channel),
       })
@@ -1087,6 +1126,8 @@ async function submitBooking() {
       skillIdList: selectedSkillIds.value,
       // 不再上送 preferredStaffId：客户端已不让顾客指定员工，等同「不指定」，由系统自动分配（后端入参保留）
       phone: '1' + inputPhone.value,
+      // 本单客户姓名（前端必填）：同时同步为账户昵称，下次预填。会话有效直接下单的客户不走 bookingLogin，只能靠这里
+      nickName: bookingName,
       // 本次联系邮箱（前端必填）：确认邮件与取消链接都发它，同时同步为账户默认邮箱
       email: inputEmail.value,
       // 营销短信同意（可选项）：每次预约都上送本次表态，后端变了才写库并记时间/IP/文案版本

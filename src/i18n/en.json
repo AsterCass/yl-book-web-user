@@ -320,6 +320,9 @@
     },
     "remark_hint": "Optional, up to 200 characters. Anything we should know in advance.",
     "remark_too_long": "Remark must not exceed 200 characters",
+    "name_hint": "Required so the store knows who the appointment is for.",
+    "name_required": "Please enter your name",
+    "name_too_long": "Name must not exceed {max} characters",
     "email": "Email",
     "email_optional": "Email (optional)",
     "email_required": "Please enter your email address",
@@ -363,6 +366,7 @@
       "duration": "Duration",
       "amount": "Estimated total",
       "time": "Time",
+      "name": "Name",
       "phone": "Phone",
       "phone_code": "Code",
       "remark": "Remark"

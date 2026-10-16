@@ -6,7 +6,7 @@ import {serviceShiro} from "@/utils/request.js";
 //    客户身份是手机号、邮箱不验证；换号码 = 用新号码走一次 bookingLogin（会话切到该号码的账户）
 
 // 下单流程免密登录（公开）：body {phone: '1xxxxxxxxxx', phoneCode(短信验证码), email?(可空、不验证),
-// nickName?, sourceCode?, referralCode?}。客户身份以手机号为准（一号一账户），短信码通过即登录，
+// nickName?(≤50，仅建号时用作昵称), sourceCode?, referralCode?}。客户身份以手机号为准（一号一账户），短信码通过即登录，
 // 该号码没账户则自动建号；邮箱只作联系方式与下次预填值（被其它账户占用则不写入账户，不影响下单）。
 // 登录后该号码在 30 分钟内可直接下单（后端已写「已验证」标记），无需再调 phone/verify。
 // 与 login 一样：会话 token 在响应头 Yl-Token（客户端会话 180 天）

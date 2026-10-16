@@ -42,7 +42,8 @@ export function portalBookingSlotsBatch(params) {
     })
 }
 
-// body: {storeId, bookTimeStr: 'yyyy-MM-dd HH:mm', skillIdList: [], preferredStaffId?, couponCode?}
+// body: {storeId, bookTimeStr: 'yyyy-MM-dd HH:mm', skillIdList: [], preferredStaffId?, couponCode?,
+// nickName?(本单客户姓名，≤50；后端可空=沿用账户昵称，填了同步为账户昵称)}
 export function portalBookingCreate(body) {
     return serviceShiro({
         url: `/portal/booking/create`,
