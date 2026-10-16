@@ -43,11 +43,6 @@
       <div class="sms-muted q-mt-sm">{{ $t('smsProgram.optin_phone') }}</div>
 
       <div class="sms-quote q-px-md q-py-sm q-mt-sm">
-        <div class="sms-quote-label">{{ $t('smsProgram.quote_intro') }}</div>
-        <div>{{ $t('booking.sms_consent_intro') }}</div>
-      </div>
-
-      <div class="sms-quote q-px-md q-py-sm q-mt-sm">
         <div class="sms-quote-label">{{ $t('smsProgram.quote_transactional') }}</div>
         <div>{{ $t('booking.sms_notify_consent') }}</div>
       </div>

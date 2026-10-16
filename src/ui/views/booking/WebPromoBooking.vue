@@ -328,7 +328,6 @@
                    ⚠️ 两个都不勾也必须能正常下单——只要「不同意就不能用服务」，就还是 forced consent。
                    验证码不在这里收同意：它由客户自己点「发送验证码」触发，那一下就是同意本身。 -->
               <div class="pbook-consent q-mt-md q-px-md q-py-sm">
-                <div class="pbook-disclosure">{{ $t('booking.sms_consent_intro') }}</div>
 
                 <!-- ① 预约通知类短信（非营销） -->
                 <div class="row items-start no-wrap q-mt-sm">
