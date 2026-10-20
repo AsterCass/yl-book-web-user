@@ -211,12 +211,12 @@
                     </span>
                   </div>
                   <template v-else>
-                    <div class="row justify-center">
+                    <div ref="dateEl" class="row justify-center pbook-date-wrap">
                       <q-date class="pbook-date no-shadow bg-transparent" v-model="selectedDate" mask="YYYY-MM-DD"
                               minimal :options="dateOptions" :default-year-month="defaultYearMonth"
                               :navigation-min-year-month="navMinYearMonth"
                               :navigation-max-year-month="navMaxYearMonth"
-                              @update:model-value="selectedSlot = ''"/>
+                              @update:model-value="selectDate"/>
                     </div>
                     <div v-if="!selectedDate" class="pbook-placeholder">{{ $t('booking.pick_date_first') }}</div>
                     <div v-else-if="!slotList.length" class="pbook-placeholder">{{ $t('booking.no_slot') }}</div>
@@ -457,6 +457,7 @@ const rootEl = ref(null)
 // 只给「选完上一项要自动滚过去」的分区留 ref
 const skillSecEl = ref(null)
 const timeSecEl = ref(null)
+const dateEl = ref(null)
 const actionEl = ref(null)
 
 /**
@@ -861,12 +862,12 @@ function scrollBehavior() {
   return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
 }
 
-// 选完一项自动滚到下一项。单步模式不滚：内容本就在一页里，再滚只会把人晃来晃去
-function scrollTo(el) {
+// 选完一项自动滚到下一项（默认滚到视口中间）。单步模式不滚：内容本就在一页里，再滚只会把人晃来晃去
+function scrollTo(el, block = 'center') {
   if (!el || props.singleStep) {
     return
   }
-  nextTick(() => el.scrollIntoView({behavior: scrollBehavior(), block: 'center'}))
+  nextTick(() => el.scrollIntoView({behavior: scrollBehavior(), block}))
 }
 
 function selectStore(s) {
@@ -929,6 +930,17 @@ function toggleSkill(id) {
   // 绝大多数客户只约一个项目：首次选中就滚到下一步（选时间）；之后再加选/取消不打断（项目仍可多选）
   if (wasEmpty && selectedSkillIds.value.length) {
     scrollTo(timeSecEl.value)
+  }
+}
+
+/**
+ * 点了某一天：清掉已选的时间，并把日历滚到视口顶部，日历和下面这一天的时间列表尽量一屏看全（手机上尤其明显）。
+ * 再点一次已选中的日期是取消选择（q-date 传 null），这时不滚。
+ */
+function selectDate(date) {
+  selectedSlot.value = ''
+  if (date) {
+    scrollTo(dateEl.value, 'start')
   }
 }
 
@@ -1492,6 +1504,11 @@ $promo-red: #cc2e2d;
   background-color: $promo-red;
   color: #fff;
   font-weight: 600;
+}
+
+// 点日期后日历滚到视口顶部（selectDate）：上方留一点空，别贴着屏幕边缘
+.pbook-date-wrap {
+  scroll-margin-top: 12px;
 }
 
 // 日历：全局 override-components.scss 里有一条 `.q-date__main .bg-primary`（管理端深色主题遗留，
