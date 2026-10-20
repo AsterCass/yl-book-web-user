@@ -372,7 +372,7 @@
         <div ref="actionEl" class="row items-center q-mt-lg"
              :class="singleStep || step === 1 ? 'justify-center' : 'justify-between'">
           <button v-if="!singleStep && step > 1" class="promo-book-btn pbook-btn-sm pbook-btn-ghost"
-                  :disabled="submitting" @click="step = 1">
+                  :disabled="submitting" @click="toSelectStep">
             {{ $t('booking.prev') }}
           </button>
           <button v-if="!singleStep && step === 1" class="promo-book-btn pbook-btn-sm" @click="toConfirmStep">
@@ -995,7 +995,13 @@ function toConfirmStep() {
     return
   }
   step.value = 2
-  nextTick(scrollToSelf)
+  jumpToSelf()
+}
+
+// 第 2 步 -> 第 1 步：同样跳回预约区顶部（第 1 步很长，不跳会停在中间某处）
+function toSelectStep() {
+  step.value = 1
+  jumpToSelf()
 }
 
 function checkSelections() {
@@ -1159,7 +1165,7 @@ async function submitBooking() {
     // Meta 把 Schedule 当转化事件看：不带 value/currency 就没法算广告 ROI，
     // 事件管理工具会一直报「缺少货币字段」。金额取本次所选项目合计（门户可选项目均已保证配价>0）
     track('Schedule', {value: Number(totalAmount.value) || 0, currency: 'USD'})
-    nextTick(scrollToSelf)
+    jumpToSelf()
   } finally {
     submitting.value = false
   }
@@ -1181,13 +1187,15 @@ function resetAll() {
   // （刚下的这单可能改了同意状态，本地的账户信息还是下单前的）
   prefillFromAccount(false)
   syncAccount()
-  nextTick(scrollToSelf)
+  jumpToSelf()
 }
 
 /**
  * 把预约区滚到视口中心（放不下则贴顶）。首页的「Book now」按钮也调用它，故对外暴露。
+ *
+ * @param instant true = 直接跳，不平滑滚动（见 jumpToSelf）
  */
-function scrollToSelf() {
+function scrollToSelf(instant = false) {
   // 「Book now」既是滚动入口，也是定位授权的触发点（用户手势内发起，不在页面加载时弹权限框）
   tryAutoPickStore()
   const el = rootEl.value
@@ -1197,7 +1205,18 @@ function scrollToSelf() {
   const rect = el.getBoundingClientRect()
   const top = rect.top + window.scrollY
   const offset = rect.height < window.innerHeight ? (window.innerHeight - rect.height) / 2 : 12
-  window.scrollTo({top: Math.max(top - offset, 0), behavior: scrollBehavior()})
+  window.scrollTo({top: Math.max(top - offset, 0), behavior: instant ? 'auto' : scrollBehavior()})
+}
+
+/**
+ * 预约区换了一屏内容（上一步 / 下一步、预约成功、再约一单）之后，直接跳到预约区，不平滑滚动。
+ * <p>
+ * 换内容时页面高度可能一下少几千像素（第 1 步的时段列表很长），浏览器先把滚动位置夹到新页面的最底部。
+ * iPhone（iOS 上的浏览器都是 Safari 内核）在同一帧里发起的平滑滚动会被这次夹底取消，人就停在第 2 步下方；
+ * Chrome 能滚完（2026-10-20 实测）。直接跳没有这个问题，换内容本来也更像翻页。
+ */
+function jumpToSelf() {
+  nextTick(() => scrollToSelf(true))
 }
 
 /**
