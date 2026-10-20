@@ -58,7 +58,7 @@
         </div>
         <div v-if="refreshFailed" class="cancel-updated q-mb-sm">{{ $t('cancelLink.refresh_failed') }}</div>
 
-        <!-- 没有还没开始的预约 -->
+        <!-- 没有还没结束的预约 -->
         <div v-if="bookingList.length === 0" class="column items-center q-py-lg">
           <q-icon name="fa-regular fa-calendar" size="2.4rem" class="cancel-muted"/>
           <div class="cancel-muted q-mt-md text-center">{{ $t('cancelLink.empty') }}</div>
@@ -95,8 +95,12 @@
             <div class="cancel-item-value">${{ item.amount }}</div>
           </div>
 
+          <!-- 已开始还没结束：只展示，按钮显示「进行中」、不能点（原则上不在网页上取消已开始的单） -->
+          <button v-if="item.inProgress" class="cancel-ghost-btn cancel-ghost-btn--busy q-mt-md" disabled>
+            {{ $t('cancelLink.in_progress') }}
+          </button>
           <!-- 第三方平台的单：只给时间与项目，并提示回平台取消 -->
-          <div v-if="item.thirdParty && !item.canceled" class="cancel-item-hint q-mt-sm">
+          <div v-else-if="item.thirdParty && !item.canceled" class="cancel-item-hint q-mt-sm">
             {{ $t('cancelLink.third_party') }}
           </div>
           <!-- 能取消：点了先弹确认框 -->
@@ -104,9 +108,9 @@
                   @click="askCancel(item)">
             {{ $t('cancelLink.cancel_btn') }}
           </button>
-          <!-- 有效但已进入截止时间：请顾客打这张单所属门店的电话 -->
+          <!-- 有效但不能在这里取消（兜底，正常走不到）：请顾客打这张单所属门店的电话 -->
           <div v-else-if="!item.canceled" class="cancel-item-hint q-mt-sm">
-            {{ $t('cancelLink.cutoff_hint', {minutes: cutoffMinutes}) }}
+            {{ $t('cancelLink.call_hint') }}
             <a v-if="item.storePhone" class="cancel-link" :href="'tel:' + item.storePhone">{{ item.storePhone }}</a>
           </div>
         </div>
@@ -114,7 +118,7 @@
         <!-- 说明：金额口径、取消规则、实时情况 -->
         <div class="cancel-foot">
           <div v-if="hasAmount">{{ $t('cancelLink.amount_note') }}</div>
-          <div>{{ $t('cancelLink.cancel_rule', {minutes: cutoffMinutes}) }}</div>
+          <div>{{ $t('cancelLink.cancel_rule') }}</div>
           <div>{{ $t('cancelLink.live_note') }}</div>
         </div>
       </div>
@@ -184,7 +188,6 @@ const bookingList = computed(() => {
   const list = info.value.bookingList || []
   return [...list.filter(item => !item.canceled), ...list.filter(item => item.canceled)]
 })
-const cutoffMinutes = computed(() => info.value.cutoffMinutes ?? 15)
 const hasAmount = computed(() => bookingList.value.some(item => item.amount != null))
 
 // 刷新状态
@@ -539,6 +542,15 @@ $cancel-red: #cc2e2d;
   &:disabled {
     opacity: .7;
     cursor: not-allowed;
+  }
+
+  // 进行中：灰色描边、不能点，只告诉顾客这张单已经开始了
+  &--busy,
+  &--busy:disabled {
+    color: #8a8a8a;
+    border-color: #d6d6d6;
+    background-color: #f7f7f7;
+    opacity: 1;
   }
 }
 
