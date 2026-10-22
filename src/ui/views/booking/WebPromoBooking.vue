@@ -58,7 +58,10 @@
           </div>
         </div>
 
-        <div class="column">
+        <!-- no-wrap 不能省：Quasar 的 .column 默认 flex-wrap: wrap，纵向 flex 一旦允许换行，每一列的宽度就由列里最宽的内容决定、
+             不再受容器约束——项目名不换行（.pbook-skill-name），手机上一个长名字（如 Salt Detox Foot Therapy and Back Massage）
+             就把这一列撑得比卡片还宽，门店卡片跟着一起出界，项目卡上的 max-width + 省略号也失效（2026-10-22） -->
+        <div class="column no-wrap">
 
           <!-- ========== 第 1 步：选门店 / 项目 / 员工 / 时间 ========== -->
           <template v-if="showSelect">
@@ -112,9 +115,9 @@
                 <div class="pbook-skill-list">
                   <div v-for="sk in mainSkillList" :key="sk.id" class="pbook-option pbook-skill"
                        :class="{'pbook-option-active': selectedSkillIds.includes(sk.id)}" @click="toggleSkill(sk.id)">
-                    <div class="row items-center no-wrap">
+                    <div class="row items-start no-wrap">
                       <q-icon :name="selectedSkillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
-                              size="1rem" class="q-mr-sm"
+                              size="1rem" class="q-mr-sm pbook-skill-icon"
                               :class="selectedSkillIds.includes(sk.id) ? 'promo-accent' : ''"/>
                       <div class="pbook-option-name pbook-skill-name">{{ sk.name }}</div>
                     </div>
@@ -134,9 +137,9 @@
                   <div class="pbook-skill-list">
                     <div v-for="sk in availableAddonSkillList" :key="sk.id" class="pbook-option pbook-skill"
                          :class="{'pbook-option-active': selectedSkillIds.includes(sk.id)}" @click="toggleSkill(sk.id)">
-                      <div class="row items-center no-wrap">
+                      <div class="row items-start no-wrap">
                         <q-icon :name="selectedSkillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
-                                size="1rem" class="q-mr-sm"
+                                size="1rem" class="q-mr-sm pbook-skill-icon"
                                 :class="selectedSkillIds.includes(sk.id) ? 'promo-accent' : ''"/>
                         <div class="pbook-option-name pbook-skill-name">{{ sk.name }}</div>
                       </div>
@@ -177,7 +180,7 @@
                     </div>
                     <div class="pbook-recap-edit q-ml-sm" @click="goEditSkills">{{ $t('booking.recap_edit') }}</div>
                   </div>
-                  <div v-for="sk in chosenSkills" :key="sk.id" class="row items-center no-wrap pbook-recap-item">
+                  <div v-for="sk in chosenSkills" :key="sk.id" class="row items-baseline no-wrap pbook-recap-item">
                     <div class="col pbook-recap-name">
                       {{ sk.name }}
                       <span v-if="sk.addonOnly" class="pbook-addon-tag q-ml-xs">{{ $t('booking.addon_tag') }}</span>
@@ -1398,17 +1401,21 @@ $promo-red: #cc2e2d;
 }
 
 .pbook-skill {
-  // 卡内一律不换行：卡片宽度 = 两行（项目名 / 金额+时长）里更宽的那一行，按内容自然撑开，
-  // 一行放得下几张放几张、放不下换行（不拉伸、不等宽）
+  // 卡片宽度 = 两行（项目名 / 金额+时长）里更宽的那一行，按内容自然撑开，
+  // 一行放得下几张放几张、放不下换行（不拉伸、不等宽）。项目名比容器还宽时卡片撑满一行、名字折行
+  // （2026-10-22 起；之前是截断成省略号，手机上看不到全名）
   flex: 0 0 auto;
   max-width: 100%;
 }
 
 .pbook-skill-name {
-  white-space: nowrap;
-  // 兜底：极端长的项目名截断，不撑破卡片/容器
-  overflow: hidden;
-  text-overflow: ellipsis;
+  // 放不下就折行、不截断；没有空格可断的超长单词也照样断开，不撑破卡片
+  overflow-wrap: anywhere;
+}
+
+// 勾选图标对齐名字第一行（名字行高 21px、图标 16px，往下让 2.5px）：单行时与原先垂直居中的位置一样
+.pbook-skill-icon {
+  margin-top: .15rem;
 }
 
 // 金额 + 时长：同一行，位于项目名称下方（与名称左对齐，让开前面的勾选图标）
@@ -1470,10 +1477,8 @@ $promo-red: #cc2e2d;
 }
 
 .pbook-recap-name {
-  // 项目名可能很长：单行截断，别把右侧的金额/时长挤出卡片
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  // 项目名可能很长：放不下就折行、不截断（2026-10-22），右侧的金额 / 时长与第一行对齐（items-baseline），不受挤压
+  overflow-wrap: anywhere;
 }
 
 .pbook-recap-total {
