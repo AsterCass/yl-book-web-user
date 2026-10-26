@@ -56,6 +56,16 @@
           <div class="pbook-step-title q-mt-sm">
             {{ step === 1 ? $t('booking.step.select') : $t('booking.step.confirm') }}
           </div>
+          <!-- 两步都显示（标题下面）：时间实时可约、下单即同步到门店系统、有特殊情况门店会来电（2026-10-26） -->
+          <div class="pbook-step-note row no-wrap items-start">
+            <q-icon name="fa-solid fa-circle-info" class="pbook-step-note-icon"/>
+            <span>{{ $t('booking.step.note') }}</span>
+          </div>
+        </div>
+        <!-- 单步模式（/sms 页）没有步骤标题，这句说明照样放在卡片最上面 -->
+        <div v-else class="pbook-step-note row no-wrap items-start q-mb-md">
+          <q-icon name="fa-solid fa-circle-info" class="pbook-step-note-icon"/>
+          <span>{{ $t('booking.step.note') }}</span>
         </div>
 
         <!-- no-wrap 不能省：Quasar 的 .column 默认 flex-wrap: wrap，纵向 flex 一旦允许换行，每一列的宽度就由列里最宽的内容决定、
@@ -1619,6 +1629,27 @@ $promo-red: #cc2e2d;
 
 .pbook-step-title {
   font-weight: 700;
+}
+
+// 步骤标题下的说明（两步都在）：样式同「半价优惠须知」（.pbook-offer，浅红底 + 红框），撑满卡片宽度。
+// 2026-10-26 先做成标题下的一行灰色小字，看着不够显眼，改成这样
+.pbook-step-note {
+  align-self: stretch;
+  margin-top: .75rem;
+  padding: .7rem .85rem;
+  border: 1px solid rgba($promo-red, .4);
+  border-radius: .5rem;
+  background: rgba($promo-red, .06);
+  font-size: .85rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.pbook-step-note-icon {
+  flex: 0 0 auto;
+  margin: .2rem .5rem 0 0;
+  color: $promo-red;
+  font-size: .95rem;
 }
 
 // 底部按钮：比 hero 主按钮小一号，白描边留给深色背景，这里去掉

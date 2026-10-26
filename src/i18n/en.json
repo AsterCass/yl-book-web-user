@@ -359,7 +359,8 @@
       "store": "Select a store",
       "project": "Select Services",
       "time": "Select a time",
-      "confirm": "Confirm your booking"
+      "confirm": "Confirm your booking",
+      "note": "All times shown on this site are available to book in real time. Your booking syncs to the store's system right away; if anything comes up, the store will give you a call."
     },
     "field": {
       "store": "Store",
