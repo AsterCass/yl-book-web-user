@@ -3,7 +3,7 @@
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 
 **Effective Date:** July 21, 2026
-**Last Updated:** October 16, 2026
+**Last Updated:** October 29, 2026
 
 ---
 
@@ -272,7 +272,13 @@ For any dispute not subject to arbitration under Section 16 — including where 
 
 ---
 
-## 20. Contact
+## 20. TikTok Content Tool (ZYY Video Publisher)
+
+"ZYY Video Publisher" is an internal content tool operated by BOH Technology Consulting & Trading Inc. Only authorized staff may use it, and only with TikTok accounts we own. It prepares short videos about our own services; each video is reviewed and approved by a staff member before it is published to our TikTok account. All content follows TikTok's Community Guidelines and Terms of Service, is labeled as AI-generated where applicable, and is disclosed as promoting our own business. The TikTok connection can be removed at any time. The tool is provided "as is" for internal use. Questions: legal@zyyboh.com
+
+---
+
+## 21. Contact
 
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 204 Hillturn Lane

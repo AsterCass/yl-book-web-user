@@ -3,7 +3,7 @@
 **BOH TECHNOLOGY CONSULTING & TRADING INC**
 
 **Effective Date:** July 21, 2026
-**Last Updated:** October 16, 2026
+**Last Updated:** October 29, 2026
 
 ---
 
@@ -293,7 +293,19 @@ Your continued use of the Site after a change becomes effective constitutes acce
 
 ---
 
-## 13. Contact Us
+## 13. TikTok Integration (ZYY Video Publisher)
+
+BOH Technology Consulting & Trading Inc also operates "ZYY Video Publisher", an internal tool used only by our staff to publish our own short videos to our own TikTok account. It is not offered to the public.
+
+When an authorized staff member connects our TikTok account through TikTok Login Kit, the tool receives, with that person's permission: basic account information (display name, avatar, open ID); account statistics (follower, following, like and video counts); the list of videos on the connected account and their public statistics (views, likes, comments, shares); and permission to upload and publish videos that a staff member has reviewed and approved.
+
+We use this information only to publish our own videos after a staff member approves each one, and to show our own performance numbers to our staff. We do not sell or share it, and we do not use it for advertising. Access tokens and statistics are stored on our own computer and are not sent to any other third party.
+
+The connection can be removed at any time from the tool's settings ("Disconnect") or in the TikTok app (Settings and privacy > Security > Apps and services). Disconnecting deletes the stored access tokens. Questions: legal@zyyboh.com
+
+---
+
+## 14. Contact Us
 
 For any question, request, or complaint regarding this Privacy Policy:
 
