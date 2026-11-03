@@ -40,7 +40,7 @@ export const HOME_STORES = [
     },
     {
         id: 'sanjose',
-        name: {zh: '圣何塞店', en: 'San Jose'},
+        name: {zh: '圣何塞店', en: 'San Jose · Massage Zen'},
         address: '5353 Almaden expressway . A-120, San Jose CA95118',
         phone: '(408) 444-9183',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 AM – 10:00 PM'},
