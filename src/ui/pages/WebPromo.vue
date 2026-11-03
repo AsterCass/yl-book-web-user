@@ -57,7 +57,8 @@
       <div class="promo-container">
         <h2 class="promo-h2 text-center">{{ $t('promo.locations_title') }}</h2>
         <div class="row justify-center">
-          <div v-for="store in storeList" :key="store.id" class="col-12 col-md-6 q-pa-md">
+          <!-- 每行张数随门店数变：两家以内一行两张，三家起桌面一行三张、平板两张（固定 col-md-6 时第三家孤零零掉到下一行） -->
+          <div v-for="store in storeList" :key="store.id" :class="storeCardCol" class="col-12 q-pa-md">
             <div class="promo-store-card column full-height">
               <q-img src="/img/promo/promo-store.webp" :ratio="16/9" fit="cover"/>
               <div class="q-pa-lg column col">
@@ -160,22 +161,26 @@
     <!-- 页脚（参照官网：灰底、链接、门店信息；门店同样来自配置） -->
     <div class="promo-footer">
       <div class="promo-container row">
-        <div class="col-12 col-md-4 q-pa-md">
+        <div class="col-12 col-md-3 q-pa-md">
           <div class="row items-center no-wrap">
             <img src="/favicon.svg" alt="" style="width: 2rem; height: 2rem" class="q-mr-sm"/>
             <div style="font-weight: 700; font-size: 1.1rem">{{ $t('main_login_title') }}</div>
           </div>
           <div class="promo-footer-muted q-mt-sm">{{ $t('promo.tagline') }}</div>
         </div>
-        <div v-for="store in storeList" :key="store.id" class="col-12 col-sm-6 col-md-3 q-pa-md">
-          <div class="promo-footer-title">{{ lv(store.name) }}</div>
-          <div class="promo-footer-muted q-mt-xs" :class="store.mapUrl ? 'promo-map-link' : ''"
-               @click="store.mapUrl && openLink(store.mapUrl)">
-            {{ store.address }}
-            <q-icon v-if="store.mapUrl" name="fa-solid fa-arrow-up-right-from-square" size=".65rem" class="q-ml-xs"/>
+        <!-- 门店栏占品牌与链接之外的全部宽度、里面各店等分：原先每店固定 col-md-3，品牌 4 + 两店 6 + 链接 2 正好 12，
+             第三家店一加就超 12 换行、整行错位 -->
+        <div class="col-12 col-md row">
+          <div v-for="store in storeList" :key="store.id" class="col-12 col-sm q-pa-md">
+            <div class="promo-footer-title">{{ lv(store.name) }}</div>
+            <div class="promo-footer-muted q-mt-xs" :class="store.mapUrl ? 'promo-map-link' : ''"
+                 @click="store.mapUrl && openLink(store.mapUrl)">
+              {{ store.address }}
+              <q-icon v-if="store.mapUrl" name="fa-solid fa-arrow-up-right-from-square" size=".65rem" class="q-ml-xs"/>
+            </div>
+            <div class="promo-footer-muted q-mt-xs">{{ store.phone }}</div>
+            <div class="promo-footer-muted q-mt-xs">{{ lv(store.hours) }}</div>
           </div>
-          <div class="promo-footer-muted q-mt-xs">{{ store.phone }}</div>
-          <div class="promo-footer-muted q-mt-xs">{{ lv(store.hours) }}</div>
         </div>
         <div class="col-12 col-sm-6 col-md-2 q-pa-md">
           <div class="promo-footer-title">{{ $t('promo.footer.links') }}</div>
@@ -258,6 +263,7 @@ onBeforeUnmount(() => {
 })
 
 const storeList = HOME_STORES
+const storeCardCol = storeList.length >= 3 ? 'col-sm-6 col-md-4' : 'col-md-6'
 const serviceGroups = HOME_SERVICE_GROUPS
 const testimonialList = HOME_TESTIMONIALS
 const noteKeys = ['promo.notes.n1', 'promo.notes.n2', 'promo.notes.n3', 'promo.notes.n4']

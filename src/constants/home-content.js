@@ -38,6 +38,14 @@ export const HOME_STORES = [
         insurance: 'Aetna, United Healthcare, BlueCross BlueShield',
         notes: {zh: '每周三会员日：修脚类服务立减 32%', en: 'Member Day every Wednesday: 32% off foot care services'},
     },
+    {
+        id: 'sanjose',
+        name: {zh: '圣何塞店', en: 'San Jose'},
+        address: '5353 Almaden expressway . A-120, San Jose CA95118',
+        phone: '(408) 444-9183',
+        hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 AM – 10:00 PM'},
+        notes: {zh: '每周二会员日：按摩类服务立减 30%', en: 'Member Day every Tuesday: 30% off body massage services'},
+    },
 ]
 
 // 顾客评价（推广页展示；来自品牌官网既有评价，t3 已去掉具体门店地名以兼容多门店）
