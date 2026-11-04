@@ -112,11 +112,27 @@
               </template>
             </div>
 
-            <!-- 项目（可多选；依赖门店：未选门店只给标题） -->
-            <div ref="skillSecEl" class="pbook-sec">
+            <!-- 人数（2026-11-04 团体预约）：1 ~ 4 个人，单选、默认 1 个人。选了多人，下一步按人逐个选项目；
+                 所有人同一时间开始、每人一张单、全成或全不成（后端 /slots/party、/create/party） -->
+            <div class="pbook-sec">
               <div class="pbook-block-title row items-center">
                 <div class="pbook-num">2</div>
-                <div>{{ isParty ? $t('booking.party.person_project') : $t('booking.step.project') }}</div>
+                <div>{{ $t('booking.step.party') }}</div>
+              </div>
+              <div class="row pbook-size-list">
+                <button v-for="n in PARTY_MAX" :key="n" class="pbook-size-btn"
+                        :class="{'pbook-size-btn-active': partySize === n}" @click="setPartySize(n)">
+                  {{ n === 1 ? $t('booking.party.option_one') : $t('booking.party.option', {n}) }}
+                </button>
+              </div>
+              <div v-if="isParty" class="pbook-option-sub q-mt-sm">{{ $t('booking.party.hint') }}</div>
+            </div>
+
+            <!-- 项目（可多选；依赖门店：未选门店只给标题）。多人时上面的列表是「当前这位」的，下方前一个人 / 后一个人切换 -->
+            <div ref="skillSecEl" class="pbook-sec">
+              <div class="pbook-block-title row items-center">
+                <div class="pbook-num">3</div>
+                <div>{{ $t('booking.step.project') }}</div>
               </div>
               <div v-if="!selectedStoreId" class="pbook-placeholder">{{ $t('booking.need_store_first') }}</div>
               <div v-else-if="loadingSkills" class="row justify-center q-py-lg">
@@ -124,6 +140,9 @@
               </div>
               <div v-else-if="!skillList.length" class="pbook-placeholder">{{ $t('booking.no_project') }}</div>
               <div v-else>
+                <div v-if="isParty" class="pbook-person-now q-mb-sm">
+                  {{ $t('booking.party.choosing', {n: currentPerson + 1, total: partySize}) }}
+                </div>
                 <!-- 项目通常十几二十个：弹性换行排布，一行塞不下自动换行，不再一个一行。
                      主服务在前；附加项目（后端 addonOnly，不能单独预约）另起一小段放在后面 -->
                 <div class="pbook-skill-list">
@@ -170,61 +189,20 @@
                   <div>{{ $t('booking.price_note') }}</div>
                 </div>
 
-                <!-- 团体预约（2026-11-04）：几个人同一时间开始、每人一张单，全成或全不成（后端 /slots/party、/create/party）。
-                     第 2 位起默认与第 1 位相同的项目，关掉「相同」再给他单独选；不能指定技师（同单人） -->
-                <div class="pbook-party q-mt-md">
-                  <div class="row items-center no-wrap">
-                    <div class="col pbook-party-title">{{ $t('booking.party.title') }}</div>
-                    <button class="pbook-party-btn" :disabled="partySize <= 1" @click="changePartySize(-1)">−</button>
-                    <div class="pbook-party-count">{{ partySize }}</div>
-                    <button class="pbook-party-btn" :disabled="partySize >= PARTY_MAX" @click="changePartySize(1)">+</button>
+                <!-- 多人：逐个人选项目，全部选完才能选时间 -->
+                <div v-if="isParty" class="column items-center q-mt-md">
+                  <div class="row justify-center pbook-person-nav">
+                    <button class="promo-book-btn pbook-btn-xs pbook-btn-ghost" :disabled="currentPerson === 0"
+                            @click="goPerson(-1)">
+                      {{ $t('booking.party.prev_person') }}
+                    </button>
+                    <button class="promo-book-btn pbook-btn-xs pbook-btn-ghost" :disabled="currentPerson >= partySize - 1"
+                            @click="goPerson(1)">
+                      {{ $t('booking.party.next_person') }}
+                    </button>
                   </div>
-                  <div class="pbook-option-sub q-mt-xs">{{ $t('booking.party.hint', {max: PARTY_MAX}) }}</div>
-                  <div v-for="(g, gi) in guests" :key="gi" class="pbook-guest q-mt-sm">
-                    <div class="row items-center no-wrap">
-                      <div class="col pbook-guest-title">{{ $t('booking.party.person', {n: gi + 2}) }}</div>
-                      <q-toggle v-model="g.same" dense size="sm" color="red-8" :label="$t('booking.party.same_as_first')"
-                                @update:model-value="onGuestSameChange(g)"/>
-                    </div>
-                    <div v-if="g.same" class="pbook-option-sub q-mt-xs">{{ selectedSkillNames || '-' }}</div>
-                    <template v-else>
-                      <div class="pbook-skill-list q-mt-xs">
-                        <div v-for="sk in mainSkillList" :key="sk.id" class="pbook-option pbook-skill"
-                             :class="{'pbook-option-active': g.skillIds.includes(sk.id)}" @click="toggleGuestSkill(g, sk.id)">
-                          <div class="row items-start no-wrap">
-                            <q-icon :name="g.skillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
-                                    size="1rem" class="q-mr-sm pbook-skill-icon"
-                                    :class="g.skillIds.includes(sk.id) ? 'promo-accent' : ''"/>
-                            <div class="pbook-option-name pbook-skill-name">{{ sk.name }}</div>
-                          </div>
-                          <div class="row items-center no-wrap pbook-skill-meta">
-                            <div v-if="sk.serviceAmount != null" class="pbook-price q-mr-md">${{ sk.serviceAmount }}</div>
-                            <div class="pbook-option-sub">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
-                          </div>
-                        </div>
-                      </div>
-                      <template v-if="guestAddons(g).length">
-                        <div class="pbook-addon-title q-mt-sm">{{ $t('booking.addon_title') }}</div>
-                        <div class="pbook-skill-list">
-                          <div v-for="sk in guestAddons(g)" :key="sk.id" class="pbook-option pbook-skill"
-                               :class="{'pbook-option-active': g.skillIds.includes(sk.id)}" @click="toggleGuestSkill(g, sk.id)">
-                            <div class="row items-start no-wrap">
-                              <q-icon :name="g.skillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
-                                      size="1rem" class="q-mr-sm pbook-skill-icon"
-                                      :class="g.skillIds.includes(sk.id) ? 'promo-accent' : ''"/>
-                              <div class="pbook-option-name pbook-skill-name">{{ sk.name }}</div>
-                            </div>
-                            <div class="row items-center no-wrap pbook-skill-meta">
-                              <div v-if="sk.serviceAmount != null" class="pbook-price q-mr-md">${{ sk.serviceAmount }}</div>
-                              <div class="pbook-option-sub">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
-                            </div>
-                          </div>
-                        </div>
-                      </template>
-                      <div class="pbook-option-sub q-mt-xs text-right">
-                        {{ $t('booking.total_minutes', {minutes: minutesOf(g.skillIds)}) }}
-                      </div>
-                    </template>
+                  <div class="pbook-option-sub q-mt-sm">
+                    {{ $t('booking.party.progress', {done: chosenCount, total: partySize}) }}
                   </div>
                 </div>
               </div>
@@ -236,10 +214,12 @@
             <!-- 可约时间（依赖门店与项目） -->
             <div ref="timeSecEl" class="pbook-sec">
               <div class="pbook-block-title row items-center">
-                <div class="pbook-num">3</div>
+                <div class="pbook-num">4</div>
                 <div>{{ $t('booking.step.time') }}</div>
               </div>
-              <div v-if="!timeReady" class="pbook-placeholder">{{ $t('booking.need_project_first') }}</div>
+              <div v-if="!timeReady" class="pbook-placeholder">
+                {{ isParty ? $t('booking.party.need_all') : $t('booking.need_project_first') }}
+              </div>
               <template v-else>
                 <!-- 挑时间之前先把已选项目摊开重述一遍：项目是多选，客户容易顺手点多了却没察觉，
                      而时长直接决定这一单占多长的时段、金额也跟着涨。明细 + 总时长 + 预估总价摆在这里，
@@ -253,19 +233,21 @@
                     </div>
                     <div class="pbook-recap-edit q-ml-sm" @click="goEditSkills">{{ $t('booking.recap_edit') }}</div>
                   </div>
-                  <div v-for="sk in chosenSkills" :key="sk.id" class="row items-baseline no-wrap pbook-recap-item">
-                    <div class="col pbook-recap-name">
-                      {{ sk.name }}
-                      <span v-if="sk.addonOnly" class="pbook-addon-tag q-ml-xs">{{ $t('booking.addon_tag') }}</span>
+                  <template v-if="!isParty">
+                    <div v-for="sk in chosenSkills" :key="sk.id" class="row items-baseline no-wrap pbook-recap-item">
+                      <div class="col pbook-recap-name">
+                        {{ sk.name }}
+                        <span v-if="sk.addonOnly" class="pbook-addon-tag q-ml-xs">{{ $t('booking.addon_tag') }}</span>
+                      </div>
+                      <div v-if="sk.serviceAmount != null" class="pbook-price q-ml-md">${{ sk.serviceAmount }}</div>
+                      <div class="pbook-option-sub q-ml-md">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
                     </div>
-                    <div v-if="sk.serviceAmount != null" class="pbook-price q-ml-md">${{ sk.serviceAmount }}</div>
-                    <div class="pbook-option-sub q-ml-md">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
-                  </div>
-                  <!-- 团体：第 1 位的明细在上面，其余每位一行（项目 + 时长） -->
-                  <template v-if="isParty">
-                    <div v-for="(ids, mi) in memberSkillLists.slice(1)" :key="'g' + mi"
+                  </template>
+                  <!-- 团体：每位一行（项目 + 时长） -->
+                  <template v-else>
+                    <div v-for="(ids, mi) in memberSkillLists" :key="'g' + mi"
                          class="row items-baseline no-wrap pbook-recap-item">
-                      <div class="col pbook-recap-name">{{ $t('booking.party.person', {n: mi + 2}) }}: {{ namesOf(ids) }}</div>
+                      <div class="col pbook-recap-name">{{ $t('booking.party.person', {n: mi + 1}) }}: {{ namesOf(ids) }}</div>
                       <div class="pbook-option-sub q-ml-md">{{ minutesOf(ids) }} {{ $t('booking.minutes') }}</div>
                     </div>
                   </template>
@@ -276,7 +258,7 @@
                   <div class="pbook-option-sub q-mt-xs">
                     <!-- 团体时每位的时长分开列了，「时长与总价合并计算」这句不适用 -->
                     <div v-if="!isParty">{{ chosenSkills.length > 1 ? $t('booking.recap_hint_multi') : $t('booking.recap_hint') }}</div>
-                    <div v-if="totalAmount != null">{{ $t('booking.price_note') }}</div>
+                    <div v-if="groupTotalAmount != null">{{ $t('booking.price_note') }}</div>
                   </div>
                 </div>
                 <div class="pbook-option-sub q-mb-sm">
@@ -351,7 +333,7 @@
               </div>
 
               <div class="pbook-block-title row items-center">
-                <div class="pbook-num">4</div>
+                <div class="pbook-num">5</div>
                 <div>{{ $t('booking.summary_title') }}</div>
               </div>
               <div class="pbook-summary">
@@ -401,7 +383,7 @@
             <!-- 联系方式（已登录客户只需确认手机号） -->
             <div class="pbook-sec">
               <div class="pbook-block-title row items-center">
-                <div class="pbook-num">5</div>
+                <div class="pbook-num">6</div>
                 <div>{{ $t('booking.contact_title') }}</div>
               </div>
 
@@ -625,15 +607,18 @@ const autoStoreHint = ref("")
 let autoPickTried = false
 // 首页门店卡片点「预约」时带来的电话：门店列表还没回来就先记下，列表到达后补选（见 pickStoreByPhone）
 let pendingStorePhone = ""
-const selectedSkillIds = ref([])
+// 每一位的项目（2026-11-04 团体预约）：单人时只有一项；currentPerson = 项目列表当前在给第几位选（0 起）。
+// selectedSkillIds 指向当前这位的数组——项目分区的勾选、附加项目规则、小计都按它，原有单人逻辑不用改
+const memberSkills = ref([[]])
+const currentPerson = ref(0)
+const selectedSkillIds = computed(() => memberSkills.value[currentPerson.value] || [])
 // 本门店是否已上报过「首次选中项目」埋点（ServiceSelected）：每家门店只报一次，换门店 / 重新预约时重置。
 // 原先它挂在「首次加载员工列表」的条件里顺带触发，偏好员工一步下线后单独用这个标记保持同样的口径
 let serviceSelectedTracked = false
 const selectedDate = ref("")
 const selectedSlot = ref("")
-// 团体预约（2026-11-04）：一共几位；第 2 位起每位 {same: 与第 1 位相同的项目, skillIds: 自己的项目（same 为 false 时用）}
+// 团体预约（2026-11-04）：一共几位（1 ~ PARTY_MAX，默认 1）
 const partySize = ref(1)
-const guests = ref([])
 // 团体可约时间里让整组无解的成员级问题（[{memberIndex, code}]），有就提示是第几位
 const slotIssues = ref([])
 
@@ -686,12 +671,13 @@ const needsPhoneCode = computed(() =>
 const showSelect = computed(() => props.singleStep || step.value === 1)
 const showConfirm = computed(() => props.singleStep || step.value === 2)
 const isParty = computed(() => partySize.value > 1)
-// 每一位的项目（第 1 位就是上面的 selectedSkillIds），下单与查可约时间都按它
-const memberSkillLists = computed(() => [selectedSkillIds.value,
-  ...guests.value.map(g => g.same ? selectedSkillIds.value : g.skillIds)])
+// 每一位的项目，下单与查可约时间都按它
+const memberSkillLists = computed(() => memberSkills.value.slice(0, partySize.value))
+// 已经选好项目的人数；全部选好才能选时间
+const chosenCount = computed(() => memberSkillLists.value.filter(ids => ids.length > 0).length)
+const allChosen = computed(() => chosenCount.value === partySize.value)
 // 选时间的前置条件：门店 + 每一位都至少一个项目（偏好员工一步已下线）
-const timeReady = computed(() => !!selectedStoreId.value && selectedSkillIds.value.length > 0
-    && guests.value.every(g => g.same || g.skillIds.length > 0))
+const timeReady = computed(() => !!selectedStoreId.value && allChosen.value)
 
 const slotList = computed(() => selectedDate.value ? (slotsByDate.value[selectedDate.value] || []) : [])
 const noSlotInWindow = computed(() => {
@@ -761,7 +747,7 @@ watch(inputPhone, (val) => {
 })
 
 // 门店/项目变化 → 已拉的可约时间失效；满足前置条件则延迟合并后重拉
-watch([selectedStoreId, selectedSkillIds, timeReady, partySize, guests], scheduleSlotReload, {deep: true})
+watch([selectedStoreId, memberSkills, timeReady, partySize], scheduleSlotReload, {deep: true})
 
 onMounted(() => {
   loadStores()
@@ -896,9 +882,9 @@ function pickStoreByPhone(phone) {
  */
 function applyStore(s) {
   selectedStoreId.value = s.id
-  selectedSkillIds.value = []
-  // 各店项目不同：同行人保留人数，项目回到「与第 1 位相同」
-  guests.value = guests.value.map(() => ({same: true, skillIds: []}))
+  // 各店项目不同：人数保留，每一位的项目清空，回到第 1 位
+  memberSkills.value = memberSkills.value.map(() => [])
+  currentPerson.value = 0
   selectedDate.value = ""
   skillList.value = []
   serviceSelectedTracked = false
@@ -1087,61 +1073,50 @@ function toggleSkill(id) {
     serviceSelectedTracked = true
     trackCustom('ServiceSelected')
   }
-  // 绝大多数客户只约一个项目：首次选中就滚到下一步（选时间）；之后再加选/取消不打断（项目仍可多选）
-  if (wasEmpty && selectedSkillIds.value.length) {
+  // 绝大多数客户只约一个项目：首次选中就滚到下一步（选时间）；之后再加选/取消不打断（项目仍可多选）。
+  // 多人时要等所有人都选好了才滚过去，否则停在这里让客户点「后一个人」
+  if (wasEmpty && selectedSkillIds.value.length && allChosen.value) {
     scrollTo(timeSecEl.value)
   }
 }
 
 /**
- * 团体人数加减（1 ~ PARTY_MAX）：新加的一位默认与第 1 位相同的项目。
+ * 选人数（1 ~ PARTY_MAX，单选）：多出来的人项目为空、等客户逐个选；减人时去掉后面几位，当前位超出就回到最后一位。
  */
-function changePartySize(delta) {
-  const next = Math.min(PARTY_MAX, Math.max(1, partySize.value + delta))
-  if (next === partySize.value) {
+function setPartySize(n) {
+  if (n === partySize.value) {
     return
   }
-  partySize.value = next
-  while (guests.value.length < next - 1) {
-    guests.value.push({same: true, skillIds: []})
+  partySize.value = n
+  while (memberSkills.value.length < n) {
+    memberSkills.value.push([])
   }
-  guests.value.splice(next - 1)
-  if (next > 1) {
-    trackCustom('PartySizeChanged', {size: next})
+  memberSkills.value.splice(n)
+  if (currentPerson.value > n - 1) {
+    currentPerson.value = n - 1
+  }
+  if (n > 1) {
+    trackCustom('PartySizeChanged', {size: n})
   }
 }
 
-// 关掉「与第 1 位相同」时从第 1 位当前的项目起步，客户只需在此基础上改
-function onGuestSameChange(g) {
-  if (!g.same && !g.skillIds.length) {
-    g.skillIds = [...selectedSkillIds.value]
+// 前一个人 / 后一个人：切换项目列表在给谁选，并滚回项目分区顶部（列表很长，按钮在最下面）
+function goPerson(delta) {
+  const next = currentPerson.value + delta
+  if (next < 0 || next >= partySize.value) {
+    return
+  }
+  currentPerson.value = next
+  const el = skillSecEl.value
+  if (el) {
+    el.scrollIntoView({behavior: scrollBehavior(), block: 'start'})
   }
 }
 
-// 同行人可选的附加项目：他自己已选的主服务能搭配的那些（规则同第 1 位）
-function guestAddons(g) {
-  return addonSkillList.value.filter(sk => (sk.addonMainSkillIds || []).some(id => g.skillIds.includes(id)))
-}
-
-// 同行人选项目：口径同 toggleSkill——取消主服务时靠它才能选的附加项目一起移除
-function toggleGuestSkill(g, id) {
-  const idx = g.skillIds.indexOf(id)
-  const skill = skillList.value.find(sk => sk.id === id)
-  if (idx >= 0) {
-    g.skillIds.splice(idx, 1)
-    const orphans = addonSkillList.value.filter(sk => g.skillIds.includes(sk.id)
-        && !(sk.addonMainSkillIds || []).some(mid => g.skillIds.includes(mid)))
-    if (orphans.length) {
-      orphans.forEach(sk => g.skillIds.splice(g.skillIds.indexOf(sk.id), 1))
-      notifyTopWarning(t('booking.addon_removed', {names: orphans.map(sk => sk.name).join(', ')}))
-    }
-    return
-  }
-  if (skill && skill.addonOnly && !(skill.addonMainSkillIds || []).some(mid => g.skillIds.includes(mid))) {
-    notifyTopWarning(t('booking.addon_need_main', {name: skill.name, main: addonMainNames(skill)}))
-    return
-  }
-  g.skillIds.push(id)
+// 某一位已选的附加项目里，搭配的主服务不在他已选集合里的那些
+function orphansOf(ids) {
+  return addonSkillList.value.filter(sk => ids.includes(sk.id)
+      && !(sk.addonMainSkillIds || []).some(mid => ids.includes(mid)))
 }
 
 /**
@@ -1232,30 +1207,19 @@ function checkSelections() {
     notifyTopWarning(t('booking.pick_store'))
     return false
   }
-  if (!selectedSkillIds.value.length) {
-    notifyTopWarning(t('booking.pick_project'))
-    return false
-  }
-  // 兜底：已选的附加项目都得有搭配的主服务在（正常交互下 toggleSkill 已保证，后端也会拒绝）
-  const orphan = orphanAddons()[0]
-  if (orphan) {
-    notifyTopWarning(t('booking.addon_need_main', {name: orphan.name, main: addonMainNames(orphan)}))
-    return false
-  }
-  // 团体：自己选项目的同行人至少一个项目，附加项目也得有搭配的主服务
-  for (let i = 0; i < guests.value.length; i++) {
-    const g = guests.value[i]
-    if (g.same) {
-      continue
-    }
-    if (!g.skillIds.length) {
-      notifyTopWarning(t('booking.party.pick_project', {n: i + 2}))
+  // 每一位都至少一个项目；没选的那位直接切过去，客户回到项目分区就是他
+  const lists = memberSkillLists.value
+  for (let i = 0; i < lists.length; i++) {
+    if (!lists[i].length) {
+      currentPerson.value = i
+      notifyTopWarning(isParty.value ? t('booking.party.pick_project', {n: i + 1}) : t('booking.pick_project'))
       return false
     }
-    const orphanGuest = addonSkillList.value.find(sk => g.skillIds.includes(sk.id)
-        && !(sk.addonMainSkillIds || []).some(mid => g.skillIds.includes(mid)))
-    if (orphanGuest) {
-      notifyTopWarning(t('booking.addon_need_main', {name: orphanGuest.name, main: addonMainNames(orphanGuest)}))
+    // 兜底：已选的附加项目都得有搭配的主服务在（正常交互下 toggleSkill 已保证，后端也会拒绝）
+    const orphan = orphansOf(lists[i])[0]
+    if (orphan) {
+      currentPerson.value = i
+      notifyTopWarning(t('booking.addon_need_main', {name: orphan.name, main: addonMainNames(orphan)}))
       return false
     }
   }
@@ -1390,7 +1354,7 @@ async function submitBooking() {
     // 单人照旧走 /create；两位及以上走 /create/party（同一时间开始、每人一张单、全成或全不成；备注抄到每一张）
     const createRes = party
         ? await portalBookingCreateParty({...body, memberList: memberSkillLists.value.map(ids => ({skillIdList: ids}))})
-        : await portalBookingCreate({...body, skillIdList: selectedSkillIds.value})
+        : await portalBookingCreate({...body, skillIdList: memberSkillLists.value[0]})
     if (!createRes) {
       // 会话在提交途中失效（拦截器已清掉登录态，表单会自动露出邮箱/验证码）：给一句人话，别让客户对着静默失败发呆
       if (wasLoggedIn && !isLoggedIn.value) {
@@ -1423,9 +1387,9 @@ function resetAll() {
   created.value = false
   step.value = 1
   selectedStoreId.value = ""
-  selectedSkillIds.value = []
+  memberSkills.value = [[]]
+  currentPerson.value = 0
   partySize.value = 1
-  guests.value = []
   slotIssues.value = []
   selectedDate.value = ""
   selectedSlot.value = ""
@@ -1617,53 +1581,58 @@ $promo-red: #cc2e2d;
   font-size: .9rem;
 }
 
-// 团体预约：人数加减 + 每位同行人的项目
-.pbook-party {
-  border: 1px solid #e6e8ec;
-  border-radius: .8rem;
-  padding: .75rem .9rem;
-  background: #fafafa;
+// 团体预约：人数单选——选中红底白字（同「下一步」按钮的配色，尺寸小一号），未选中红字红框
+.pbook-size-list {
+  gap: .6rem;
 }
 
-.pbook-party-title {
+.pbook-size-btn {
+  font-family: inherit;
+  font-size: .95rem;
   font-weight: 700;
-  font-size: .92rem;
+  padding: .45rem 1.15rem;
+  border: 2px solid $promo-red;
+  border-radius: .6rem;
+  background: #fff;
+  color: $promo-red;
+  cursor: pointer;
+  transition: background-color .25s ease, color .25s ease;
+
+  &:hover {
+    background-color: #fdf3f3;
+  }
 }
 
-.pbook-party-btn {
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid #e6e8ec;
-  border-radius: 999px;
-  background: #fff;
-  font-size: 1.1rem;
-  line-height: 1;
-  cursor: pointer;
+.pbook-size-btn-active {
+  background-color: $promo-red;
+  color: #fff;
+
+  &:hover {
+    background-color: #b52827;
+  }
+}
+
+// 多人时项目列表上方「正在为第几位选择」
+.pbook-person-now {
+  font-weight: 700;
+  color: $promo-red;
+}
+
+// 前一个人 / 后一个人：样式同「上一步」（红字红框），尺寸更小
+.pbook-person-nav {
+  gap: .8rem;
+}
+
+.pbook-btn-xs {
+  font-size: .9rem;
+  padding: .4rem 1.2rem;
+  border-width: 2px;
 
   &:disabled {
-    opacity: .4;
-    cursor: default;
+    opacity: .45;
+    cursor: not-allowed;
+    transform: none;
   }
-
-  &:not(:disabled):hover {
-    border-color: rgba(204, 46, 45, .55);
-  }
-}
-
-.pbook-party-count {
-  min-width: 2.2rem;
-  text-align: center;
-  font-weight: 700;
-}
-
-.pbook-guest {
-  border-top: 1px dashed #e6e8ec;
-  padding-top: .6rem;
-}
-
-.pbook-guest-title {
-  font-weight: 600;
-  font-size: .9rem;
 }
 
 // 重述卡 / 汇总里附加项目名后的小标签

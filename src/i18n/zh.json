@@ -358,23 +358,27 @@
     "view_my_bookings": "查看我的预约",
     "book_another": "再约一单",
     "party": {
-      "title": "几位一起来？",
-      "hint": "最多 {max} 位。所有人同一时间开始，每位一张预约；只要有一位约不上，就都不预约。",
+      "hint": "所有人同一时间开始，每位一张预约；只要有一位约不上，就都不预约。",
       "person": "第 {n} 位",
-      "person_project": "第 1 位的项目",
-      "same_as_first": "与第 1 位相同",
       "people": "人数",
       "recap_title": "{people} 位同时开始",
       "time_note": "下面是所有人都能同时开始的时间。",
       "no_slot_range": "未来 {days} 天内没有能让所有人同时开始的时间，可以减少人数或调整项目。",
       "issue": "第 {n} 位选的项目目前约不上，请换一个项目。",
-      "pick_project": "请为第 {n} 位至少选择一个项目"
+      "pick_project": "请为第 {n} 位至少选择一个项目",
+      "option_one": "1 个人",
+      "option": "{n} 个人",
+      "choosing": "正在为第 {n} 位选择项目（共 {total} 位）",
+      "prev_person": "前一个人",
+      "next_person": "后一个人",
+      "progress": "已选好 {done}/{total} 位",
+      "need_all": "请先选择所有人的预约项目"
     },
     "session_expired": "登录状态已过期，请在下方验证邮箱与手机号后再次点击预约。",
     "step": {
       "select": "选择预约内容",
       "store": "选择门店",
-      "project": "选择预约项目",
+      "party": "选择人数", "project": "选择预约项目",
       "time": "选择预约时间",
       "confirm": "确认预约信息",
       "note": "本网站所提供的时间实时可约，您的预约会立刻同步到门店系统，如果有特殊情况，门店会给您致电。"
