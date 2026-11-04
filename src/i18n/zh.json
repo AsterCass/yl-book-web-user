@@ -350,6 +350,7 @@
       "amount": "下方的预计金额为原价，未计入此折扣。"
     },
     "need_store_first": "请先选择门店",
+    "need_people_first": "请先选择人数",
     "need_project_first": "请先选择预约项目",
     "book_now": "立即预约",
     "success_title": "预约成功！",

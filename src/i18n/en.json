@@ -350,6 +350,7 @@
       "amount": "The estimated total below is the regular price and does not include this discount."
     },
     "need_store_first": "Select a store first",
+    "need_people_first": "Select the number of people first",
     "need_project_first": "Select at least one service first",
     "book_now": "Book now",
     "success_title": "You are booked!",

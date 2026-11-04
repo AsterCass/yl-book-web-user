@@ -112,20 +112,29 @@
               </template>
             </div>
 
-            <!-- 人数（2026-11-04 团体预约）：1 ~ 4 个人，单选、默认 1 个人。选了多人，下一步按人逐个选项目；
-                 所有人同一时间开始、每人一张单、全成或全不成（后端 /slots/party、/create/party） -->
+            <!-- 人数（2026-11-04 团体预约）：选了门店才能选，选门店时默认 1 个人；1 ~ 4 个人单选。选了多人，下一步按人逐个选项目；
+                 所有人同一时间开始、每人一张单、全成或全不成（后端 /slots/party、/create/party）。
+                 卡片样式与门店 / 项目选项一致（.pbook-option），卡片上按人数画几个小人 -->
             <div class="pbook-sec">
               <div class="pbook-block-title row items-center">
                 <div class="pbook-num">2</div>
                 <div>{{ $t('booking.step.party') }}</div>
               </div>
-              <div class="row pbook-size-list">
-                <button v-for="n in PARTY_MAX" :key="n" class="pbook-size-btn"
-                        :class="{'pbook-size-btn-active': partySize === n}" @click="setPartySize(n)">
-                  {{ n === 1 ? $t('booking.party.option_one') : $t('booking.party.option', {n}) }}
-                </button>
-              </div>
-              <div v-if="isParty" class="pbook-option-sub q-mt-sm">{{ $t('booking.party.hint') }}</div>
+              <div v-if="!selectedStoreId" class="pbook-placeholder">{{ $t('booking.need_store_first') }}</div>
+              <template v-else>
+                <div class="pbook-size-list">
+                  <div v-for="n in PARTY_MAX" :key="n" class="pbook-option pbook-size column items-center"
+                       :class="{'pbook-option-active': partySize === n}" @click="setPartySize(n)">
+                    <div class="row no-wrap pbook-size-icons" :class="partySize === n ? 'promo-accent' : ''">
+                      <q-icon v-for="i in n" :key="i" name="fa-solid fa-user" size=".8rem"/>
+                    </div>
+                    <div class="pbook-option-name pbook-size-name">
+                      {{ n === 1 ? $t('booking.party.option_one') : $t('booking.party.option', {n}) }}
+                    </div>
+                  </div>
+                </div>
+                <div v-if="isParty" class="pbook-option-sub q-mt-sm">{{ $t('booking.party.hint') }}</div>
+              </template>
             </div>
 
             <!-- 项目（可多选；依赖门店：未选门店只给标题）。多人时上面的列表是「当前这位」的，下方前一个人 / 后一个人切换 -->
@@ -134,7 +143,7 @@
                 <div class="pbook-num">3</div>
                 <div>{{ $t('booking.step.project') }}</div>
               </div>
-              <div v-if="!selectedStoreId" class="pbook-placeholder">{{ $t('booking.need_store_first') }}</div>
+              <div v-if="!selectedStoreId || !partySize" class="pbook-placeholder">{{ $t('booking.need_people_first') }}</div>
               <div v-else-if="loadingSkills" class="row justify-center q-py-lg">
                 <q-spinner-pie size="34px"/>
               </div>
@@ -617,8 +626,8 @@ const selectedSkillIds = computed(() => memberSkills.value[currentPerson.value] 
 let serviceSelectedTracked = false
 const selectedDate = ref("")
 const selectedSlot = ref("")
-// 团体预约（2026-11-04）：一共几位（1 ~ PARTY_MAX，默认 1）
-const partySize = ref(1)
+// 团体预约（2026-11-04）：一共几位（1 ~ PARTY_MAX）；0 = 还没选（没选门店时），选了门店默认 1
+const partySize = ref(0)
 // 团体可约时间里让整组无解的成员级问题（[{memberIndex, code}]），有就提示是第几位
 const slotIssues = ref([])
 
@@ -676,8 +685,8 @@ const memberSkillLists = computed(() => memberSkills.value.slice(0, partySize.va
 // 已经选好项目的人数；全部选好才能选时间
 const chosenCount = computed(() => memberSkillLists.value.filter(ids => ids.length > 0).length)
 const allChosen = computed(() => chosenCount.value === partySize.value)
-// 选时间的前置条件：门店 + 每一位都至少一个项目（偏好员工一步已下线）
-const timeReady = computed(() => !!selectedStoreId.value && allChosen.value)
+// 选时间的前置条件：门店 + 人数 + 每一位都至少一个项目（偏好员工一步已下线）
+const timeReady = computed(() => !!selectedStoreId.value && partySize.value > 0 && allChosen.value)
 
 const slotList = computed(() => selectedDate.value ? (slotsByDate.value[selectedDate.value] || []) : [])
 const noSlotInWindow = computed(() => {
@@ -882,7 +891,10 @@ function pickStoreByPhone(phone) {
  */
 function applyStore(s) {
   selectedStoreId.value = s.id
-  // 各店项目不同：人数保留，每一位的项目清空，回到第 1 位
+  // 各店项目不同：人数保留（第一次选门店默认 1 个人），每一位的项目清空，回到第 1 位
+  if (!partySize.value) {
+    partySize.value = 1
+  }
   memberSkills.value = memberSkills.value.map(() => [])
   currentPerson.value = 0
   selectedDate.value = ""
@@ -1208,7 +1220,7 @@ function checkSelections() {
     return false
   }
   // 每一位都至少一个项目；没选的那位直接切过去，客户回到项目分区就是他
-  const lists = memberSkillLists.value
+  const lists = memberSkillLists.value.length ? memberSkillLists.value : [[]]
   for (let i = 0; i < lists.length; i++) {
     if (!lists[i].length) {
       currentPerson.value = i
@@ -1389,7 +1401,8 @@ function resetAll() {
   selectedStoreId.value = ""
   memberSkills.value = [[]]
   currentPerson.value = 0
-  partySize.value = 1
+  // 门店清空了，人数回到「还没选」（再选门店时默认 1 个人）
+  partySize.value = 0
   slotIssues.value = []
   selectedDate.value = ""
   selectedSlot.value = ""
@@ -1581,35 +1594,33 @@ $promo-red: #cc2e2d;
   font-size: .9rem;
 }
 
-// 团体预约：人数单选——选中红底白字（同「下一步」按钮的配色，尺寸小一号），未选中红字红框
+// 团体预约：人数单选。卡片沿用门店 / 项目的 .pbook-option（白底浅灰框，选中红框浅红底），
+// 四张等宽排一行，窄屏两列；卡片上按人数画几个小人，未选中灰色、选中红色
 .pbook-size-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: .6rem;
-}
 
-.pbook-size-btn {
-  font-family: inherit;
-  font-size: .95rem;
-  font-weight: 700;
-  padding: .45rem 1.15rem;
-  border: 2px solid $promo-red;
-  border-radius: .6rem;
-  background: #fff;
-  color: $promo-red;
-  cursor: pointer;
-  transition: background-color .25s ease, color .25s ease;
-
-  &:hover {
-    background-color: #fdf3f3;
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.pbook-size-btn-active {
-  background-color: $promo-red;
-  color: #fff;
+.pbook-size {
+  padding: .6rem .4rem;
+  text-align: center;
+}
 
-  &:hover {
-    background-color: #b52827;
-  }
+.pbook-size-icons {
+  gap: .15rem;
+  color: #9aa1ae;
+  transition: color .25s ease;
+}
+
+.pbook-size-name {
+  margin-top: .3rem;
+  font-size: .88rem;
+  white-space: nowrap;
 }
 
 // 多人时项目列表上方「正在为第几位选择」
