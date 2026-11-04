@@ -94,6 +94,15 @@
             <div class="cancel-muted">{{ $t('booking.field.amount') }}</div>
             <div class="cancel-item-value">${{ item.amount }}</div>
           </div>
+          <!-- 顾客自己说的两样（2026-11-04）：备注、对技师的要求（技师用对外名称）；店员备注不在这里 -->
+          <div v-if="item.customerRemark" class="cancel-item-row">
+            <div class="cancel-muted">{{ $t('cancelLink.your_note') }}</div>
+            <div class="cancel-item-value cancel-item-note">{{ item.customerRemark }}</div>
+          </div>
+          <div v-if="staffPreferenceRow(item)" class="cancel-item-row">
+            <div class="cancel-muted">{{ staffPreferenceRow(item).label }}</div>
+            <div class="cancel-item-value">{{ staffPreferenceRow(item).value }}</div>
+          </div>
 
           <!-- 已开始还没结束：只展示，按钮显示「进行中」、不能点（原则上不在网页上取消已开始的单） -->
           <button v-if="item.inProgress" class="cancel-ghost-btn cancel-ghost-btn--busy q-mt-md" disabled>
@@ -189,6 +198,28 @@ const bookingList = computed(() => {
   return [...list.filter(item => !item.canceled), ...list.filter(item => item.canceled)]
 })
 const hasAmount = computed(() => bookingList.value.some(item => item.amount != null))
+
+// 对技师的要求（后端给性别或技师对外名称）：只要某个性别 →「Requested: A female technician」；
+// 点了几位 →「Preferred technicians: Ada or Tom」。没有返回 null
+function staffPreferenceRow(item) {
+  const p = item && item.staffPreference
+  if (!p) {
+    return null
+  }
+  if (p.gender === 'F' || p.gender === 'M') {
+    return {
+      label: t('cancelLink.requested'),
+      value: t(p.gender === 'F' ? 'cancelLink.female_technician' : 'cancelLink.male_technician'),
+    }
+  }
+  const names = (p.staffNames || []).filter(Boolean)
+  if (names.length === 0) {
+    return null
+  }
+  const value = names.length === 1 ? names[0]
+      : names.slice(0, -1).join(t('cancelLink.list_sep')) + t('cancelLink.or') + names[names.length - 1]
+  return {label: t('cancelLink.preferred_technicians'), value}
+}
 
 // 刷新状态
 const refreshing = ref(false)
@@ -447,6 +478,11 @@ $cancel-red: #cc2e2d;
   min-width: 0;
   text-align: right;
   overflow-wrap: anywhere;
+}
+
+// 顾客备注：保留顾客写的换行
+.cancel-item-note {
+  white-space: pre-wrap;
 }
 
 .cancel-item-hint {
