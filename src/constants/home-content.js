@@ -41,7 +41,7 @@ export const HOME_STORES = [
     {
         id: 'sanjose',
         name: {zh: '圣何塞店', en: 'San Jose · Massage Zen'},
-        address: '5353 Almaden expressway . A-120, San Jose CA95118',
+        address: '5353 Almaden Expy, A-120, San Jose, CA 95118',
         phone: '(408) 444-9183',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 AM – 10:00 PM'},
         notes: {zh: '每周二会员日：按摩类服务立减 30%', en: 'Member Day every Tuesday: 30% off body massage services'},
@@ -88,19 +88,56 @@ export const HOME_TESTIMONIALS = [
     },
 ]
 
-// 服务项目（按类别分组），价格/时长为参考价目
+// 服务项目（按类别分组）：展示所有门店服务的全集，不含价格/时长；
+// 具体门店可约项目、价格与时长由顾客进入门店预约流程时查看。desc 为服务简介
 export const HOME_SERVICE_GROUPS = [
     {
         id: 'footTherapy',
         icon: 'fa-solid fa-spa',
         title: {zh: '足浴足疗', en: 'Foot Therapy'},
         items: [
-            {name: {zh: '经典足疗', en: 'Classic Foot Massage'}, price: '$50', minutes: 60},
-            {name: {zh: '草本足浴', en: 'Herbal Foot Therapy'}, price: '$60', minutes: 60},
-            {name: {zh: '牛奶足浴', en: 'Milk Foot Therapy'}, price: '$60', minutes: 60},
-            {name: {zh: '海盐排毒足浴', en: 'Salt Detox Foot Therapy'}, price: '$60', minutes: 60},
-            {name: {zh: '生姜足浴', en: 'Ginger Foot Therapy'}, price: '$60', minutes: 60},
-            {name: {zh: '尊享足疗', en: 'Premium Foot Therapy'}, price: '$80', minutes: 70},
+            {
+                name: {zh: '经典足疗', en: 'Classic Foot Massage'},
+                desc: {
+                    zh: '温水泡脚后按足底反射区推拿，缓解疲劳、促进循环。',
+                    en: 'A warm foot soak followed by reflexology on the soles to ease fatigue and boost circulation.',
+                },
+            },
+            {
+                name: {zh: '草本足浴', en: 'Herbal Foot Therapy'},
+                desc: {
+                    zh: '中草药汤剂泡脚配合足部按摩，温经散寒、舒缓身心。',
+                    en: 'A Chinese herbal soak with foot massage to warm the body and calm the mind.',
+                },
+            },
+            {
+                name: {zh: '牛奶足浴', en: 'Milk Foot Therapy'},
+                desc: {
+                    zh: '牛奶泡脚配合足部按摩，滋润软化足部肌肤。',
+                    en: 'A milk soak with foot massage that softens and moisturizes the skin of the feet.',
+                },
+            },
+            {
+                name: {zh: '海盐排毒足浴', en: 'Salt Detox Foot Therapy'},
+                desc: {
+                    zh: '海盐泡脚配合足部按摩，清洁足部、帮助消除疲劳。',
+                    en: 'A sea salt soak with foot massage to cleanse the feet and help relieve fatigue.',
+                },
+            },
+            {
+                name: {zh: '生姜足浴', en: 'Ginger Foot Therapy'},
+                desc: {
+                    zh: '生姜泡脚配合足部按摩，驱寒暖身、促进血液循环。',
+                    en: 'A ginger soak with foot massage to dispel chill, warm the body and promote circulation.',
+                },
+            },
+            {
+                name: {zh: '尊享足疗', en: 'Premium Foot Therapy'},
+                desc: {
+                    zh: '升级足浴加更长时长的足部与腿部按摩，全面放松。',
+                    en: 'An upgraded soak with extended foot and leg massage for full relaxation.',
+                },
+            },
         ],
     },
     {
@@ -108,7 +145,13 @@ export const HOME_SERVICE_GROUPS = [
         icon: 'fa-solid fa-shoe-prints',
         title: {zh: '修脚', en: 'Foot Care'},
         items: [
-            {name: {zh: '修脚', en: 'Foot Care'}, price: '$35', minutes: 30},
+            {
+                name: {zh: '修脚', en: 'Foot Care'},
+                desc: {
+                    zh: '中式药浴修脚：专业技师修剪趾甲、去除老茧死皮，呵护足部健康。',
+                    en: 'Chinese medicinal pedicure: skilled technicians trim nails and remove calluses and dead skin for healthy feet.',
+                },
+            },
         ],
     },
     {
@@ -116,9 +159,76 @@ export const HOME_SERVICE_GROUPS = [
         icon: 'fa-solid fa-hands',
         title: {zh: '全身按摩', en: 'Body Massage'},
         items: [
-            {name: {zh: '舒缓全身按摩', en: 'Relaxation Body Massage'}, price: '$60', minutes: 60},
-            {name: {zh: '深层组织按摩', en: 'Deep Tissue Massage'}, price: '$70', minutes: 60},
-            {name: {zh: '足疗 + 全身按摩组合', en: 'Foot + Body Combo Massage'}, price: '$90', minutes: 90},
+            {
+                name: {zh: '舒缓全身按摩', en: 'Relaxation Body Massage'},
+                desc: {
+                    zh: '中等力度的全身推拿，舒缓压力、放松身心。',
+                    en: 'A full-body massage with medium pressure to relieve stress and relax body and mind.',
+                },
+            },
+            {
+                name: {zh: '深层组织按摩', en: 'Deep Tissue Massage'},
+                desc: {
+                    zh: '缓解肌肉紧张 · 改善酸痛 · 深层放松',
+                    en: 'Relieves muscle tension · Eases soreness · Deep relaxation',
+                },
+            },
+            {
+                name: {zh: '热石精油按摩', en: 'Hot Stone & Essential Oil Massage'},
+                desc: {
+                    zh: '放松肌肉 · 促进血液循环 · 缓解疲劳',
+                    en: 'Relaxes muscles · Promotes circulation · Relieves fatigue',
+                },
+            },
+            {
+                name: {zh: '颈肩按摩', en: 'Neck & Shoulder Massage'},
+                desc: {
+                    zh: '缓解肩颈酸痛 · 放松肌肉 · 改善疲劳',
+                    en: 'Relieves neck and shoulder pain · Relaxes muscles · Eases fatigue',
+                },
+            },
+            {
+                name: {zh: '踩背按摩', en: 'Walk-on-Back Massage'},
+                desc: {
+                    zh: '深层放松 · 疏通经络 · 缓解身体疲劳',
+                    en: 'Deep relaxation · Unblocks meridians · Relieves body fatigue',
+                },
+            },
+            {
+                name: {zh: '去角质按摩（磨砂）', en: 'Dead Skin Removal Massage (Sugar Scrub)'},
+                desc: {
+                    zh: '去除老废角质 · 改善肌肤质感 · 使肌肤更光滑',
+                    en: 'Removes dead skin · Refines skin texture · Leaves skin smoother',
+                },
+            },
+            {
+                name: {zh: '日式指压按摩', en: 'Shiatsu Massage'},
+                desc: {
+                    zh: '舒缓酸痛 · 放松身心 · 促进血液循环',
+                    en: 'Soothes soreness · Relaxes body and mind · Promotes circulation',
+                },
+            },
+        ],
+    },
+    {
+        id: 'headSpa',
+        icon: 'fa-solid fa-shower',
+        title: {zh: '头疗', en: 'Head Spa'},
+        items: [
+            {
+                name: {zh: '头皮深层护理', en: 'Deluxe Scalp Treatment'},
+                desc: {
+                    zh: '通过专业头皮检测、深层清洁、瀑布式冲洗、头发护理、蒸汽护理以及舒缓的头皮按摩，让您全面放松、焕活头皮与秀发。',
+                    en: 'Experience the ultimate head spa with advanced scalp analysis, deep scalp purifying, waterfall cleansing, hair conditioning, steaming treatment, and a revitalizing scalp massage for total relaxation and care.',
+                },
+            },
+            {
+                name: {zh: '四步奢华头发护理', en: 'Premium 4-Step Hair Treatment'},
+                desc: {
+                    zh: '采用四步专业护理，深层滋养、补水修护，并形成保护膜，让秀发更加柔顺亮泽，恢复健康光彩。',
+                    en: 'Indulge in our premium head spa experience with a signature 4-step treatment to smooth, hydrate, and apply a protective top coat, leaving your hair silky smooth with a healthy, radiant shine.',
+                },
+            },
         ],
     },
     {
@@ -126,11 +236,41 @@ export const HOME_SERVICE_GROUPS = [
         icon: 'fa-solid fa-hand-dots',
         title: {zh: '针灸理疗', en: 'Acupuncture Therapy'},
         items: [
-            {name: {zh: '初诊咨询 + 治疗', en: 'Initial Consultation + Treatment'}, price: '$138', minutes: 75},
-            {name: {zh: '复诊针灸', en: 'Follow-up Acupuncture'}, price: '$108', minutes: 60},
-            {name: {zh: '疼痛管理针灸', en: 'Pain Management Acupuncture'}, price: '$128', minutes: 60},
-            {name: {zh: '减压助眠疗法', en: 'Stress & Sleep Therapy'}, price: '$128', minutes: 60},
-            {name: {zh: '招牌荷尔蒙平衡疗法', en: 'Signature Hormone Balance Therapy'}, price: '$150', minutes: 60},
+            {
+                name: {zh: '初诊咨询 + 治疗', en: 'Initial Consultation + Treatment'},
+                desc: {
+                    zh: '首次到访先进行问诊评估，再制定并实施个性化针灸方案。',
+                    en: 'A first-visit assessment followed by a personalized acupuncture treatment plan.',
+                },
+            },
+            {
+                name: {zh: '复诊针灸', en: 'Follow-up Acupuncture'},
+                desc: {
+                    zh: '根据上次疗程的反馈调整穴位，持续巩固调理效果。',
+                    en: 'Points are adjusted based on your progress to continue and reinforce your treatment.',
+                },
+            },
+            {
+                name: {zh: '疼痛管理针灸', en: 'Pain Management Acupuncture'},
+                desc: {
+                    zh: '针对颈肩腰背、关节等部位的慢性酸痛进行针灸调理。',
+                    en: 'Acupuncture targeting chronic aches in the neck, shoulders, back and joints.',
+                },
+            },
+            {
+                name: {zh: '减压助眠疗法', en: 'Stress & Sleep Therapy'},
+                desc: {
+                    zh: '以安神穴位为主的针灸调理，帮助舒缓压力、改善睡眠。',
+                    en: 'Acupuncture on calming points to help ease stress and improve sleep.',
+                },
+            },
+            {
+                name: {zh: '招牌荷尔蒙平衡疗法', en: 'Signature Hormone Balance Therapy'},
+                desc: {
+                    zh: '基于中医调和阴阳、调理肝肾的理念，以针灸调理身体内在平衡。',
+                    en: 'Rooted in the TCM approach of balancing yin and yang and supporting the liver and kidneys, this acupuncture helps restore inner balance.',
+                },
+            },
         ],
     },
     {
@@ -138,11 +278,83 @@ export const HOME_SERVICE_GROUPS = [
         icon: 'fa-solid fa-wand-magic-sparkles',
         title: {zh: '面部焕活', en: 'Facial Rejuvenation'},
         items: [
-            {name: {zh: '面部针灸提升', en: 'Facial Acupuncture Lift'}, price: '$158', minutes: 60},
-            {name: {zh: '面部刮痧与穴位按摩', en: 'Facial Gua Sha & Acupressure'}, price: '$128', minutes: 60},
-            {name: {zh: '抗衰老招牌护理', en: 'Anti-Aging Signature Treatment'}, price: '$188', minutes: 75},
-            {name: {zh: '淋巴排毒', en: 'Lymphatic Detox'}, price: '$128', minutes: 60},
-            {name: {zh: '艾灸疗法', en: 'Moxibustion Therapy'}, price: '$68', minutes: 45},
+            {
+                name: {zh: '面部针灸提升', en: 'Facial Acupuncture Lift'},
+                desc: {
+                    zh: '在面部穴位施以细针，促进面部气血运行，令肌肤紧致有光泽。',
+                    en: 'Fine needles on facial points boost circulation for firmer, more radiant skin.',
+                },
+            },
+            {
+                name: {zh: '面部刮痧与穴位按摩', en: 'Facial Gua Sha & Acupressure'},
+                desc: {
+                    zh: '以刮痧板疏通面部经络并配合穴位按压，消除浮肿、提亮气色。',
+                    en: 'Gua sha and acupressure release facial tension, reduce puffiness and brighten the complexion.',
+                },
+            },
+            {
+                name: {zh: '抗衰老招牌护理', en: 'Anti-Aging Signature Treatment'},
+                desc: {
+                    zh: '融合针灸、刮痧与按摩手法的综合面部护理，帮助淡化细纹、紧致轮廓。',
+                    en: 'A combined facial of acupuncture, gua sha and massage to soften fine lines and firm facial contours.',
+                },
+            },
+            {
+                name: {zh: '淋巴排毒', en: 'Lymphatic Detox'},
+                desc: {
+                    zh: '轻柔的淋巴引流手法，帮助消除浮肿、促进代谢。',
+                    en: 'Gentle lymphatic drainage to reduce puffiness and support circulation.',
+                },
+            },
+            {
+                name: {zh: '艾灸疗法', en: 'Moxibustion Therapy'},
+                desc: {
+                    zh: '点燃艾草温熏穴位，温通经络、驱寒暖身。',
+                    en: 'Burning mugwort warms key points to unblock meridians and dispel cold.',
+                },
+            },
+            {
+                name: {zh: '玻尿酸氧气保湿护理', en: 'Oxygen Infusion Hyaluronic Acid'},
+                desc: {
+                    zh: '以加压氧气将玻尿酸精华导入肌肤，深层补水，令肌肤饱满水润。',
+                    en: 'Pressurized oxygen infuses hyaluronic acid serum into the skin for deep hydration and a plump, dewy look.',
+                },
+            },
+            {
+                name: {zh: 'LED 光疗祛痘 / 亮肤护理', en: 'LED Light Therapy - Acne / Brightening'},
+                desc: {
+                    zh: '以不同波长的 LED 光照射肌肤，帮助舒缓痘痘肌、提亮肤色。',
+                    en: 'LED light at different wavelengths helps calm acne-prone skin and brighten the complexion.',
+                },
+            },
+            {
+                name: {zh: '水氧深层清洁护理', en: 'Hydra Facial Deep Cleansing'},
+                desc: {
+                    zh: '水氧仪深层清洁毛孔、去除角质与油脂，同时为肌肤补水。',
+                    en: 'Hydra-dermabrasion deep cleans pores, lifts away dead skin and oil, and hydrates at the same time.',
+                },
+            },
+            {
+                name: {zh: '纳米胶原蛋白导入护理', en: 'Nano Infusion Collagen Therapy'},
+                desc: {
+                    zh: '无针纳米导入技术在肌肤表层打开微通道，让胶原蛋白精华更好地吸收。',
+                    en: 'Needle-free nano infusion opens micro-channels in the skin surface so collagen serum absorbs better.',
+                },
+            },
+            {
+                name: {zh: '24K 黄金焕颜护理', en: '24K Gold Youth Facial'},
+                desc: {
+                    zh: '24K 金箔面膜配合精华导入与按摩，提亮肤色、焕发光泽。',
+                    en: 'A 24K gold leaf mask with serum infusion and massage for a brighter, glowing complexion.',
+                },
+            },
+            {
+                name: {zh: '干细胞焕肤护理', en: 'Stem Cell Regeneration Facial'},
+                desc: {
+                    zh: '以植物干细胞精华配合仪器导入，滋养修护，令肌肤柔嫩焕亮。',
+                    en: 'Plant stem cell serum infused with professional devices nourishes and renews the skin for a soft, radiant look.',
+                },
+            },
         ],
     },
 ]

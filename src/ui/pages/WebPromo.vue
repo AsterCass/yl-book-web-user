@@ -97,7 +97,7 @@
       </div>
     </div>
 
-    <!-- Services & Prices（配置驱动） -->
+    <!-- Services（配置驱动，仅展示服务全集，不含价格/时长） -->
     <div class="promo-block promo-block-alt">
       <div class="promo-container">
         <h2 class="promo-h2 text-center">{{ $t('promo.services_title') }}</h2>
@@ -120,12 +120,9 @@
                 <q-icon :name="group.icon" size="1rem" class="q-mr-sm"/>
                 <div>{{ lv(group.title) }}</div>
               </div>
-              <div v-for="item in group.items" :key="item.name.en" class="promo-price-row row items-center justify-between">
-                <div class="col">
-                  <div>{{ lv(item.name) }}</div>
-                  <div class="promo-muted" style="font-size: .8rem">{{ item.minutes }} {{ $t('booking.minutes') }}</div>
-                </div>
-                <div class="promo-price q-ml-md">{{ item.price }}</div>
+              <div v-for="item in group.items" :key="item.name.en" class="promo-price-row">
+                <div>{{ lv(item.name) }}</div>
+                <div v-if="item.desc" class="promo-muted q-mt-xs" style="font-size: .8rem">{{ lv(item.desc) }}</div>
               </div>
             </div>
           </div>
@@ -266,7 +263,7 @@ const storeList = HOME_STORES
 const storeCardCol = storeList.length >= 3 ? 'col-sm-6 col-md-4' : 'col-md-6'
 const serviceGroups = HOME_SERVICE_GROUPS
 const testimonialList = HOME_TESTIMONIALS
-const noteKeys = ['promo.notes.n1', 'promo.notes.n2', 'promo.notes.n3', 'promo.notes.n4']
+const noteKeys = ['promo.notes.n3']
 const curYear = new Date().getFullYear()
 
 // 配置中的可本地化字段（{zh, en}）按当前语言取值
@@ -550,11 +547,6 @@ $promo-red: #cc2e2d;
   &:first-of-type {
     border-top: none;
   }
-}
-
-.promo-price {
-  font-weight: 800;
-  color: $promo-red;
 }
 
 // ===== Google 数据使用说明 =====

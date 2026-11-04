@@ -75,14 +75,9 @@
           </div>
           <div class="row">
             <div v-for="item in group.items" :key="item.name.en" class="col-12 col-sm-6 col-md-4 q-pa-sm">
-              <div class="home-card row items-center justify-between full-height home-service-card">
-                <div class="col">
-                  <div style="font-size: .9rem">{{ lv(item.name) }}</div>
-                  <div style="opacity: .55; font-size: .78rem">
-                    {{ item.minutes }} {{ $t('booking.minutes') }}
-                  </div>
-                </div>
-                <div class="q-ml-sm" style="font-weight: 600">{{ item.price }}</div>
+              <div class="home-card full-height home-service-card">
+                <div style="font-size: .9rem">{{ lv(item.name) }}</div>
+                <div v-if="item.desc" class="q-mt-xs" style="opacity: .55; font-size: .78rem">{{ lv(item.desc) }}</div>
               </div>
             </div>
           </div>
