@@ -133,7 +133,6 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="isParty" class="pbook-option-sub q-mt-sm">{{ $t('booking.party.hint') }}</div>
               </template>
             </div>
 
@@ -198,21 +197,31 @@
                   <div>{{ $t('booking.price_note') }}</div>
                 </div>
 
-                <!-- 多人：逐个人选项目，全部选完才能选时间 -->
-                <div v-if="isParty" class="column items-center q-mt-md">
-                  <div class="row justify-center pbook-person-nav">
-                    <button class="promo-book-btn pbook-btn-xs pbook-btn-ghost" :disabled="currentPerson === 0"
-                            @click="goPerson(-1)">
-                      {{ $t('booking.party.prev_person') }}
-                    </button>
-                    <button class="promo-book-btn pbook-btn-xs pbook-btn-ghost" :disabled="currentPerson >= partySize - 1"
-                            @click="goPerson(1)">
-                      {{ $t('booking.party.next_person') }}
-                    </button>
+                <!-- 多人：逐个人选项目，全部选完才能选时间。导航条两头是「前一个人 / 后一个人」，中间每位一个圆点
+                     （实心 = 已选好，外圈 = 正在选，点圆点直接跳到那位）+ 已选好几位。按钮沿用选项卡片的样子；
+                     当前这位已选好、后面还有人时「后一个人」用选中色，提示往下走 -->
+                <div v-if="isParty" class="row items-center pbook-person-nav q-mt-md">
+                  <button type="button" class="pbook-person-step row items-center no-wrap"
+                          :disabled="currentPerson === 0" @click="goPerson(-1)">
+                    <q-icon name="fa-solid fa-chevron-left" size=".7rem" class="q-mr-sm"/>
+                    <span>{{ $t('booking.party.prev_person') }}</span>
+                  </button>
+                  <div class="column items-center pbook-person-progress">
+                    <div class="row no-wrap pbook-person-dots">
+                      <span v-for="(ids, mi) in memberSkillLists" :key="mi" class="pbook-person-dot"
+                            :class="{'pbook-person-dot-done': ids.length > 0, 'pbook-person-dot-now': mi === currentPerson}"
+                            :title="$t('booking.party.person', {n: mi + 1})" @click="goPerson(mi - currentPerson)"/>
+                    </div>
+                    <div class="pbook-option-sub q-mt-xs text-center">
+                      {{ $t('booking.party.progress', {done: chosenCount, total: partySize}) }}
+                    </div>
                   </div>
-                  <div class="pbook-option-sub q-mt-sm">
-                    {{ $t('booking.party.progress', {done: chosenCount, total: partySize}) }}
-                  </div>
+                  <button type="button" class="pbook-person-step row items-center no-wrap"
+                          :class="{'pbook-person-step-go': selectedSkillIds.length > 0 && currentPerson < partySize - 1}"
+                          :disabled="currentPerson >= partySize - 1" @click="goPerson(1)">
+                    <span>{{ $t('booking.party.next_person') }}</span>
+                    <q-icon name="fa-solid fa-chevron-right" size=".7rem" class="q-ml-sm"/>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1115,7 +1124,7 @@ function setPartySize(n) {
 // 前一个人 / 后一个人：切换项目列表在给谁选，并滚回项目分区顶部（列表很长，按钮在最下面）
 function goPerson(delta) {
   const next = currentPerson.value + delta
-  if (next < 0 || next >= partySize.value) {
+  if (delta === 0 || next < 0 || next >= partySize.value) {
     return
   }
   currentPerson.value = next
@@ -1629,21 +1638,94 @@ $promo-red: #cc2e2d;
   color: $promo-red;
 }
 
-// 前一个人 / 后一个人：样式同「上一步」（红字红框），尺寸更小
+// 前一个人 / 后一个人导航条：浅灰底圆角条，按钮沿用选项卡片的样子（白底浅灰框、悬停红框），中间圆点是每一位的进度
 .pbook-person-nav {
-  gap: .8rem;
+  flex-wrap: nowrap;
+  gap: .6rem;
+  padding: .55rem .6rem;
+  border: 1px solid #e6e8ec;
+  border-radius: .8rem;
+  background: #fafbfc;
+
+  // 窄屏两个按钮已占满一行：圆点与进度挪到按钮上面单独一行，两个按钮各占一半
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+    row-gap: .45rem;
+
+    .pbook-person-progress {
+      order: -1;
+      flex: 0 0 100%;
+    }
+
+    .pbook-person-step {
+      flex: 1 1 0;
+      justify-content: center;
+    }
+  }
 }
 
-.pbook-btn-xs {
-  font-size: .9rem;
-  padding: .4rem 1.2rem;
-  border-width: 2px;
+.pbook-person-progress {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pbook-person-step {
+  font-family: inherit;
+  font-size: .85rem;
+  font-weight: 600;
+  color: inherit;
+  padding: .45rem .85rem;
+  border: 1px solid #e6e8ec;
+  border-radius: .7rem;
+  background: #fff;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color .25s ease, background-color .25s ease, color .25s ease;
+
+  &:hover:not(:disabled) {
+    border-color: rgba(204, 46, 45, .55);
+  }
 
   &:disabled {
-    opacity: .45;
-    cursor: not-allowed;
-    transform: none;
+    opacity: .4;
+    cursor: default;
   }
+
+  @media (max-width: 480px) {
+    font-size: .8rem;
+    padding: .4rem .6rem;
+  }
+}
+
+// 当前这位已选好、后面还有人：「后一个人」用选中色（同选项卡片的选中态）
+.pbook-person-step-go {
+  border-color: $promo-red;
+  background-color: #fdf3f3;
+  color: $promo-red;
+}
+
+.pbook-person-dots {
+  gap: .4rem;
+}
+
+.pbook-person-dot {
+  width: .6rem;
+  height: .6rem;
+  border-radius: 50%;
+  border: 1.5px solid #c3c8d1;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.pbook-person-dot-done {
+  border-color: $promo-red;
+  background: $promo-red;
+}
+
+.pbook-person-dot-now {
+  border-color: $promo-red;
+  box-shadow: 0 0 0 3px rgba(204, 46, 45, .2);
 }
 
 // 重述卡 / 汇总里附加项目名后的小标签

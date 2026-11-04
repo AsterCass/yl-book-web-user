@@ -359,7 +359,6 @@
     "view_my_bookings": "View my bookings",
     "book_another": "Make another booking",
     "party": {
-      "hint": "Everyone starts at the same time, with one appointment each. If anyone can't be booked, none are.",
       "person": "Person {n}",
       "people": "People",
       "recap_title": "{people} people starting together",

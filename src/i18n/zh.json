@@ -359,7 +359,6 @@
     "view_my_bookings": "查看我的预约",
     "book_another": "再约一单",
     "party": {
-      "hint": "所有人同一时间开始，每位一张预约；只要有一位约不上，就都不预约。",
       "person": "第 {n} 位",
       "people": "人数",
       "recap_title": "{people} 位同时开始",
