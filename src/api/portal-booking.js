@@ -42,6 +42,27 @@ export function portalBookingSlotsBatch(params) {
     })
 }
 
+// 团体预约的可约时间（2026-11-04，免登录，与单人可约时间共用单 IP 限流）：body {storeId, memberList: [{skillIdList: []}]}
+// 返回 {dayList: [{dateStr, slotList}], memberIssueList: [{memberIndex, code}]}——未来 14 天每天整组能同时开始的时刻；
+// memberIssueList 非空 = 有人的项目根本排不了（每天都是空的），code 见后端 PhonePartyIssueCodeEnum
+export function portalBookingSlotsParty(body) {
+    return serviceShiro({
+        url: `/portal/booking/slots/party`,
+        data: body,
+        method: 'post',
+    })
+}
+
+// 团体预约下单（2026-11-04）：同一时间开始、每人一张单，全成或全不成。body 同 create，只是 skillIdList 换成
+// memberList: [{skillIdList: []}]（不能指定技师）；被别人抢先排不下时后端直接报错、什么都不写
+export function portalBookingCreateParty(body) {
+    return serviceShiro({
+        url: `/portal/booking/create/party`,
+        data: body,
+        method: 'post',
+    })
+}
+
 // body: {storeId, bookTimeStr: 'yyyy-MM-dd HH:mm', skillIdList: [], preferredStaffId?, couponCode?,
 // nickName?(本单客户姓名，≤50；后端可空=沿用账户昵称，填了同步为账户昵称)}
 export function portalBookingCreate(body) {

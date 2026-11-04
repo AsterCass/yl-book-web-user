@@ -22,9 +22,13 @@
             <div class="promo-muted">{{ $t('booking.field.store') }}</div>
             <div class="text-right">{{ createdInfo.storeName }}</div>
           </div>
+          <div v-if="createdInfo.people > 1" class="row justify-between q-my-xs">
+            <div class="promo-muted">{{ $t('booking.party.people') }}</div>
+            <div class="text-right">{{ createdInfo.people }}</div>
+          </div>
           <div class="row justify-between q-my-xs">
             <div class="promo-muted">{{ $t('booking.field.project') }}</div>
-            <div class="text-right col-7">{{ createdInfo.skillNames }}</div>
+            <div class="text-right col-7" style="white-space: pre-line">{{ createdInfo.skillNames }}</div>
           </div>
           <div class="row justify-between q-my-xs">
             <div class="promo-muted">{{ $t('booking.field.time') }}</div>
@@ -112,7 +116,7 @@
             <div ref="skillSecEl" class="pbook-sec">
               <div class="pbook-block-title row items-center">
                 <div class="pbook-num">2</div>
-                <div>{{ $t('booking.step.project') }}</div>
+                <div>{{ isParty ? $t('booking.party.person_project') : $t('booking.step.project') }}</div>
               </div>
               <div v-if="!selectedStoreId" class="pbook-placeholder">{{ $t('booking.need_store_first') }}</div>
               <div v-else-if="loadingSkills" class="row justify-center q-py-lg">
@@ -165,6 +169,64 @@
                   <div v-if="totalAmount != null">{{ $t('booking.total_amount', {amount: '$' + totalAmount}) }}</div>
                   <div>{{ $t('booking.price_note') }}</div>
                 </div>
+
+                <!-- 团体预约（2026-11-04）：几个人同一时间开始、每人一张单，全成或全不成（后端 /slots/party、/create/party）。
+                     第 2 位起默认与第 1 位相同的项目，关掉「相同」再给他单独选；不能指定技师（同单人） -->
+                <div class="pbook-party q-mt-md">
+                  <div class="row items-center no-wrap">
+                    <div class="col pbook-party-title">{{ $t('booking.party.title') }}</div>
+                    <button class="pbook-party-btn" :disabled="partySize <= 1" @click="changePartySize(-1)">−</button>
+                    <div class="pbook-party-count">{{ partySize }}</div>
+                    <button class="pbook-party-btn" :disabled="partySize >= PARTY_MAX" @click="changePartySize(1)">+</button>
+                  </div>
+                  <div class="pbook-option-sub q-mt-xs">{{ $t('booking.party.hint', {max: PARTY_MAX}) }}</div>
+                  <div v-for="(g, gi) in guests" :key="gi" class="pbook-guest q-mt-sm">
+                    <div class="row items-center no-wrap">
+                      <div class="col pbook-guest-title">{{ $t('booking.party.person', {n: gi + 2}) }}</div>
+                      <q-toggle v-model="g.same" dense size="sm" color="red-8" :label="$t('booking.party.same_as_first')"
+                                @update:model-value="onGuestSameChange(g)"/>
+                    </div>
+                    <div v-if="g.same" class="pbook-option-sub q-mt-xs">{{ selectedSkillNames || '-' }}</div>
+                    <template v-else>
+                      <div class="pbook-skill-list q-mt-xs">
+                        <div v-for="sk in mainSkillList" :key="sk.id" class="pbook-option pbook-skill"
+                             :class="{'pbook-option-active': g.skillIds.includes(sk.id)}" @click="toggleGuestSkill(g, sk.id)">
+                          <div class="row items-start no-wrap">
+                            <q-icon :name="g.skillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
+                                    size="1rem" class="q-mr-sm pbook-skill-icon"
+                                    :class="g.skillIds.includes(sk.id) ? 'promo-accent' : ''"/>
+                            <div class="pbook-option-name pbook-skill-name">{{ sk.name }}</div>
+                          </div>
+                          <div class="row items-center no-wrap pbook-skill-meta">
+                            <div v-if="sk.serviceAmount != null" class="pbook-price q-mr-md">${{ sk.serviceAmount }}</div>
+                            <div class="pbook-option-sub">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <template v-if="guestAddons(g).length">
+                        <div class="pbook-addon-title q-mt-sm">{{ $t('booking.addon_title') }}</div>
+                        <div class="pbook-skill-list">
+                          <div v-for="sk in guestAddons(g)" :key="sk.id" class="pbook-option pbook-skill"
+                               :class="{'pbook-option-active': g.skillIds.includes(sk.id)}" @click="toggleGuestSkill(g, sk.id)">
+                            <div class="row items-start no-wrap">
+                              <q-icon :name="g.skillIds.includes(sk.id) ? 'task_alt' : 'panorama_fish_eye'"
+                                      size="1rem" class="q-mr-sm pbook-skill-icon"
+                                      :class="g.skillIds.includes(sk.id) ? 'promo-accent' : ''"/>
+                              <div class="pbook-option-name pbook-skill-name">{{ sk.name }}</div>
+                            </div>
+                            <div class="row items-center no-wrap pbook-skill-meta">
+                              <div v-if="sk.serviceAmount != null" class="pbook-price q-mr-md">${{ sk.serviceAmount }}</div>
+                              <div class="pbook-option-sub">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                      <div class="pbook-option-sub q-mt-xs text-right">
+                        {{ $t('booking.total_minutes', {minutes: minutesOf(g.skillIds)}) }}
+                      </div>
+                    </template>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -186,7 +248,8 @@
                   <div class="row items-center no-wrap">
                     <q-icon name="fa-solid fa-circle-info" size=".95rem" class="q-mr-sm pbook-recap-icon"/>
                     <div class="col pbook-recap-title">
-                      {{ $t('booking.recap_title', {count: chosenSkills.length}) }}
+                      {{ isParty ? $t('booking.party.recap_title', {people: partySize})
+                        : $t('booking.recap_title', {count: chosenSkills.length}) }}
                     </div>
                     <div class="pbook-recap-edit q-ml-sm" @click="goEditSkills">{{ $t('booking.recap_edit') }}</div>
                   </div>
@@ -198,17 +261,27 @@
                     <div v-if="sk.serviceAmount != null" class="pbook-price q-ml-md">${{ sk.serviceAmount }}</div>
                     <div class="pbook-option-sub q-ml-md">{{ sk.consumeMinutes }} {{ $t('booking.minutes') }}</div>
                   </div>
+                  <!-- 团体：第 1 位的明细在上面，其余每位一行（项目 + 时长） -->
+                  <template v-if="isParty">
+                    <div v-for="(ids, mi) in memberSkillLists.slice(1)" :key="'g' + mi"
+                         class="row items-baseline no-wrap pbook-recap-item">
+                      <div class="col pbook-recap-name">{{ $t('booking.party.person', {n: mi + 2}) }}: {{ namesOf(ids) }}</div>
+                      <div class="pbook-option-sub q-ml-md">{{ minutesOf(ids) }} {{ $t('booking.minutes') }}</div>
+                    </div>
+                  </template>
                   <div class="row items-center justify-between pbook-recap-total">
-                    <div>{{ $t('booking.total_minutes', {minutes: totalMinutes}) }}</div>
-                    <div v-if="totalAmount != null">{{ $t('booking.total_amount', {amount: '$' + totalAmount}) }}</div>
+                    <div>{{ isParty ? '' : $t('booking.total_minutes', {minutes: totalMinutes}) }}</div>
+                    <div v-if="groupTotalAmount != null">{{ $t('booking.total_amount', {amount: '$' + groupTotalAmount}) }}</div>
                   </div>
                   <div class="pbook-option-sub q-mt-xs">
-                    <div>{{ chosenSkills.length > 1 ? $t('booking.recap_hint_multi') : $t('booking.recap_hint') }}</div>
+                    <!-- 团体时每位的时长分开列了，「时长与总价合并计算」这句不适用 -->
+                    <div v-if="!isParty">{{ chosenSkills.length > 1 ? $t('booking.recap_hint_multi') : $t('booking.recap_hint') }}</div>
                     <div v-if="totalAmount != null">{{ $t('booking.price_note') }}</div>
                   </div>
                 </div>
                 <div class="pbook-option-sub q-mb-sm">
                   <div>{{ $t('booking.time_note', {days: MAX_ADVANCE_DAYS}) }}</div>
+                  <div v-if="isParty">{{ $t('booking.party.time_note') }}</div>
                   <div v-if="storeTimezoneName">{{ $t('booking.timezone_note', {zone: storeTimezoneName}) }}</div>
                 </div>
                 <div v-if="loadingSlots" class="row justify-center q-py-lg">
@@ -217,8 +290,18 @@
                 <template v-else>
                   <!-- 整个 14 天窗口都排不下：这不是普通说明而是走不下去的死路（多半是项目选多了、
                        所需时长凑不出空档），用红字提示并给一个直接跳回项目分区的入口 -->
-                  <div v-if="noSlotInWindow" class="pbook-placeholder pbook-warn">
-                    {{ $t('booking.no_slot_range', {days: MAX_ADVANCE_DAYS}) }}
+                  <!-- 团体：有人的项目根本排不了（如没有技师会做），每天都是空的，直接说是第几位 -->
+                  <div v-if="slotIssues.length" class="pbook-placeholder pbook-warn">
+                    <div v-for="(issue, ii) in slotIssues" :key="ii">
+                      {{ $t('booking.party.issue', {n: issue.memberIndex + 1}) }}
+                    </div>
+                    <span class="pbook-warn-link" @click="goEditSkills">
+                      {{ $t('booking.change_service') }}
+                    </span>
+                  </div>
+                  <div v-else-if="noSlotInWindow" class="pbook-placeholder pbook-warn">
+                    {{ isParty ? $t('booking.party.no_slot_range', {days: MAX_ADVANCE_DAYS})
+                      : $t('booking.no_slot_range', {days: MAX_ADVANCE_DAYS}) }}
                     <span class="pbook-warn-link" @click="goEditSkills">
                       {{ $t('booking.change_service') }}
                     </span>
@@ -276,17 +359,32 @@
                   <div class="promo-muted">{{ $t('booking.field.store') }}</div>
                   <div class="text-right col-7">{{ selectedStoreName || '-' }}</div>
                 </div>
-                <div class="row justify-between items-start q-my-xs">
-                  <div class="promo-muted">{{ $t('booking.field.project') }}</div>
-                  <div class="text-right col-7">{{ selectedSkillNames || '-' }}</div>
-                </div>
-                <div class="row justify-between items-start q-my-xs">
-                  <div class="promo-muted">{{ $t('booking.field.duration') }}</div>
-                  <div class="text-right">{{ totalMinutes }} {{ $t('booking.minutes') }}</div>
-                </div>
-                <div v-if="totalAmount != null" class="row justify-between items-start q-my-xs">
+                <template v-if="!isParty">
+                  <div class="row justify-between items-start q-my-xs">
+                    <div class="promo-muted">{{ $t('booking.field.project') }}</div>
+                    <div class="text-right col-7">{{ selectedSkillNames || '-' }}</div>
+                  </div>
+                  <div class="row justify-between items-start q-my-xs">
+                    <div class="promo-muted">{{ $t('booking.field.duration') }}</div>
+                    <div class="text-right">{{ totalMinutes }} {{ $t('booking.minutes') }}</div>
+                  </div>
+                </template>
+                <!-- 团体：人数 + 每位的项目与时长 -->
+                <template v-else>
+                  <div class="row justify-between items-start q-my-xs">
+                    <div class="promo-muted">{{ $t('booking.party.people') }}</div>
+                    <div class="text-right">{{ partySize }}</div>
+                  </div>
+                  <div v-for="(ids, mi) in memberSkillLists" :key="'m' + mi" class="row justify-between items-start q-my-xs">
+                    <div class="promo-muted">{{ $t('booking.party.person', {n: mi + 1}) }}</div>
+                    <div class="text-right col-7">
+                      {{ namesOf(ids) || '-' }} ({{ minutesOf(ids) }} {{ $t('booking.minutes') }})
+                    </div>
+                  </div>
+                </template>
+                <div v-if="groupTotalAmount != null" class="row justify-between items-start q-my-xs">
                   <div class="promo-muted">{{ $t('booking.field.amount') }}</div>
-                  <div class="text-right">${{ totalAmount }}</div>
+                  <div class="text-right">${{ groupTotalAmount }}</div>
                 </div>
                 <div class="row justify-between items-start q-my-xs">
                   <div class="promo-muted">{{ $t('booking.field.time') }}</div>
@@ -442,8 +540,10 @@ import {formatClock, formatDateTime} from "@/utils/time-format.js";
 import {TimezoneOptEnum} from "@/constants/enums/common.js";
 import {
   portalBookingCreate,
+  portalBookingCreateParty,
   portalBookingSkills,
   portalBookingSlotsBatch,
+  portalBookingSlotsParty,
   portalBookingStores
 } from "@/api/portal-booking.js";
 import {portalBookingLogin, portalMe, portalPhoneSendCode} from "@/api/portal-auth.js";
@@ -463,6 +563,8 @@ const REMARK_MAX = 200
 // 验证码重发冷却（秒）；后端另有限流（邮箱 10 次/天，短信同号码 5 次/时）
 const RESEND_COOLDOWN = 60
 const TOTAL_STEP = 2
+// 团体预约一次最多几个人（与后端 customer.portal.party-max-members 对齐）
+const PARTY_MAX = 4
 // 可约时间是限流最紧的接口（单 IP 30 次/时），改门店/项目后延迟合并再请求，避免连点多选打满额度
 const SLOT_RELOAD_DELAY = 600
 
@@ -505,7 +607,7 @@ const props = defineProps({
 const step = ref(1)
 const submitting = ref(false)
 const created = ref(false)
-const createdInfo = ref({storeName: '', skillNames: '', slot: ''})
+const createdInfo = ref({storeName: '', skillNames: '', slot: '', people: 1})
 
 const storeList = ref([])
 const skillList = ref([])
@@ -529,6 +631,11 @@ const selectedSkillIds = ref([])
 let serviceSelectedTracked = false
 const selectedDate = ref("")
 const selectedSlot = ref("")
+// 团体预约（2026-11-04）：一共几位；第 2 位起每位 {same: 与第 1 位相同的项目, skillIds: 自己的项目（same 为 false 时用）}
+const partySize = ref(1)
+const guests = ref([])
+// 团体可约时间里让整组无解的成员级问题（[{memberIndex, code}]），有就提示是第几位
+const slotIssues = ref([])
 
 const inputName = ref("")
 const inputEmail = ref("")
@@ -578,8 +685,13 @@ const needsPhoneCode = computed(() =>
 
 const showSelect = computed(() => props.singleStep || step.value === 1)
 const showConfirm = computed(() => props.singleStep || step.value === 2)
-// 选时间的前置条件：门店 + 至少一个项目（偏好员工一步已下线）
-const timeReady = computed(() => !!selectedStoreId.value && selectedSkillIds.value.length > 0)
+const isParty = computed(() => partySize.value > 1)
+// 每一位的项目（第 1 位就是上面的 selectedSkillIds），下单与查可约时间都按它
+const memberSkillLists = computed(() => [selectedSkillIds.value,
+  ...guests.value.map(g => g.same ? selectedSkillIds.value : g.skillIds)])
+// 选时间的前置条件：门店 + 每一位都至少一个项目（偏好员工一步已下线）
+const timeReady = computed(() => !!selectedStoreId.value && selectedSkillIds.value.length > 0
+    && guests.value.every(g => g.same || g.skillIds.length > 0))
 
 const slotList = computed(() => selectedDate.value ? (slotsByDate.value[selectedDate.value] || []) : [])
 const noSlotInWindow = computed(() => {
@@ -599,6 +711,28 @@ const chosenSkills = computed(() => [...mainSkillList.value, ...addonSkillList.v
     .filter(sk => selectedSkillIds.value.includes(sk.id)))
 const totalMinutes = computed(() => chosenSkills.value.reduce((sum, sk) => sum + (sk.consumeMinutes || 0), 0))
 const selectedSkillNames = computed(() => chosenSkills.value.map(sk => sk.name).join(', '))
+
+// 某一位的项目（按「主服务在前、附加在后」）、名称串、时长合计
+function skillsOf(ids) {
+  return [...mainSkillList.value, ...addonSkillList.value].filter(sk => ids.includes(sk.id))
+}
+
+function namesOf(ids) {
+  return skillsOf(ids).map(sk => sk.name).join(', ')
+}
+
+function minutesOf(ids) {
+  return skillsOf(ids).reduce((sum, sk) => sum + (sk.consumeMinutes || 0), 0)
+}
+
+// 整组预估总价（单人时就是 totalAmount）：仅累加已配置金额的项目
+const groupTotalAmount = computed(() => {
+  const priced = memberSkillLists.value.flatMap(ids => skillsOf(ids)).filter(sk => sk.serviceAmount != null)
+  if (!priced.length) {
+    return null
+  }
+  return Math.round(priced.reduce((acc, sk) => acc + Number(sk.serviceAmount), 0) * 100) / 100
+})
 
 // 预估总价：仅累加已配置金额的项目；两位小数取整规避浮点误差
 const totalAmount = computed(() => {
@@ -627,7 +761,7 @@ watch(inputPhone, (val) => {
 })
 
 // 门店/项目变化 → 已拉的可约时间失效；满足前置条件则延迟合并后重拉
-watch([selectedStoreId, selectedSkillIds, timeReady], scheduleSlotReload, {deep: true})
+watch([selectedStoreId, selectedSkillIds, timeReady, partySize, guests], scheduleSlotReload, {deep: true})
 
 onMounted(() => {
   loadStores()
@@ -763,6 +897,8 @@ function pickStoreByPhone(phone) {
 function applyStore(s) {
   selectedStoreId.value = s.id
   selectedSkillIds.value = []
+  // 各店项目不同：同行人保留人数，项目回到「与第 1 位相同」
+  guests.value = guests.value.map(() => ({same: true, skillIds: []}))
   selectedDate.value = ""
   skillList.value = []
   serviceSelectedTracked = false
@@ -830,6 +966,7 @@ function loadSkills() {
  */
 function scheduleSlotReload() {
   slotsByDate.value = {}
+  slotIssues.value = []
   selectedSlot.value = ""
   if (slotTimer) {
     clearTimeout(slotTimer)
@@ -847,10 +984,18 @@ function loadSlotsBatch() {
   slotTimer = null
   const seq = ++slotReqSeq
   loadingSlots.value = true
-  portalBookingSlotsBatch({
-    storeId: selectedStoreId.value,
-    skillIdList: selectedSkillIds.value,
-  }).then(res => {
+  // 单人照旧走 /slots/batch；两位及以上走 /slots/party（整组同时开始的时刻），两者返回的每天结构相同
+  const party = isParty.value
+  const request = party
+      ? portalBookingSlotsParty({
+        storeId: selectedStoreId.value,
+        memberList: memberSkillLists.value.map(ids => ({skillIdList: ids})),
+      })
+      : portalBookingSlotsBatch({
+        storeId: selectedStoreId.value,
+        skillIdList: selectedSkillIds.value,
+      })
+  request.then(res => {
     if (seq !== slotReqSeq) {
       return
     }
@@ -858,8 +1003,10 @@ function loadSlotsBatch() {
     if (!res || !res.data || !res.data.data) {
       return
     }
+    const days = party ? (res.data.data.dayList || []) : res.data.data
+    slotIssues.value = party ? (res.data.data.memberIssueList || []) : []
     const map = {}
-    for (const day of res.data.data) {
+    for (const day of days) {
       map[day.dateStr] = day.slotList || []
     }
     slotsByDate.value = map
@@ -944,6 +1091,57 @@ function toggleSkill(id) {
   if (wasEmpty && selectedSkillIds.value.length) {
     scrollTo(timeSecEl.value)
   }
+}
+
+/**
+ * 团体人数加减（1 ~ PARTY_MAX）：新加的一位默认与第 1 位相同的项目。
+ */
+function changePartySize(delta) {
+  const next = Math.min(PARTY_MAX, Math.max(1, partySize.value + delta))
+  if (next === partySize.value) {
+    return
+  }
+  partySize.value = next
+  while (guests.value.length < next - 1) {
+    guests.value.push({same: true, skillIds: []})
+  }
+  guests.value.splice(next - 1)
+  if (next > 1) {
+    trackCustom('PartySizeChanged', {size: next})
+  }
+}
+
+// 关掉「与第 1 位相同」时从第 1 位当前的项目起步，客户只需在此基础上改
+function onGuestSameChange(g) {
+  if (!g.same && !g.skillIds.length) {
+    g.skillIds = [...selectedSkillIds.value]
+  }
+}
+
+// 同行人可选的附加项目：他自己已选的主服务能搭配的那些（规则同第 1 位）
+function guestAddons(g) {
+  return addonSkillList.value.filter(sk => (sk.addonMainSkillIds || []).some(id => g.skillIds.includes(id)))
+}
+
+// 同行人选项目：口径同 toggleSkill——取消主服务时靠它才能选的附加项目一起移除
+function toggleGuestSkill(g, id) {
+  const idx = g.skillIds.indexOf(id)
+  const skill = skillList.value.find(sk => sk.id === id)
+  if (idx >= 0) {
+    g.skillIds.splice(idx, 1)
+    const orphans = addonSkillList.value.filter(sk => g.skillIds.includes(sk.id)
+        && !(sk.addonMainSkillIds || []).some(mid => g.skillIds.includes(mid)))
+    if (orphans.length) {
+      orphans.forEach(sk => g.skillIds.splice(g.skillIds.indexOf(sk.id), 1))
+      notifyTopWarning(t('booking.addon_removed', {names: orphans.map(sk => sk.name).join(', ')}))
+    }
+    return
+  }
+  if (skill && skill.addonOnly && !(skill.addonMainSkillIds || []).some(mid => g.skillIds.includes(mid))) {
+    notifyTopWarning(t('booking.addon_need_main', {name: skill.name, main: addonMainNames(skill)}))
+    return
+  }
+  g.skillIds.push(id)
 }
 
 /**
@@ -1043,6 +1241,23 @@ function checkSelections() {
   if (orphan) {
     notifyTopWarning(t('booking.addon_need_main', {name: orphan.name, main: addonMainNames(orphan)}))
     return false
+  }
+  // 团体：自己选项目的同行人至少一个项目，附加项目也得有搭配的主服务
+  for (let i = 0; i < guests.value.length; i++) {
+    const g = guests.value[i]
+    if (g.same) {
+      continue
+    }
+    if (!g.skillIds.length) {
+      notifyTopWarning(t('booking.party.pick_project', {n: i + 2}))
+      return false
+    }
+    const orphanGuest = addonSkillList.value.find(sk => g.skillIds.includes(sk.id)
+        && !(sk.addonMainSkillIds || []).some(mid => g.skillIds.includes(mid)))
+    if (orphanGuest) {
+      notifyTopWarning(t('booking.addon_need_main', {name: orphanGuest.name, main: addonMainNames(orphanGuest)}))
+      return false
+    }
   }
   if (!selectedSlot.value) {
     notifyTopWarning(t('booking.pick_time'))
@@ -1151,10 +1366,10 @@ async function submitBooking() {
       globalState.updateLoginToken(token)
       globalState.updateUserData(authRes.data.data)
     }
-    const createRes = await portalBookingCreate({
+    const party = isParty.value
+    const body = {
       storeId: selectedStoreId.value,
       bookTimeStr: selectedSlot.value,
-      skillIdList: selectedSkillIds.value,
       // 不再上送 preferredStaffId：客户端已不让顾客指定员工，等同「不指定」，由系统自动分配（后端入参保留）
       phone: '1' + inputPhone.value,
       // 本单客户姓名（前端必填）：同时同步为账户昵称，下次预填。会话有效直接下单的客户不走 bookingLogin，只能靠这里
@@ -1171,7 +1386,11 @@ async function submitBooking() {
       remark: inputRemark.value || null,
       // 来源 / 推荐码按下单所在的页面：Google 落地页记 Google、不带推荐码，其余按落地参数
       ...bookingAttributionParams(props.channel),
-    })
+    }
+    // 单人照旧走 /create；两位及以上走 /create/party（同一时间开始、每人一张单、全成或全不成；备注抄到每一张）
+    const createRes = party
+        ? await portalBookingCreateParty({...body, memberList: memberSkillLists.value.map(ids => ({skillIdList: ids}))})
+        : await portalBookingCreate({...body, skillIdList: selectedSkillIds.value})
     if (!createRes) {
       // 会话在提交途中失效（拦截器已清掉登录态，表单会自动露出邮箱/验证码）：给一句人话，别让客户对着静默失败发呆
       if (wasLoggedIn && !isLoggedIn.value) {
@@ -1182,14 +1401,18 @@ async function submitBooking() {
     createdInfo.value = {
       mail: inputEmail.value || '',
       storeName: selectedStoreName.value,
-      skillNames: selectedSkillNames.value,
+      // 团体按位一行：「第 1 位: A, B」
+      skillNames: party
+          ? memberSkillLists.value.map((ids, i) => `${t('booking.party.person', {n: i + 1})}: ${namesOf(ids)}`).join('\n')
+          : selectedSkillNames.value,
       slot: selectedSlot.value,
+      people: partySize.value,
     }
     created.value = true
     notifyTopPositive(t('booking.create_success'))
     // Meta 把 Schedule 当转化事件看：不带 value/currency 就没法算广告 ROI，
     // 事件管理工具会一直报「缺少货币字段」。金额取本次所选项目合计（门户可选项目均已保证配价>0）
-    track('Schedule', {value: Number(totalAmount.value) || 0, currency: 'USD'})
+    track('Schedule', {value: Number(groupTotalAmount.value) || 0, currency: 'USD'})
     jumpToSelf()
   } finally {
     submitting.value = false
@@ -1201,6 +1424,9 @@ function resetAll() {
   step.value = 1
   selectedStoreId.value = ""
   selectedSkillIds.value = []
+  partySize.value = 1
+  guests.value = []
+  slotIssues.value = []
   selectedDate.value = ""
   selectedSlot.value = ""
   skillList.value = []
@@ -1387,6 +1613,55 @@ $promo-red: #cc2e2d;
 
 // ===== 附加项目 =====
 .pbook-addon-title {
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+// 团体预约：人数加减 + 每位同行人的项目
+.pbook-party {
+  border: 1px solid #e6e8ec;
+  border-radius: .8rem;
+  padding: .75rem .9rem;
+  background: #fafafa;
+}
+
+.pbook-party-title {
+  font-weight: 700;
+  font-size: .92rem;
+}
+
+.pbook-party-btn {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #e6e8ec;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: .4;
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    border-color: rgba(204, 46, 45, .55);
+  }
+}
+
+.pbook-party-count {
+  min-width: 2.2rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.pbook-guest {
+  border-top: 1px dashed #e6e8ec;
+  padding-top: .6rem;
+}
+
+.pbook-guest-title {
   font-weight: 600;
   font-size: .9rem;
 }

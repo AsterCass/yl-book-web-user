@@ -357,6 +357,19 @@
     "success_hint_no_email": "See you soon! No email on file for this booking — to cancel, please call the store.",
     "view_my_bookings": "View my bookings",
     "book_another": "Make another booking",
+    "party": {
+      "title": "How many people?",
+      "hint": "Up to {max} people. Everyone starts at the same time, with one appointment each. If anyone can't be booked, none are.",
+      "person": "Person {n}",
+      "person_project": "Services for person 1",
+      "same_as_first": "Same as person 1",
+      "people": "People",
+      "recap_title": "{people} people starting together",
+      "time_note": "The times below are when everyone can start together.",
+      "no_slot_range": "No time in the next {days} days lets everyone start together. Try fewer people or different services.",
+      "issue": "The services chosen for person {n} can't be booked right now. Please choose another service.",
+      "pick_project": "Please choose at least one service for person {n}"
+    },
     "session_expired": "Your sign-in expired. Please verify your email and phone below, then tap Book now again.",
     "step": {
       "select": "Choose your appointment",
