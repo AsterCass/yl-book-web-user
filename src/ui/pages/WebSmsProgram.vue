@@ -41,6 +41,8 @@
       <div class="sms-muted">{{ $t('smsProgram.optin_steps') }}</div>
       <!-- 电话预约：通话里由 AI 告知会发预约短信，口头同意，没有勾选框 -->
       <div class="sms-muted q-mt-sm">{{ $t('smsProgram.optin_phone') }}</div>
+      <!-- 门店一体机（2026-11-05）：键盘下方的同意文案逐字引用，须与 yl-reception-ai kiosk 上显示的一致 -->
+      <div class="sms-muted q-mt-sm">{{ $t('smsProgram.optin_kiosk') }}</div>
 
       <div class="sms-quote q-px-md q-py-sm q-mt-sm">
         <div class="sms-quote-label">{{ $t('smsProgram.quote_transactional') }}</div>
