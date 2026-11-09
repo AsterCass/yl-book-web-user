@@ -17,6 +17,16 @@
         <div class="promo-muted q-mt-sm">
           {{ createdInfo.mail ? $t('booking.success_hint') : $t('booking.success_hint_no_email') }}
         </div>
+        <!-- 同预约表单顶部的两条说明（2026-11-09）：实时可约 / 有特殊情况门店来电；取消与未到店规则。放在预约摘要上方，
+             卡片整体居中，这两段左对齐 -->
+        <div class="pbook-step-note row no-wrap items-start text-left">
+          <q-icon name="fa-solid fa-circle-info" class="pbook-step-note-icon"/>
+          <span>{{ $t('booking.step.note') }}</span>
+        </div>
+        <div class="pbook-step-note pbook-step-note-next row no-wrap items-start text-left">
+          <q-icon name="fa-solid fa-calendar-xmark" class="pbook-step-note-icon"/>
+          <span>{{ $t('booking.step.policy') }}</span>
+        </div>
         <div class="pbook-summary q-mt-lg full-width">
           <div class="row justify-between q-my-xs">
             <div class="promo-muted">{{ $t('booking.field.store') }}</div>
@@ -65,12 +75,23 @@
             <q-icon name="fa-solid fa-circle-info" class="pbook-step-note-icon"/>
             <span>{{ $t('booking.step.note') }}</span>
           </div>
+          <!-- 取消与未到店规则（2026-11-09）：提前 1 小时取消、迟到 15 分钟未联系会被取消、有未到店记录的再约可能先收预付款 -->
+          <div class="pbook-step-note pbook-step-note-next row no-wrap items-start">
+            <q-icon name="fa-solid fa-calendar-xmark" class="pbook-step-note-icon"/>
+            <span>{{ $t('booking.step.policy') }}</span>
+          </div>
         </div>
-        <!-- 单步模式（/sms 页）没有步骤标题，这句说明照样放在卡片最上面 -->
-        <div v-else class="pbook-step-note row no-wrap items-start q-mb-md">
-          <q-icon name="fa-solid fa-circle-info" class="pbook-step-note-icon"/>
-          <span>{{ $t('booking.step.note') }}</span>
-        </div>
+        <!-- 单步模式（/sms 页）没有步骤标题，这两句说明照样放在卡片最上面 -->
+        <template v-else>
+          <div class="pbook-step-note row no-wrap items-start">
+            <q-icon name="fa-solid fa-circle-info" class="pbook-step-note-icon"/>
+            <span>{{ $t('booking.step.note') }}</span>
+          </div>
+          <div class="pbook-step-note pbook-step-note-next row no-wrap items-start q-mb-md">
+            <q-icon name="fa-solid fa-calendar-xmark" class="pbook-step-note-icon"/>
+            <span>{{ $t('booking.step.policy') }}</span>
+          </div>
+        </template>
 
         <!-- no-wrap 不能省：Quasar 的 .column 默认 flex-wrap: wrap，纵向 flex 一旦允许换行，每一列的宽度就由列里最宽的内容决定、
              不再受容器约束——项目名不换行（.pbook-skill-name），手机上一个长名字（如 Salt Detox Foot Therapy and Back Massage）
@@ -1980,6 +2001,11 @@ $promo-red: #cc2e2d;
   font-size: .85rem;
   font-weight: 600;
   line-height: 1.55;
+}
+
+// 第二条（取消与未到店规则）紧跟第一条，间距比标题到第一条小一点，看得出是同一组说明
+.pbook-step-note-next {
+  margin-top: .5rem;
 }
 
 .pbook-step-note-icon {
