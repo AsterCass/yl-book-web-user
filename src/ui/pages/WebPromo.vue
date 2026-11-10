@@ -13,8 +13,10 @@
       <q-space/>
     </div>
 
-    <!-- Hero：整幅实景 + 站点图标 + 品牌名（i18n） + 预约按钮（参照其样式但更醒目） -->
-    <div class="promo-hero column items-center justify-center text-center q-px-md">
+    <!-- Hero：整幅实景 + 站点图标 + 品牌名（i18n） + 预约按钮（参照其样式但更醒目）。
+         带 ?store= 且该店配了 hero 时换成该店的底图（行内样式压过样式表里的默认图） -->
+    <div class="promo-hero column items-center justify-center text-center q-px-md"
+         :style="storeHero ? { backgroundImage: `url('${storeHero}')` } : null">
       <div class="row items-center justify-center no-wrap">
         <img src="/favicon.svg" alt="" class="promo-hero-icon q-mr-md"/>
         <!-- 首页大标题单独用一个键：main_login_title 还挂在页签标题、取消预约页、
@@ -281,13 +283,14 @@ onBeforeUnmount(() => {
 
 const route = useRoute()
 
-// 门店专属内容（?store=<门店 id>，首页与 /google 都认，不分大小写）：只换 About Us 的图和正文、加「门店实景」模块；
+// 门店专属内容（?store=<门店 id>，首页与 /google 都认，不分大小写）：只换最上方底图、About Us 的图和正文，加「门店实景」模块；
 // 不带 / 不认识 / 该店没配 = 默认内容。不影响预约区：不自动选门店（两家店离得近，替顾客选容易约错）
 const pageStore = computed(() => {
   const raw = Array.isArray(route.query.store) ? route.query.store[0] : route.query.store
   const id = String(raw || '').trim().toLowerCase()
   return id ? HOME_STORES.find(s => s.id === id) || null : null
 })
+const storeHero = computed(() => pageStore.value && pageStore.value.hero ? pageStore.value.hero : null)
 const storeAbout = computed(() => pageStore.value && pageStore.value.about ? pageStore.value.about : null)
 const storeGallery = computed(() => pageStore.value && pageStore.value.gallery ? pageStore.value.gallery : [])
 

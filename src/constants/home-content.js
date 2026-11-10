@@ -7,7 +7,9 @@
 // （见 utils/store-geo.js）。不填 = 该店不参与自动选择，其余功能不受影响。
 //
 // 门店专属页（2026-11-10）：首页与 /google 带 ?store=<门店 id>（如 ?store=sanjose，不分大小写）时，按该店的
-// about / gallery 展示；不带参数、id 不认识、或该店没配对应项，一律用默认内容（即不带参数时的页面）。
+// hero / about / gallery 展示；不带参数、id 不认识、或该店没配对应项，一律用默认内容（即不带参数时的页面）。
+//   - hero：页面最上方大图（Hero 底图）。全屏背景、按 cover 铺满（裁掉超出部分），上面压着半透明暗色遮罩。
+//     不配 = 默认的 /img/promo/promo-hero.webp。宽度尽量不低于 1600，压成 webp。
 //   - about：About Us 左边的图 + 正文（subtitle 可选，paragraphs 每段 {zh, en}）。桌面端图片与右侧文字等高
 //     （比例对不上时居中裁掉两侧），手机上按原始比例。标题「About Us」不随门店变。不配 = 沿用默认的图和三段默认文案。
 //   - gallery：「门店实景」模块的图片列表，放 About Us 正下方、单独深色底，一行排开，超出内容区宽度就在内容区里
@@ -79,7 +81,8 @@ export const HOME_STORES = [
                 },
             ],
         },
-        gallery: [1, 2, 3, 4, 5, 6, 7].map(n => `/img/promo/stores/sanjose/${n}.jpg`),
+        hero: '/img/promo/stores/sanjose/main.webp',
+        gallery: [1, 2, 3, 4, 5, 6].map(n => `/img/promo/stores/sanjose/${n}.jpg`),
     },
 ]
 
