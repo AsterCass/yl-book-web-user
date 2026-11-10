@@ -37,18 +37,36 @@
       </button>
     </div>
 
-    <!-- About Us -->
+    <!-- About Us：带 ?store= 且该店配了 about 时换成该店的图和正文，否则是默认内容；标题不变。
+         门店图在桌面端（两栏并排）与右侧文字等高：高度跟文字走，宽度占满左栏，比例对不上时居中裁掉两侧；
+         手机上上下排，按原始比例显示 -->
     <div class="promo-block promo-block-alt">
-      <div class="promo-container row items-center">
-        <div class="col-12 col-md-5 q-pa-md">
-          <q-img src="/img/promo/promo-about.jpg" :ratio="1" fit="cover" class="promo-photo"/>
+      <div class="promo-container row" :class="storeAbout ? 'promo-about-store' : 'items-center'">
+        <div class="col-12 col-md-5 q-pa-md" :class="{ 'promo-about-store-media': storeAbout }">
+          <img v-if="storeAbout" :src="storeAbout.image" alt="" class="promo-photo promo-about-store-img"/>
+          <q-img v-else src="/img/promo/promo-about.jpg" :ratio="1" fit="cover" class="promo-photo"/>
         </div>
         <div class="col-12 col-md-7 q-pa-md">
           <h2 class="promo-h2">{{ $t('promo.about_title') }}</h2>
-          <p class="promo-paragraph">{{ $t('promo.about.p1') }}</p>
-          <p class="promo-paragraph">{{ $t('promo.about.p2') }}</p>
-          <p class="promo-paragraph">{{ $t('promo.about.p3') }}</p>
+          <template v-if="storeAbout">
+            <p v-if="storeAbout.subtitle" class="promo-about-subtitle">{{ lv(storeAbout.subtitle) }}</p>
+            <p v-for="(p, i) in storeAbout.paragraphs" :key="i" class="promo-paragraph">{{ lv(p) }}</p>
+          </template>
+          <template v-else>
+            <p class="promo-paragraph">{{ $t('promo.about.p1') }}</p>
+            <p class="promo-paragraph">{{ $t('promo.about.p2') }}</p>
+            <p class="promo-paragraph">{{ $t('promo.about.p3') }}</p>
+          </template>
         </div>
+      </div>
+    </div>
+
+    <!-- 门店实景：只在带 ?store= 且该店配了 gallery 时出现；单独一块深色底，与上下两块区分开。
+         图片条只占内容区宽度（与上下模块对齐），放得下就居中静止，放不下就在内容区里自动循环滚动 -->
+    <div v-if="storeGallery.length" class="promo-block promo-gallery-block">
+      <div class="promo-container">
+        <h2 class="promo-h2 text-center">{{ $t('promo.gallery_title') }}</h2>
+        <promo-store-gallery :images="storeGallery"/>
       </div>
     </div>
 
@@ -217,7 +235,9 @@ import {switchLanguage} from "@/utils/global-tools.js";
 import {openLink} from "@/utils/base-tools.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
 import {i18n} from "@/i18n/index.js";
+import {useRoute} from "vue-router";
 import WebPromoBooking from "@/ui/views/booking/WebPromoBooking.vue";
+import PromoStoreGallery from "@/ui/components/PromoStoreGallery.vue";
 import {HOME_SERVICE_GROUPS, HOME_STORES, HOME_TESTIMONIALS} from "@/constants/home-content.js";
 
 const props = defineProps({
@@ -258,6 +278,18 @@ onBeforeUnmount(() => {
     bookingObserver = null
   }
 })
+
+const route = useRoute()
+
+// 门店专属内容（?store=<门店 id>，首页与 /google 都认，不分大小写）：只换 About Us 的图和正文、加「门店实景」模块；
+// 不带 / 不认识 / 该店没配 = 默认内容。不影响预约区：不自动选门店（两家店离得近，替顾客选容易约错）
+const pageStore = computed(() => {
+  const raw = Array.isArray(route.query.store) ? route.query.store[0] : route.query.store
+  const id = String(raw || '').trim().toLowerCase()
+  return id ? HOME_STORES.find(s => s.id === id) || null : null
+})
+const storeAbout = computed(() => pageStore.value && pageStore.value.about ? pageStore.value.about : null)
+const storeGallery = computed(() => pageStore.value && pageStore.value.gallery ? pageStore.value.gallery : [])
 
 const storeList = HOME_STORES
 const storeCardCol = storeList.length >= 3 ? 'col-sm-6 col-md-4' : 'col-md-6'
@@ -502,6 +534,60 @@ $promo-red: #cc2e2d;
 .promo-photo {
   border-radius: 1rem;
   box-shadow: 0 10px 34px rgba(0, 0, 0, .16);
+}
+
+// 门店专属 About 图：手机上（上下排）按原始比例铺满宽度
+.promo-about-store-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.promo-about-subtitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: .9rem !important;
+}
+
+// 文字最后一段不留下边距：图与文字等高时，图的下沿对齐最后一行字，而不是对齐一段空白
+.promo-about-store .promo-paragraph:last-child {
+  margin-bottom: 0 !important;
+}
+
+// 桌面端两栏并排（col-md 起，≥1024px）：图片脱离文档流，左栏高度只由整行（= 右侧文字）决定，
+// 图片铺满左栏内容区（扣掉 q-pa-md 的 16px）→ 高度与文字一致；比例对不上时 cover 居中裁两侧
+@media (min-width: 1024px) {
+  .promo-about-store {
+    align-items: stretch;
+  }
+
+  .promo-about-store-media {
+    position: relative;
+
+    .promo-about-store-img {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: calc(100% - 32px);
+      height: calc(100% - 32px);
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+}
+
+// 门店实景：单独一块深色底，与上面的 About Us（浅灰）、下面的 Our Locations（白）都区分开，
+// 不改其余各块的底色交替。
+// 宽度钉死为页宽：.promo-page 是 Quasar 的 column（flex 换行），不钉的话这一块会被图片条撑到图片条那么宽，
+// 整页出现横向滚动，图片条也量不出「放不下」、不会滚动
+.promo-gallery-block {
+  width: 100%;
+  min-width: 0;
+  background-color: #26262a;
+
+  .promo-h2 {
+    color: #fff;
+  }
 }
 
 // ===== 门店卡片 =====

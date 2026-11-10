@@ -5,6 +5,15 @@
 //
 // ⚠️ 新增门店记得补 lat/lng：预约区「点 Book now 时按定位自动选最近门店」靠它算距离
 // （见 utils/store-geo.js）。不填 = 该店不参与自动选择，其余功能不受影响。
+//
+// 门店专属页（2026-11-10）：首页与 /google 带 ?store=<门店 id>（如 ?store=sanjose，不分大小写）时，按该店的
+// about / gallery 展示；不带参数、id 不认识、或该店没配对应项，一律用默认内容（即不带参数时的页面）。
+//   - about：About Us 左边的图 + 正文（subtitle 可选，paragraphs 每段 {zh, en}）。桌面端图片与右侧文字等高
+//     （比例对不上时居中裁掉两侧），手机上按原始比例。标题「About Us」不随门店变。不配 = 沿用默认的图和三段默认文案。
+//   - gallery：「门店实景」模块的图片列表，放 About Us 正下方、单独深色底，一行排开，超出内容区宽度就在内容区里
+//     自动循环滚动。空 / 不配 = 不显示这个模块。
+//   图片放 public/img/promo/stores/<门店 id>/，上传前压缩（About 图宽 1200、实景图宽 960 足够）。
+//   这个参数只影响展示：预约区不会因此自动选中该店（两家店离得近，替顾客选容易约错）。
 
 // 对外品牌名（须与 Google OAuth 同意屏幕配置的应用名称完全一致，勿加后缀；
 // 各语言页面均原样展示该拉丁名，品牌审核按此核对）
@@ -45,6 +54,32 @@ export const HOME_STORES = [
         phone: '(408) 444-9183',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 AM – 10:00 PM'},
         notes: {zh: '每周二会员日：按摩类服务立减 30%', en: 'Member Day every Tuesday: 30% off body massage services'},
+        about: {
+            image: '/img/promo/stores/sanjose/0.jpg',
+            subtitle: {zh: 'Massage Zen (ZYY Spa) · 圣何塞', en: 'Massage Zen (ZYY Spa) · San Jose'},
+            paragraphs: [
+                {
+                    zh: '郑远元（ZYY）是来自中国的养生品牌，在全球已有九千多家门店。我们的圣何塞门店 Massage Zen (ZYY Spa) 位于 '
+                        + 'Almaden Plaza，靠近 Costco，是一个安静、干净的放松空间，设有私密房间和双人房。',
+                    en: 'ZYY Spa (Zhengyuanyuan) is a wellness brand from China with more than 9,000 stores worldwide. '
+                        + 'Our San Jose studio, Massage Zen (ZYY Spa), brings that craft to Almaden Plaza, near Costco: '
+                        + 'a calm, clean place to unwind, with private rooms and couples rooms.',
+                },
+                {
+                    zh: '店里经验丰富的理疗师提供热石精油按摩、深层按摩、颈肩按摩、踩背按摩、指压按摩和磨砂按摩。我们还提供头疗，'
+                        + '每位客人都免费做头皮检测；美容项目包括水氧深层清洁、LED 光疗、纳米胶原导入、24K 黄金焕颜和干细胞焕肤等。'
+                        + '我们每天 10:00–22:00 营业，地址：5353 Almaden Expy, A-120, San Jose, CA 95118。'
+                        + '节假日营业时间不固定，请致电 (408) 444-9183 确认。会员办理请咨询前台。',
+                    en: 'Our experienced therapists offer hot stone and essential oil massage, deep tissue, neck and shoulder, '
+                        + 'walk-on-back, shiatsu and sugar scrub body treatments. We also offer a relaxing head spa with a free '
+                        + 'scalp analysis for every guest, and professional facials including hydrafacial deep cleansing, LED '
+                        + 'light therapy, nano collagen infusion, 24K gold and stem cell regeneration. We are open every day '
+                        + 'from 10 AM to 10 PM at 5353 Almaden Expy, A-120, San Jose, CA 95118. Holiday hours vary, so please '
+                        + 'call (408) 444-9183 to confirm. Ask our front desk about our membership program.',
+                },
+            ],
+        },
+        gallery: [1, 2, 3, 4, 5, 6, 7].map(n => `/img/promo/stores/sanjose/${n}.jpg`),
     },
 ]
 
@@ -84,6 +119,30 @@ export const HOME_TESTIMONIALS = [
             en: 'I put my significant other on to this place about a month after they opened and she has been going every week ever since…her massages are full body and relaxing according to her. Great place super satisfied!',
         },
         author: 'Patrick P.',
+        stars: 5,
+    },
+    // t5 / t6：圣何塞店 Google 商家页的评价（2026-11-10），点名的 Lulu、Eva 是该店技师；按要求所有页面都展示
+    {
+        id: 't5',
+        text: {
+            zh: 'Lulu 的手法太棒了！她非常亲切、专业，很清楚该怎么处理我不舒服的部位。做完整个人彻底放松、神清气爽，'
+                + '下次一定还约她！',
+            en: "Lulu did an incredible job! She was very kind, professional, and knew exactly how to work on my "
+                + "problem areas. I left feeling completely relaxed and refreshed. I'll definitely be booking with her again!",
+        },
+        author: 'Sijin W.',
+        stars: 5,
+    },
+    {
+        id: 't6',
+        text: {
+            zh: '今天第一次来，Eva 给我做的按摩力道十足。我约的是颈部 / 头皮 / 上半身按摩，体验非常好。'
+                + '员工很友善，环境干净又温馨。',
+            en: 'Came here for the first time today and got a really strong massage from Eva. I signed up for the '
+                + 'neck / scalp / upper body massage and loved the experience. Friendly staff and clean and welcoming '
+                + 'environment too.',
+        },
+        author: 'Maitreyee',
         stars: 5,
     },
 ]
