@@ -12,6 +12,20 @@
         } catch (e) {}
         if (optedOut) return;
 
+        // ?ads=no（给已有渠道的链接）：本标签页里 GA 与 Meta Pixel 都不加载；记在 sessionStorage，刷新 / 站内跳转后照样不加载。
+        // 规则与 src/utils/pixel.js 的 isNoAdsVisit 一致
+        var adsParam = new URLSearchParams(location.search).get('ads');
+        var noAds = (adsParam || '').trim().toLowerCase() === 'no';
+        try {
+          if (adsParam !== null) {
+            if (noAds) sessionStorage.setItem('zyy_ads', 'no');
+            else sessionStorage.removeItem('zyy_ads');
+          } else {
+            noAds = sessionStorage.getItem('zyy_ads') === 'no';
+          }
+        } catch (e) {}
+        if (noAds) return;
+
         var tag = document.createElement('script');
         tag.async = true;
         tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;

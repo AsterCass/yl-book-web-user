@@ -48,9 +48,39 @@ export function setAdOptOut(optOut) {
     }
 }
 
-/** 动态注入 Meta Pixel 基础代码。已选择退出（含 GPC）则整段脚本都不加载 */
+// ?ads=no 的本标签页标记（与 index.html 里 GA 那段共用同一个 key）
+const NO_ADS_KEY = 'zyy_ads'
+
+/**
+ * 这次访问是否来自「已有渠道」的链接（2026-11-11）：网址带 ?ads=no（不分大小写）时，本标签页里 Meta Pixel 与 GA 都不加载。
+ * 记在 sessionStorage：刷新、站内跳转后网址里没了参数也照样不加载；网址明确带了别的 ads 值就清掉标记。
+ * 规则与 index.html 里 GA 那段一致。不是用户的隐私选择（那是 isAdOptedOut），只是按链接来源不做衡量
+ */
+export function isNoAdsVisit() {
+    if (typeof window === 'undefined') {
+        return false
+    }
+    const param = new URLSearchParams(window.location.search).get('ads')
+    const no = (param || '').trim().toLowerCase() === 'no'
+    try {
+        if (param !== null) {
+            if (no) {
+                sessionStorage.setItem(NO_ADS_KEY, 'no')
+            } else {
+                sessionStorage.removeItem(NO_ADS_KEY)
+            }
+            return no
+        }
+        return sessionStorage.getItem(NO_ADS_KEY) === 'no'
+    } catch (e) {
+        // 隐私模式下 sessionStorage 可能不可用：只看当前网址
+        return no
+    }
+}
+
+/** 动态注入 Meta Pixel 基础代码。已选择退出（含 GPC），或这是 ?ads=no 的访问，则整段脚本都不加载 */
 export function initPixel() {
-    if (!PIXEL_ID || loaded || typeof window === 'undefined' || isAdOptedOut()) return
+    if (!PIXEL_ID || loaded || typeof window === 'undefined' || isAdOptedOut() || isNoAdsVisit()) return
 
     /* eslint-disable */
     !function (f, b, e, v, n, t, s) {
