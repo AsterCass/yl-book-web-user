@@ -12,6 +12,8 @@
         } catch (e) {}
         if (optedOut) return;
 
+        // ?ads=no 暂不生效（2026-11-11）：恢复时去掉下面这段的注释，并同步恢复 src/utils/pixel.js 的 initPixel 与 landing-params.js
+        /*
         var adsParam = new URLSearchParams(location.search).get('ads');
         var noAds = (adsParam || '').trim().toLowerCase() === 'no';
         try {
@@ -23,6 +25,7 @@
           }
         } catch (e) {}
         if (noAds) return;
+        */
 
         var zyyStore = (new URLSearchParams(location.search).get('store') || '').trim();
         try {
