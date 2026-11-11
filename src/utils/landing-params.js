@@ -1,4 +1,5 @@
 import {useGlobalStateStore} from "@/utils/global-state.js";
+import {isNoAdsVisit} from "@/utils/pixel.js";
 
 // 站外投放落地参数：?platform=xx&ref=xx
 // platform -> 注册来源 sourceCode，ref -> 推荐码 referralCode，注册/下单时上报。
@@ -25,6 +26,48 @@ const PLATFORM_SOURCE_CODE = {
 // 有意不放进 PLATFORM_SOURCE_CODE：?platform=google 会让「页面上有半价活动、单子却记成 Google」，
 // Google 来源只能由 /google 页面本身决定（见 bookingAttributionParams）
 export const GOOGLE_SOURCE_CODE = 5
+
+// Google 落地页上「Google 广告带来的」来源 code：UserSourceEnum.GOOGLE_AD(6)，后端映射为预约来源「Google Ad」(81)，
+// 业务处理同 Google 预约，只为在管理端分开看（2026-11-11）。条件见 isGoogleAdVisit
+export const GOOGLE_AD_SOURCE_CODE = 6
+
+// 门店参数在本标签页里的记忆（与 index.html 里 GA 那段共用同一个 key）
+const STORE_KEY = 'zyy_store'
+
+/**
+ * 当前门店参数（?store=xxx，去掉首尾空白）：网址里带了就记进 sessionStorage，没带就取本标签页记过的那个，都没有返回空串。
+ * 记住是为了刷新、站内跳转后网址里没了参数也照样算（规则与 index.html 里 GA 那段一致）
+ */
+export function currentStoreParam() {
+    const fromUrl = (new URLSearchParams(window.location.search).get('store') || '').trim()
+    try {
+        if (fromUrl) {
+            sessionStorage.setItem(STORE_KEY, fromUrl)
+            return fromUrl
+        }
+        return sessionStorage.getItem(STORE_KEY) || ''
+    } catch (e) {
+        // 隐私模式下 sessionStorage 可能不可用：只看当前网址
+        return fromUrl
+    }
+}
+
+/**
+ * 是否 Google 广告带来的访问：带了门店参数（?store=xxx）、且不是 ?ads=no。
+ * 带门店参数的链接给 Google 广告用，加了 &ads=no 的给已有渠道（与「ads=no 不加载 GA / Meta Pixel」同一套判断）
+ */
+export function isGoogleAdVisit() {
+    return !!currentStoreParam() && !isNoAdsVisit()
+}
+
+/**
+ * 整页加载时先把门店参数与 ?ads=no 记进本标签页（早于路由安装，原始网址还在）：
+ * 之后刷新或站内跳转，下单时仍按落地链接判断来源
+ */
+export function captureStoreParams() {
+    currentStoreParam()
+    isNoAdsVisit()
+}
 
 export function platformToSourceCode(platform) {
     if (!platform) {
@@ -92,12 +135,16 @@ export function buildAttributionParams() {
 
 /**
  * 预约组件（下单 / 下单时建号）上报的归因参数，<b>按下单所在的页面</b>决定：
- *   - Google 落地页（channel = 'google'）：固定 Google 来源，<b>不带推荐码</b>——URL 上的 ?ref= 不接收，
+ *   - Google 落地页（channel = 'google'）：固定 Google 来源（落地链接带门店参数且不是 ?ads=no 时为 Google Ad，见 isGoogleAdVisit），
+ *     <b>不带推荐码</b>——URL 上的 ?ref= 不接收，
  *     之前在首页存下的推荐码也不带，Google 渠道保持干净；已存的落地参数原样保留，不清空
  *     （顾客回到首页下单，照旧按首页的落地参数归因）。
  *   - 其余页面：按 ?platform= / ?ref= 落地参数（buildAttributionParams）。
  * 这样顾客看到的优惠与单上记的来源一致：/google 页不展示半价活动，单就是 Google；回首页看到活动，单就是本站。
  */
 export function bookingAttributionParams(channel) {
-    return channel === 'google' ? {sourceCode: GOOGLE_SOURCE_CODE} : buildAttributionParams()
+    if (channel === 'google') {
+        return {sourceCode: isGoogleAdVisit() ? GOOGLE_AD_SOURCE_CODE : GOOGLE_SOURCE_CODE}
+    }
+    return buildAttributionParams()
 }

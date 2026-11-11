@@ -1,4 +1,5 @@
 import {isAdOptedOut} from "@/utils/pixel.js";
+import {currentStoreParam} from "@/utils/landing-params.js";
 
 // Google Analytics 4（2026-11-11）。gtag.js 由 index.html 的 <head> 加载：只在正式环境（.env.production 的 VITE_GA_ID），
 // 已选择退出（GPC / 「Do Not Sell」开关）的访客整段不加载。这里只负责发事件与当场停用，不负责加载。
@@ -17,11 +18,7 @@ export function gaEvent(name, params) {
  * 口径与 index.html 里 gtag('set', {store}) 的完全一致；没有返回空串
  */
 export function gaStore() {
-    try {
-        return new URLSearchParams(window.location.search).get('store') || sessionStorage.getItem('zyy_store') || ''
-    } catch (e) {
-        return ''
-    }
+    return currentStoreParam()
 }
 
 /** 当场停用 GA（GA 官方开关 window['ga-disable-<ID>']）：「Do Not Sell」打开退出时调用，页面随后刷新就不再加载 */

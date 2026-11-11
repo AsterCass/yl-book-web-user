@@ -11,7 +11,7 @@ import 'animate.css'
 import App from './App.vue'
 import {createPinia} from 'pinia'
 import {createPersistedStatePlugin} from "@/utils/global-state";
-import {captureLandingParams} from "@/utils/landing-params";
+import {captureLandingParams, captureStoreParams} from "@/utils/landing-params";
 import {initPixel} from '@/utils/pixel'
 
 
@@ -31,6 +31,8 @@ app.use(i18n)
 // 必须早于 app.use(router)：安装 router 即触发首次导航，"/" 会 redirect 到 dashboard，
 // 而 vue-router 不保留 query，届时 ?platform=/?ref= 已从地址栏消失
 captureLandingParams()
+// 门店参数与 ?ads=no 也在路由安装前记进本标签页（下单来源 Google / Google Ad 要用）
+captureStoreParams()
 
 app.use(router)
 initPixel()
