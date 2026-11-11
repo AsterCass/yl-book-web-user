@@ -24,6 +24,13 @@
         } catch (e) {}
         if (noAds) return;
 
+        var zyyStore = (new URLSearchParams(location.search).get('store') || '').trim();
+        try {
+          if (zyyStore) sessionStorage.setItem('zyy_store', zyyStore);
+          else zyyStore = sessionStorage.getItem('zyy_store') || '';
+        } catch (e) {}
+        if (!zyyStore) return;
+
         var tag = document.createElement('script');
         tag.async = true;
         tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
@@ -32,13 +39,7 @@
         window.dataLayer = window.dataLayer || [];
         window.gtag = function () { window.dataLayer.push(arguments); };
         window.gtag('js', new Date());
-
-        var zyyStore = new URLSearchParams(location.search).get('store');
-        try {
-          if (zyyStore) sessionStorage.setItem('zyy_store', zyyStore);
-          else zyyStore = sessionStorage.getItem('zyy_store');
-        } catch (e) {}
-        if (zyyStore) window.gtag('set', { store: zyyStore });
+        window.gtag('set', { store: zyyStore });
 
         window.gtag('config', GA_ID, { cookie_expires: 60 * 60 * 24 * 365 });
       })();
