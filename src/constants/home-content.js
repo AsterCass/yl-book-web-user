@@ -6,7 +6,7 @@
 // ⚠️ 新增门店记得补 lat/lng：预约区「点 Book now 时按定位自动选最近门店」靠它算距离
 // （见 utils/store-geo.js）。不填 = 该店不参与自动选择，其余功能不受影响。
 //
-// 门店专属页（2026-11-10）：首页与 /google 带 ?store=<门店 id>（如 ?store=sanjose，不分大小写）时，按该店的
+// 门店专属页（2026-11-10）：首页与 /google 带 ?store=<门店 id>（如 ?store=zen = 圣何塞，不分大小写）时，按该店的
 // hero / about / gallery 展示；不带参数、id 不认识、或该店没配对应项，一律用默认内容（即不带参数时的页面）。
 //   - hero：页面最上方大图（Hero 底图）。全屏背景、按 cover 铺满（裁掉超出部分），上面压着半透明暗色遮罩。
 //     不配 = 默认的 /img/promo/promo-hero.webp。宽度尽量不低于 1600，压成 webp。
@@ -50,14 +50,14 @@ export const HOME_STORES = [
         notes: {zh: '每周三会员日：修脚类服务立减 32%', en: 'Member Day every Wednesday: 32% off foot care services'},
     },
     {
-        id: 'sanjose',
+        id: 'zen',
         name: {zh: '圣何塞店', en: 'San Jose · Massage Zen'},
         address: '5353 Almaden Expy, A-120, San Jose, CA 95118',
         phone: '(408) 444-9183',
         hours: {zh: '周一至周日 10:00 – 22:00', en: 'Mon – Sun, 10:00 AM – 10:00 PM'},
         notes: {zh: '每周二会员日：按摩类服务立减 30%', en: 'Member Day every Tuesday: 30% off body massage services'},
         about: {
-            image: '/img/promo/stores/sanjose/0.jpg',
+            image: '/img/promo/stores/zen/0.jpg',
             subtitle: {zh: 'Massage Zen (ZYY Spa) · 圣何塞', en: 'Massage Zen (ZYY Spa) · San Jose'},
             paragraphs: [
                 {
@@ -81,8 +81,8 @@ export const HOME_STORES = [
                 },
             ],
         },
-        hero: '/img/promo/stores/sanjose/main.webp',
-        gallery: [1, 2, 3, 4, 5, 6].map(n => `/img/promo/stores/sanjose/${n}.jpg`),
+        hero: '/img/promo/stores/zen/main.webp',
+        gallery: [1, 2, 3, 4, 5, 6].map(n => `/img/promo/stores/zen/${n}.jpg`),
     },
 ]
 
