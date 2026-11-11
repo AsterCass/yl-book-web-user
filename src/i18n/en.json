@@ -206,7 +206,7 @@
       "link": "Do Not Sell or Share My Personal Information",
       "title": "Do Not Sell or Share My Personal Information",
       "intro": "We do not sell your personal information, and we never send your name, phone number, or email address to any advertising company.",
-      "scope": "We do use the Meta Pixel to measure whether our ads lead to bookings. It reports page views and booking steps to Meta, together with your IP address and browser details. Some state privacy laws treat that as \"sharing\" for cross-context behavioral advertising, so you can turn it off here.",
+      "scope": "We do use the Meta Pixel and Google Analytics to measure whether our ads and other traffic sources lead to bookings. They report page views and booking steps to Meta and Google, together with your IP address and browser details. Some state privacy laws treat that as \"sharing\" for cross-context behavioral advertising, so you can turn it off here; once off, neither runs on this device.",
       "toggle_label": "Do not share my information for advertising measurement",
       "state_in": "Currently on: advertising measurement is active on this device.",
       "state_out": "Currently off: no advertising code runs on this device.",

@@ -2,6 +2,36 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        var GA_ID = '%VITE_GA_ID%';
+        if (!/^G-[A-Z0-9]+$/.test(GA_ID)) return;
+        var optedOut = navigator.globalPrivacyControl === true;
+        try {
+          optedOut = optedOut || localStorage.getItem('adOptOut') === '1';
+        } catch (e) {}
+        if (optedOut) return;
+
+        var tag = document.createElement('script');
+        tag.async = true;
+        tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+        document.head.appendChild(tag);
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+
+        var zyyStore = new URLSearchParams(location.search).get('store');
+        try {
+          if (zyyStore) sessionStorage.setItem('zyy_store', zyyStore);
+          else zyyStore = sessionStorage.getItem('zyy_store');
+        } catch (e) {}
+        if (zyyStore) window.gtag('set', { store: zyyStore });
+
+        // cookie 有效期压到 365 天（GA 默认两年）：隐私政策承诺我们设置的 cookie 不超过 12 个月
+        window.gtag('config', GA_ID, { cookie_expires: 60 * 60 * 24 * 365 });
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>预约系统</title>

@@ -569,6 +569,7 @@ import {
 } from "@/api/portal-booking.js";
 import {portalBookingLogin, portalMe, portalPhoneSendCode} from "@/api/portal-auth.js";
 import {track, trackCustom} from "@/utils/pixel.js";
+import {gaEvent, gaStore} from "@/utils/ga.js";
 
 const t = i18n.global.t
 const globalState = useGlobalStateStore()
@@ -1419,6 +1420,15 @@ async function submitBooking() {
     // Meta 把 Schedule 当转化事件看：不带 value/currency 就没法算广告 ROI，
     // 事件管理工具会一直报「缺少货币字段」。金额取本次所选项目合计（门户可选项目均已保证配价>0）
     track('Schedule', {value: Number(groupTotalAmount.value) || 0, currency: 'USD'})
+    // GA4 转化（2026-11-11）：store = 网址的 ?store=（落地页按门店区分，不是实际约的那家店），没带就不传；
+    // service = 本次所有人选的项目名（去重）；value 口径同上面的 Meta Schedule（原价合计、不扣半价）。不带任何个人信息
+    const gaStoreParam = gaStore()
+    gaEvent('generate_lead', {
+      ...(gaStoreParam ? {store: gaStoreParam} : {}),
+      service: [...new Set(memberSkillLists.value.flatMap(ids => skillsOf(ids)).map(sk => sk.name))].join(', '),
+      value: Number(groupTotalAmount.value) || 0,
+      currency: 'USD',
+    })
     jumpToSelf()
   } finally {
     submitting.value = false

@@ -68,6 +68,7 @@ import {switchLanguage} from "@/utils/global-tools.js";
 import {notifyTopPositive, notifyTopWarning} from "@/utils/notification-tools.js";
 import {i18n} from "@/i18n/index.js";
 import {isAdOptedOut, isGpcEnabled, setAdOptOut} from "@/utils/pixel.js";
+import {disableGa} from "@/utils/ga.js";
 
 const t = i18n.global.t
 const thisRouter = useRouter()
@@ -78,8 +79,8 @@ const gpc = ref(isGpcEnabled())
 const optOut = ref(isAdOptedOut())
 
 /**
- * 切换后立刻刷新页面：Pixel 脚本一旦注入就无法真正卸载，只有重新加载才能保证「退出后这台设备上
- * 一行 Meta 代码都不再运行」。反向打开时同理，刷新后才会重新注入。
+ * 切换后立刻刷新页面：Pixel / GA 脚本一旦注入就无法真正卸载，只有重新加载才能保证「退出后这台设备上
+ * 一行 Meta / Google 的衡量代码都不再运行」（GA 由 index.html 加载，刷新后按退出状态不再加载）。反向打开时同理，刷新后才会重新注入。
  */
 function onToggle(value) {
   if (!setAdOptOut(value)) {
@@ -87,6 +88,10 @@ function onToggle(value) {
     optOut.value = !value
     notifyTopWarning(t('doNotSell.save_failed'))
     return
+  }
+  // 刷新前的这 600ms 里 GA 也不再发任何数据
+  if (value) {
+    disableGa()
   }
   notifyTopPositive(value ? t('doNotSell.saved_out') : t('doNotSell.saved_in'))
   setTimeout(() => window.location.reload(), 600)
