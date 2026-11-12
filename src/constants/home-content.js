@@ -11,7 +11,8 @@
 //   - hero：页面最上方大图（Hero 底图）。全屏背景、按 cover 铺满（裁掉超出部分），上面压着半透明暗色遮罩。
 //     不配 = 默认的 /img/promo/promo-hero.webp。宽度尽量不低于 1600，压成 webp。
 //   - heroTitle / heroTagline：大图上的标题与标题下那行小字（{zh, en}，2026-11-12）。不配 = 默认文案（promo.hero_title /
-//     promo.tagline）。只换大图上的字：页脚的品牌名与小字是全品牌的（页脚列着所有门店），不随门店变。
+//     promo.tagline）。页脚的品牌名、品牌下的小字与版权行里的名字也跟着换成这两项；不带参数的首页仍是全称
+//     （main_login_title，Google 登录品牌审核核对的是这个页面）。浏览器标签页标题不变。
 //   - about：About Us 左边的图 + 正文（subtitle 可选，paragraphs 每段 {zh, en}）。桌面端图片与右侧文字等高
 //     （比例对不上时居中裁掉两侧），手机上按原始比例。标题「About Us」不随门店变。不配 = 沿用默认的图和三段默认文案。
 //   - gallery：「门店实景」模块的图片列表，放 About Us 正下方、单独深色底，一行排开，超出内容区宽度就在内容区里

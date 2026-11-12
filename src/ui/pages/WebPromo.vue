@@ -182,9 +182,10 @@
         <div class="col-12 col-md-3 q-pa-md">
           <div class="row items-center no-wrap">
             <img src="/favicon.svg" alt="" style="width: 2rem; height: 2rem" class="q-mr-sm"/>
-            <div style="font-weight: 700; font-size: 1.1rem">{{ $t('main_login_title') }}</div>
+            <!-- 品牌名与小字：带 ?store= 且该店配了 heroTitle / heroTagline 时同大图一起换 -->
+            <div style="font-weight: 700; font-size: 1.1rem">{{ storeHeroTitle || $t('main_login_title') }}</div>
           </div>
-          <div class="promo-footer-muted q-mt-sm">{{ $t('promo.tagline') }}</div>
+          <div class="promo-footer-muted q-mt-sm">{{ storeHeroTagline || $t('promo.tagline') }}</div>
         </div>
         <!-- 门店栏占品牌与链接之外的全部宽度、里面各店等分：原先每店固定 col-md-3，品牌 4 + 两店 6 + 链接 2 正好 12，
              第三家店一加就超 12 换行、整行错位 -->
@@ -215,7 +216,7 @@
         </div>
       </div>
       <div class="text-center promo-footer-copy q-py-md">
-        © {{ curYear }} {{ $t('main_login_title') }} · {{ $t('promo.footer.rights') }}
+        © {{ curYear }} {{ storeHeroTitle || $t('main_login_title') }} · {{ $t('promo.footer.rights') }}
       </div>
     </div>
 
