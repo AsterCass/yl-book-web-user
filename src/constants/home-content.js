@@ -10,6 +10,8 @@
 // hero / about / gallery 展示；不带参数、id 不认识、或该店没配对应项，一律用默认内容（即不带参数时的页面）。
 //   - hero：页面最上方大图（Hero 底图）。全屏背景、按 cover 铺满（裁掉超出部分），上面压着半透明暗色遮罩。
 //     不配 = 默认的 /img/promo/promo-hero.webp。宽度尽量不低于 1600，压成 webp。
+//   - heroTitle / heroTagline：大图上的标题与标题下那行小字（{zh, en}，2026-11-12）。不配 = 默认文案（promo.hero_title /
+//     promo.tagline）。只换大图上的字：页脚的品牌名与小字是全品牌的（页脚列着所有门店），不随门店变。
 //   - about：About Us 左边的图 + 正文（subtitle 可选，paragraphs 每段 {zh, en}）。桌面端图片与右侧文字等高
 //     （比例对不上时居中裁掉两侧），手机上按原始比例。标题「About Us」不随门店变。不配 = 沿用默认的图和三段默认文案。
 //   - gallery：「门店实景」模块的图片列表，放 About Us 正下方、单独深色底，一行排开，超出内容区宽度就在内容区里
@@ -82,6 +84,8 @@ export const HOME_STORES = [
             ],
         },
         hero: '/img/promo/stores/zen/main.webp',
+        heroTitle: {zh: '郑远元按摩', en: 'ZYY Spa'},
+        heroTagline: {zh: '头疗 · 按摩 · 面部护理', en: 'Scalp Care · Massage · Facial'},
         gallery: [1, 2, 3, 4, 5, 6].map(n => `/img/promo/stores/zen/${n}.jpg`),
     },
 ]

@@ -21,9 +21,10 @@
         <img src="/favicon.svg" alt="" class="promo-hero-icon q-mr-md"/>
         <!-- 首页大标题单独用一个键：main_login_title 还挂在页签标题、取消预约页、
              不出售页与页脚上，那些地方仍用全称，这里只改 Hero 这一处的文案 -->
-        <h1 class="promo-hero-title">{{ $t('promo.hero_title') }}</h1>
+        <h1 class="promo-hero-title">{{ storeHeroTitle || $t('promo.hero_title') }}</h1>
       </div>
-      <div class="promo-hero-tagline q-mt-sm">{{ $t('promo.tagline') }}</div>
+      <!-- 标题与这行小字：带 ?store= 且该店配了 heroTitle / heroTagline 时换成该店的 -->
+      <div class="promo-hero-tagline q-mt-sm">{{ storeHeroTagline || $t('promo.tagline') }}</div>
       <!-- VIP 专属优惠横幅（红 + 金，白底保证压图可读）。Google 落地页不参与本站活动，横幅与说明都不展示 -->
       <template v-if="showOffer">
         <div class="promo-vip-banner q-mt-md">
@@ -291,6 +292,9 @@ const pageStore = computed(() => {
   return id ? HOME_STORES.find(s => s.id === id) || null : null
 })
 const storeHero = computed(() => pageStore.value && pageStore.value.hero ? pageStore.value.hero : null)
+// 大图上的标题与小字（按当前语言取；没配返回空串，模板里回落默认文案）
+const storeHeroTitle = computed(() => pageStore.value && pageStore.value.heroTitle ? lv(pageStore.value.heroTitle) : '')
+const storeHeroTagline = computed(() => pageStore.value && pageStore.value.heroTagline ? lv(pageStore.value.heroTagline) : '')
 const storeAbout = computed(() => pageStore.value && pageStore.value.about ? pageStore.value.about : null)
 const storeGallery = computed(() => pageStore.value && pageStore.value.gallery ? pageStore.value.gallery : [])
 
