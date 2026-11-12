@@ -66,8 +66,8 @@ export function isGoogleAdVisit() {
  */
 export function captureStoreParams() {
     currentStoreParam()
-    // ?ads=no 暂不生效（2026-11-11），恢复时去掉注释
-    // isNoAdsVisit()
+    // 要暂停 ?ads=no 时把下一行注释掉
+    isNoAdsVisit()
 }
 
 export function platformToSourceCode(platform) {
@@ -136,8 +136,7 @@ export function buildAttributionParams() {
 
 /**
  * 预约组件（下单 / 下单时建号）上报的归因参数，<b>按下单所在的页面</b>决定：
- *   - Google 落地页（channel = 'google'）：固定 Google 来源（落地链接带门店参数且不是 ?ads=no 时为 Google Ad，见 isGoogleAdVisit；
- *     2026-11-11 起 Google Ad 暂不使用，一律 Google），
+ *   - Google 落地页（channel = 'google'）：固定 Google 来源（落地链接带门店参数且不是 ?ads=no 时为 Google Ad，见 isGoogleAdVisit），
  *     <b>不带推荐码</b>——URL 上的 ?ref= 不接收，
  *     之前在首页存下的推荐码也不带，Google 渠道保持干净；已存的落地参数原样保留，不清空
  *     （顾客回到首页下单，照旧按首页的落地参数归因）。
@@ -146,9 +145,9 @@ export function buildAttributionParams() {
  */
 export function bookingAttributionParams(channel) {
     if (channel === 'google') {
-        // Google Ad 暂不使用（2026-11-11）：/google 页一律记 Google 预约。恢复时把下一行换回这句（同步恢复 index.html 与 pixel.js）
-        // return {sourceCode: isGoogleAdVisit() ? GOOGLE_AD_SOURCE_CODE : GOOGLE_SOURCE_CODE}
-        return {sourceCode: GOOGLE_SOURCE_CODE}
+        // 要暂停 Google Ad（/google 页一律记 Google 预约）时把下一行换成注释里这句（同步切换 index.html 与 pixel.js）
+        // return {sourceCode: GOOGLE_SOURCE_CODE}
+        return {sourceCode: isGoogleAdVisit() ? GOOGLE_AD_SOURCE_CODE : GOOGLE_SOURCE_CODE}
     }
     return buildAttributionParams()
 }

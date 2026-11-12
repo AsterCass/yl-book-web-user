@@ -78,11 +78,11 @@ export function isNoAdsVisit() {
     }
 }
 
-/** 动态注入 Meta Pixel 基础代码。已选择退出（含 GPC）则整段脚本都不加载 */
+/** 动态注入 Meta Pixel 基础代码。已选择退出（含 GPC），或这是 ?ads=no 的访问，则整段脚本都不加载 */
 export function initPixel() {
-    // ?ads=no 暂不生效（2026-11-11）：恢复时把下一行换回这句（同步恢复 index.html 与 landing-params.js）
-    // if (!PIXEL_ID || loaded || typeof window === 'undefined' || isAdOptedOut() || isNoAdsVisit()) return
-    if (!PIXEL_ID || loaded || typeof window === 'undefined' || isAdOptedOut()) return
+    // 要暂停 ?ads=no 时把下一行换成注释里这句（同步切换 index.html 与 landing-params.js）
+    // if (!PIXEL_ID || loaded || typeof window === 'undefined' || isAdOptedOut()) return
+    if (!PIXEL_ID || loaded || typeof window === 'undefined' || isAdOptedOut() || isNoAdsVisit()) return
 
     /* eslint-disable */
     !function (f, b, e, v, n, t, s) {
