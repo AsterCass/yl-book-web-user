@@ -1065,6 +1065,8 @@ function selectStore(s) {
     // 手动选门店 = 客户自己的决定，清掉自动选择的提示
     autoStoreHint.value = ""
     trackCustom('StoreSelected')
+    // GA4 预约步骤事件（2026-11-19）：与上面的 Meta 事件同一时机；都会自动带上 index.html 里 set 的 store / ads
+    gaEvent('select_store')
   }
   scrollTo(skillSecEl.value)
 }
@@ -1115,6 +1117,7 @@ function toggleSkill(id) {
   if (selectedSkillIds.value.length && !serviceSelectedTracked) {
     serviceSelectedTracked = true
     trackCustom('ServiceSelected')
+    gaEvent('select_service')
   }
   // 绝大多数客户只约一个项目：首次选中就滚到下一步（选时间）；之后再加选/取消不打断（项目仍可多选）。
   // 多人时要等所有人都选好了才滚过去，否则停在这里让客户点「后一个人」
@@ -1140,6 +1143,7 @@ function setPartySize(n) {
   }
   if (n > 1) {
     trackCustom('PartySizeChanged', {size: n})
+    gaEvent('select_party_size', {size: n})
   }
 }
 
@@ -1176,6 +1180,8 @@ function selectDate(date) {
 function selectSlot(slot) {
   selectedSlot.value = slot
   trackCustom('DateSelected')
+  // Meta 那边叫 DateSelected，实际是选中了某个开始时间（日期 + 时刻），GA 按实际叫 select_time
+  gaEvent('select_time')
   scrollTo(actionEl.value)
 }
 
