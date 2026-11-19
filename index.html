@@ -48,6 +48,11 @@
 
         window.dataLayer = window.dataLayer || [];
         window.gtag = function () { window.dataLayer.push(arguments); };
+        // 关掉广告个性化（2026-11-19）：GA 与 Google Ads 都只做统计和转化衡量，不拿访问数据建再营销受众、不做个性化广告（隐私政策是这么写的；
+        // 要开再营销得先改政策）。必须用 consent 且放在最前面：线上实测 config / set 里的 allow_ad_personalization_signals
+        // 拦不住加载时的第一批请求（页面浏览、再营销名单都照发 npa=0），consent 默认值才能让所有请求都带 npa=1。
+        // 只拒绝 ad_personalization 一项：转化计数、广告点击归因不受影响
+        window.gtag('consent', 'default', { ad_personalization: 'denied' });
         window.gtag('js', new Date());
         window.gtag('set', { store: zyyStore, ads: zyyAdsValue || 'yes' });
 
@@ -55,10 +60,10 @@
 
         // Google Ads 转化（2026-11-19）：和 GA 共用上面这一份 gtag.js，加载条件也完全相同（正式环境、没退出、带了 store）。
         // 这一步会在落地时把网址里的广告点击标识（gclid）记进本站 cookie，预约成功时 Ads 才对得上是哪次点击带来的。
-        // allow_ad_personalization_signals: false = 只做转化衡量，不拿访问数据建再营销受众（隐私政策）
+        // 不做再营销靠的是上面的 consent 默认值，这里不用再单独设
         var ADS_ID = '%VITE_GADS_ID%';
         if (/^AW-[0-9]+$/.test(ADS_ID)) {
-          window.gtag('config', ADS_ID, { allow_ad_personalization_signals: false });
+          window.gtag('config', ADS_ID);
         }
       })();
     </script>
