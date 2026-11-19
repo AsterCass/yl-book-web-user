@@ -569,7 +569,7 @@ import {
 } from "@/api/portal-booking.js";
 import {portalBookingLogin, portalMe, portalPhoneSendCode} from "@/api/portal-auth.js";
 import {track, trackCustom} from "@/utils/pixel.js";
-import {gaEvent, gaStore} from "@/utils/ga.js";
+import {adsBookConversion, gaEvent, gaStore} from "@/utils/ga.js";
 
 const t = i18n.global.t
 const globalState = useGlobalStateStore()
@@ -1442,6 +1442,8 @@ async function submitBooking() {
       value: Number(groupTotalAmount.value) || 0,
       currency: 'USD',
     })
+    // Google Ads「网站预约」转化（2026-11-19）：同一时机、同一金额；团体预约也只报一次（金额为整组合计）
+    adsBookConversion(Number(groupTotalAmount.value) || 0)
     jumpToSelf()
   } finally {
     submitting.value = false
