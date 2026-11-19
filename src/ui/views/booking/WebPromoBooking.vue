@@ -1214,6 +1214,8 @@ function sendPhoneCode() {
       return
     }
     notifyTopPositive(t('booking.phone_code_sent'))
+    // GA4（2026-11-19）：验证码确实发出去了才算（号码不合法、发送失败都不算）
+    gaEvent('send_verification_code')
     phoneTimer = startCountdown(phoneCountdown, phoneTimer)
   })
 }
@@ -1319,6 +1321,11 @@ function checkContact() {
  * 点「立即预约」：校验通过后，预约通知短信没勾就先弹确认框（选完在 {@link answerSmsPrompt} 里下单），勾了直接下单。
  */
 function doBook() {
+  // GA4（2026-11-19）：每次点「立即预约」都算（含没填全被拦下的），正在提交中的重复点击不算；
+  // 预约成功另有 generate_lead，两者一比就是从点击到成功的转化
+  if (!submitting.value) {
+    gaEvent('click_book')
+  }
   if (submitting.value || !checkSelections() || !checkContact()) {
     return
   }
