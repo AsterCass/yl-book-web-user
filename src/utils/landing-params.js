@@ -135,14 +135,30 @@ export function buildAttributionParams() {
 }
 
 /**
+ * 首页（/、/index、/promo）按哪个渠道算（2026-11-23）：没带 ?platform= 也没带 ?ref= 的首页访问与 /google 一样算 Google 渠道
+ * （不展示本站半价活动、下单记 Google 预约、不带推荐码），?platform=google 也算 Google；
+ * platform 只要有值（含后端不认识的值，如 ?platform=web，后端记「本站预约」）、或带了 ?ref=，就是本站渠道。
+ * 依据是整页加载时 captureLandingParams 记下的落地参数（首页以网址为准，没带即清空），站内跳转回首页不变。
+ * 返回值即 WebPromoBooking 的 channel：'google' 或 ''（本站）
+ */
+export function homeChannel() {
+    const globalState = useGlobalStateStore()
+    const platform = (globalState.platform || '').trim().toLowerCase()
+    if (platform === 'google') {
+        return 'google'
+    }
+    return platform || globalState.referralCode ? '' : 'google'
+}
+
+/**
  * 预约组件（下单 / 下单时建号）上报的归因参数，<b>按下单所在的页面</b>决定：
- *   - Google 落地页（channel = 'google'）：固定 Google 来源（落地链接带门店参数且不是 ?ads=no 时为 Google Ad，见 isGoogleAdVisit；
+ *   - Google 渠道（channel = 'google'：/google 页，以及没带落地参数的首页，见 homeChannel）：固定 Google 来源（落地链接带门店参数且不是 ?ads=no 时为 Google Ad，见 isGoogleAdVisit；
  *     2026-11-16 起 Google Ad 暂不使用，一律 Google），
  *     <b>不带推荐码</b>——URL 上的 ?ref= 不接收，
  *     之前在首页存下的推荐码也不带，Google 渠道保持干净；已存的落地参数原样保留，不清空
  *     （顾客回到首页下单，照旧按首页的落地参数归因）。
- *   - 其余页面：按 ?platform= / ?ref= 落地参数（buildAttributionParams）。
- * 这样顾客看到的优惠与单上记的来源一致：/google 页不展示半价活动，单就是 Google；回首页看到活动，单就是本站。
+ *   - 其余（带了落地参数的首页、/sms 页等）：按 ?platform= / ?ref= 落地参数（buildAttributionParams）。
+ * 这样顾客看到的优惠与单上记的来源一致：Google 渠道不展示半价活动，单就是 Google；看到活动的，单就是本站。
  */
 export function bookingAttributionParams(channel) {
     if (channel === 'google') {

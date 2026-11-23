@@ -174,7 +174,7 @@
     </div>
 
     <!-- 在线预约区：点「Book now」不再跳转登录页，而是滚到这里就地完成预约（免登录浏览，下单时才验证身份） -->
-    <web-promo-booking ref="bookingRef" :channel="variant" :show-offer="showOffer"/>
+    <web-promo-booking ref="bookingRef" :channel="channel" :show-offer="showOffer"/>
 
     <!-- 页脚（参照官网：灰底、链接、门店信息；门店同样来自配置） -->
     <div class="promo-footer">
@@ -238,6 +238,7 @@ import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import {switchLanguage} from "@/utils/global-tools.js";
 import {openLink} from "@/utils/base-tools.js";
 import {useGlobalStateStore} from "@/utils/global-state.js";
+import {homeChannel} from "@/utils/landing-params.js";
 import {i18n} from "@/i18n/index.js";
 import {useRoute} from "vue-router";
 import WebPromoBooking from "@/ui/views/booking/WebPromoBooking.vue";
@@ -247,7 +248,8 @@ import {HOME_SERVICE_GROUPS, HOME_STORES, HOME_TESTIMONIALS} from "@/constants/h
 const props = defineProps({
   /**
    * 页面版本：空 = 首页（/）；'google' = Google 落地页（/google）。内容与首页相同，但不展示本站活动（半价横幅、
-   * 确认步骤的半价须知），下单固定记「Google预约」来源、不带推荐码——Google 是独立渠道，不参与本站活动
+   * 确认步骤的半价须知），下单固定记「Google预约」来源、不带推荐码——Google 是独立渠道，不参与本站活动。
+   * 首页没带 ?platform= / ?ref= 时也按 Google 渠道处理（2026-11-23，见下方 channel）
    */
   variant: {
     type: String,
@@ -255,8 +257,11 @@ const props = defineProps({
   },
 })
 
-// 是否展示本站活动（半价）：Google 落地页不展示
-const showOffer = computed(() => props.variant !== 'google')
+// 本页渠道（2026-11-23）：/google 固定 Google；首页没带 ?platform= / ?ref= 时也按 Google（见 landing-params 的 homeChannel）
+const channel = computed(() => props.variant === 'google' ? 'google' : homeChannel())
+
+// 是否展示本站活动（半价）：Google 渠道不展示
+const showOffer = computed(() => channel.value !== 'google')
 
 const globalState = useGlobalStateStore()
 

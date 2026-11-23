@@ -610,8 +610,9 @@ const props = defineProps({
     default: false,
   },
   /**
-   * 下单所在的页面渠道：'google' = Google 落地页（/google），下单固定记 Google 来源、不带推荐码；
-   * 空 = 首页等，按 ?platform= / ?ref= 落地参数归因（见 landing-params.js 的 bookingAttributionParams）
+   * 下单所在的页面渠道：'google' = Google 渠道（/google，以及没带 ?platform= / ?ref= 的首页，见 landing-params.js 的 homeChannel），
+   * 下单固定记 Google 来源、不带推荐码；空 = 本站（带了落地参数的首页、/sms 页等），按 ?platform= / ?ref= 落地参数归因
+   * （见 landing-params.js 的 bookingAttributionParams）
    */
   channel: {
     type: String,

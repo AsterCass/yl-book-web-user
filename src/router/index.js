@@ -20,7 +20,8 @@ const router = createRouter({
     history: createWebHistory(import.meta.env.VITE_BASE_URL),
     routes: [
         // 官网首页 = 推广页（免登录）：版式参照 buildhealth 官网，数据来自 home-content 配置；
-        // 页内保留「应用用途与 Google 数据使用」板块以满足 Google OAuth 品牌验证对首页的要求
+        // 页内保留「应用用途与 Google 数据使用」板块以满足 Google OAuth 品牌验证对首页的要求。
+        // 没带 ?platform= 也没带 ?ref= 打开时与 /google 相同：不展示本站半价活动、下单记「Google预约」（2026-11-23，见 landing-params 的 homeChannel）
         {
             path: "/",
             alias: ["/index", "/promo"],
